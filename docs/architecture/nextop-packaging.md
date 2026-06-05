@@ -4,11 +4,11 @@ This repository can publish individual apps as Nextop workspace app packages.
 
 ## Source Layout
 
-Each publishable app owns a `nextop/` directory:
+Each publishable app owns a `nextop-package/` directory:
 
 ```txt
 apps/<app-id>/
-  nextop/
+  nextop-package/
     nextop.app.json
     AGENTS.md
     bootstrap.sh
@@ -41,6 +41,7 @@ enabled for each release environment.
   "apps": {
     "github-trending": {
       "packageCommand": "pnpm package:nextop --app github-trending",
+      "packageSourceDir": "apps/github-trending/nextop-package",
       "packageDir": "build/nextop-app/github-trending/package",
       "iconPath": "build/nextop-app/github-trending/package/icon.svg"
     }

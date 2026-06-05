@@ -17,7 +17,7 @@ The right panel intentionally excludes issues, pull requests, discussions, relat
 
 ## Nextop Packaging
 
-The app's Nextop package source lives in `nextop/`.
+The app's Nextop package source lives in `nextop-package/`.
 
 ```bash
 pnpm package:nextop --app github-trending

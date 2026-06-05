@@ -28,6 +28,7 @@ test("publish config registers github-trending as the default app", async () => 
   const { appId, app } = resolveAppConfig(config, "");
 
   assert.equal(appId, "github-trending");
+  assert.equal(app.packageSourceDir, "apps/github-trending/nextop-package");
   assert.equal(app.packageCommand, "pnpm package:nextop --app github-trending");
   assert.equal(app.packageDir, "build/nextop-app/github-trending/package");
   assert.equal(

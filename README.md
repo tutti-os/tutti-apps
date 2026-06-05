@@ -56,7 +56,7 @@ pnpm --filter @nextop-apps/github-trending test
 - Cross-app imports are not allowed; move shared code into `packages/*`.
 - Each app should keep its product/technical docs under `apps/<app-id>/docs`.
 - Each publishable app keeps Nextop package source files under
-  `apps/<app-id>/nextop`.
+  `apps/<app-id>/nextop-package`.
 - Root `nextop.publish.json` configures which apps can be published and which
   app each environment publishes by default.
 - Repository-wide architecture and conventions belong in `docs/*`.

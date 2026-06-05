@@ -21,7 +21,7 @@ to the right panel unless the product plan changes.
 - App overview: `README.md`
 - Technical plan: `docs/technical-plan.md`
 - Docs index: `docs/README.md`
-- Nextop package source: `nextop/`
+- Nextop package source: `nextop-package/`
 - Repository build-system context: `../../docs/architecture/build-system.md`
 - Repository package workflow: `../../docs/architecture/nextop-packaging.md`
 
@@ -70,14 +70,14 @@ client or classification logic later, promote that code into `packages/*`.
 
 ## Nextop Package
 
-The app's Nextop package source lives in `nextop/`.
+The app's Nextop package source lives in `nextop-package/`.
 
-- `nextop/nextop.app.json`: source manifest.
-- `nextop/bootstrap.sh`: runtime entrypoint copied into the package.
-- `nextop/AGENTS.md`: runtime package guide.
-- `nextop/icon.svg`: App Center icon.
-- `nextop/static` and `nextop/server`: placeholder package assets until the
-  TanStack Start app is implemented.
+- `nextop-package/nextop.app.json`: source manifest.
+- `nextop-package/bootstrap.sh`: runtime entrypoint copied into the package.
+- `nextop-package/AGENTS.md`: runtime package guide.
+- `nextop-package/icon.svg`: App Center icon.
+- `nextop-package/static` and `nextop-package/server`: placeholder package
+  assets until the TanStack Start app is implemented.
 
 Root `nextop.publish.json` enables this app for production and staging release
 workflows.

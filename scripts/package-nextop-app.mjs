@@ -155,8 +155,10 @@ async function copyIfExists(from, to) {
   return true;
 }
 
-async function writeManifest({ nextopDir, packageRoot, version }) {
-  const manifest = await readJson(path.join(nextopDir, "nextop.app.json"));
+async function writeManifest({ packageSourceDir, packageRoot, version }) {
+  const manifest = await readJson(
+    path.join(packageSourceDir, "nextop.app.json"),
+  );
   manifest.version = version;
   await writeFile(
     path.join(packageRoot, "nextop.app.json"),
@@ -166,38 +168,42 @@ async function writeManifest({ nextopDir, packageRoot, version }) {
 }
 
 async function writePackageFiles({ appConfig, version }) {
-  const nextopDir = path.join(rootDir, appConfig.nextopDir);
+  const packageSourceDir = path.join(rootDir, appConfig.packageSourceDir);
   const packageRoot = path.join(rootDir, appConfig.packageDir);
 
   await rm(packageRoot, { force: true, recursive: true });
   await mkdir(packageRoot, { recursive: true });
 
-  const manifest = await writeManifest({ nextopDir, packageRoot, version });
+  const manifest = await writeManifest({
+    packageSourceDir,
+    packageRoot,
+    version,
+  });
 
   await cp(
-    path.join(nextopDir, "AGENTS.md"),
+    path.join(packageSourceDir, "AGENTS.md"),
     path.join(packageRoot, "AGENTS.md"),
   );
   await cp(
-    path.join(nextopDir, "bootstrap.sh"),
+    path.join(packageSourceDir, "bootstrap.sh"),
     path.join(packageRoot, "bootstrap.sh"),
   );
   await chmod(path.join(packageRoot, "bootstrap.sh"), 0o755);
   await cp(
-    path.join(nextopDir, "icon.svg"),
+    path.join(packageSourceDir, "icon.svg"),
     path.join(packageRoot, "icon.svg"),
   );
 
   await copyIfExists(
-    path.join(nextopDir, "server"),
+    path.join(packageSourceDir, "server"),
     path.join(packageRoot, "server"),
   );
   await copyIfExists(
-    path.join(nextopDir, "static"),
+    path.join(packageSourceDir, "static"),
     path.join(packageRoot, "dist"),
   );
   await copyIfExists(
-    path.join(nextopDir, "README.md"),
+    path.join(packageSourceDir, "README.md"),
     path.join(packageRoot, "README.md"),
   );
 

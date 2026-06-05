@@ -35,7 +35,7 @@ Rule of thumb:
 - Code moves into `packages/*` only when there is a real shared boundary.
 - Documentation that teaches future agents how the repository works belongs in
   `docs/architecture` or `docs/conventions`.
-- Publishable app package sources belong in `apps/<app-id>/nextop`.
+- Publishable app package sources belong in `apps/<app-id>/nextop-package`.
 - The root `nextop.publish.json` file controls which apps can be published and
   the default app for each release environment.
 

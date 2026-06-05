@@ -7,7 +7,7 @@ nextop-apps/
   apps/
     github-trending/
       docs/
-      nextop/
+      nextop-package/
       src/
       package.json
       tsconfig.json
@@ -43,7 +43,7 @@ An app owns:
 - route structure and product UI
 - app-specific server functions and API routes
 - app-specific docs under `apps/<app-id>/docs`
-- Nextop package source under `apps/<app-id>/nextop` when publishable
+- Nextop package source under `apps/<app-id>/nextop-package` when publishable
 - app-specific validation scripts
 
 Apps must not import from another app's private `src`.
@@ -70,7 +70,7 @@ First-version product boundary:
 - repo row README preview
 - README-only right panel
 - GitHub API integration and README rendering
-- Nextop package source under `apps/github-trending/nextop`
+- Nextop package source under `apps/github-trending/nextop-package`
 
 If future apps need GitHub API access, promote the GitHub client into a package
 such as `packages/github`.
