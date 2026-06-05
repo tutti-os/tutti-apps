@@ -1,0 +1,37 @@
+# dependencies
+/node_modules
+**/node_modules
+
+# package managers
+.pnp
+.pnp.js
+
+# builds
+/build
+**/dist
+**/.turbo
+**/.output
+**/.next
+**/out
+
+# coverage
+/coverage
+**/coverage
+
+# local files
+.DS_Store
+.env
+.env*.local
+*.pem
+*.tsbuildinfo
+next-env.d.ts
+logs/
+tmp/
+local-data/
+.worktrees/
+
+# agent/editor local state
+.agents/
+.claude/
+.codex/
+.superpowers/

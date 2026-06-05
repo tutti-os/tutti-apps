@@ -1,0 +1,51 @@
+# Agent Workflow
+
+## Entry Sequence
+
+When entering the repository:
+
+1. Read root `AGENTS.md`.
+2. Read the nearest nested `AGENTS.md` for the target directory.
+3. Read the relevant docs under `docs/architecture` or the target app's `docs`.
+4. Inspect package scripts before running commands.
+
+## Recording Decisions
+
+Add durable notes when a decision affects future work.
+
+Use:
+
+- `docs/architecture/*` for module boundaries, framework decisions, build
+  system choices, and app/package ownership.
+- `docs/conventions/*` for recurring workflow rules, validation rules, and
+  agent traps.
+- `apps/<app-id>/docs/*` for app-specific product and technical plans.
+
+Do not leave important architecture decisions only in chat.
+
+## Editing Rules
+
+- Keep changes scoped to the app/package being modified.
+- Do not import from another app's private source tree.
+- Promote shared code into `packages/*` only when the shared boundary is real.
+- Update docs when changing structure, commands, or ownership.
+- Prefer focused app/package checks before workspace-wide checks.
+
+## Verification
+
+For narrow changes:
+
+```bash
+pnpm --filter <package> typecheck
+pnpm --filter <package> test
+```
+
+For repository-level changes:
+
+```bash
+pnpm lint
+pnpm test
+pnpm typecheck
+```
+
+For frontend changes, start the target app and verify the UI in a browser.
