@@ -26,7 +26,7 @@
 - Keep `README thumbnail preview` in repo rows as structured visual previews, not generated screenshots.
 - Use SQLite design and module boundaries, but do not require a live GitHub token or external crawler for the first UI pass.
 - Replace the placeholder Nextop package `server/` and `static/` only after TanStack Start build succeeds and `.output/server/index.mjs` is packaged.
-- Use Tailwind utilities directly in TSX for app visuals. Do not add CSS Modules, custom global business classes, or app-specific global CSS; keep the stylesheet to the Tailwind entry only.
+- Use Tailwind utilities directly in TSX for app visuals. Do not add CSS Modules or custom global business classes. Define the fixed visual palette by overriding Tailwind/shadcn semantic color tokens such as `background`, `foreground`, `card`, `border`, `primary`, `muted`, and `accent`; components should consume those tokens with classes like `bg-background`, `text-foreground`, `border-border`, and `text-muted-foreground`.
 
 ## File Map
 
@@ -38,7 +38,7 @@ Create:
 - `apps/github-trending/src/routes/index.tsx` - dashboard route with search params and loader.
 - `apps/github-trending/src/routes/api.trending.ts` - JSON server route for category board data.
 - `apps/github-trending/src/routes/api.repos.$owner.$repo.readme.ts` - JSON server route for README data.
-- `apps/github-trending/src/styles.css` - minimal Tailwind v4 entry file.
+- `apps/github-trending/src/styles.css` - Tailwind v4 entry plus semantic theme token overrides.
 - `apps/github-trending/src/components/app-shell.tsx` - three-pane application frame.
 - `apps/github-trending/src/components/command-bar.tsx` - search, range, language, refresh/open controls.
 - `apps/github-trending/src/components/category-sidebar.tsx` - category, saved collection, pinned topic navigation.
@@ -248,7 +248,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-screen bg-[#061114] text-[#e9f7f4] antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased">
         {children}
         <Scripts />
       </body>
@@ -271,21 +271,48 @@ export const Route = createFileRoute("/")({
 })
 
 function IndexRoute() {
-  return <main className="min-h-screen bg-[#061114] text-[#e9f7f4]">TrendReader</main>
+  return <main className="min-h-screen bg-background text-foreground">TrendReader</main>
 }
 ```
 
 Expected: initial route compiles before UI components exist.
 
-- [ ] **Step 6: Add minimal Tailwind entry**
+- [ ] **Step 6: Add Tailwind semantic theme tokens**
 
 Create `apps/github-trending/src/styles.css`:
 
 ```css
 @import "tailwindcss";
+
+@theme {
+  --color-background: #061114;
+  --color-foreground: #e9f7f4;
+  --color-card: #0b1b20;
+  --color-card-foreground: #e9f7f4;
+  --color-popover: #0b1b20;
+  --color-popover-foreground: #e9f7f4;
+  --color-primary: #2dd4bf;
+  --color-primary-foreground: #031414;
+  --color-secondary: #10272d;
+  --color-secondary-foreground: #d7ece8;
+  --color-muted: #10272d;
+  --color-muted-foreground: #8fa8a6;
+  --color-accent: #45f08a;
+  --color-accent-foreground: #031414;
+  --color-destructive: #fb7185;
+  --color-destructive-foreground: #fff1f2;
+  --color-border: #264247;
+  --color-input: #1b343a;
+  --color-ring: #2dd4bf;
+  --color-chart-1: #45f08a;
+  --color-chart-2: #2dd4bf;
+  --color-chart-3: #60a5fa;
+  --color-chart-4: #facc15;
+  --color-chart-5: #fb923c;
+}
 ```
 
-Expected: Tailwind compiles. All visual styling, including dark colors, borders, glows, typography, pane backgrounds, and markdown element styling, is expressed with Tailwind utility classes in TSX.
+Expected: Tailwind compiles. All visual styling, including dark colors, borders, glows, typography, pane backgrounds, and markdown element styling, is expressed with Tailwind utility classes in TSX using semantic tokens. Do not use arbitrary hex utility classes like `bg-[#061114]` in component code.
 
 - [ ] **Step 7: Verify scaffold**
 
@@ -699,9 +726,9 @@ export function Button({
     <button
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-md border text-sm transition",
-        variant === "default" && "border-emerald-400/30 bg-emerald-400/10 text-emerald-100",
-        variant === "ghost" && "border-transparent bg-transparent text-slate-300 hover:bg-white/5",
-        variant === "outline" && "border-white/10 bg-white/[0.03] text-slate-100 hover:border-cyan-300/40",
+        variant === "default" && "border-primary/40 bg-primary/15 text-primary hover:bg-primary/20",
+        variant === "ghost" && "border-transparent bg-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+        variant === "outline" && "border-border bg-card/70 text-foreground hover:border-primary/50 hover:bg-secondary",
         size === "sm" && "h-9 px-3",
         size === "icon" && "h-9 w-9 px-0",
         className,
@@ -881,32 +908,32 @@ type MarkdownRendererProps = {
 
 export function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
   return (
-    <div className="space-y-5 text-sm leading-7 text-slate-200">
+    <div className="space-y-5 text-sm leading-7 text-foreground">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeSanitize]}
         components={{
           h1: ({ children }) => (
-            <h1 className="text-3xl font-semibold tracking-normal text-white">
+            <h1 className="text-3xl font-semibold tracking-normal text-foreground">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="pt-3 text-xl font-semibold tracking-normal text-white">
+            <h2 className="pt-3 text-xl font-semibold tracking-normal text-foreground">
               {children}
             </h2>
           ),
-          p: ({ children }) => <p className="text-slate-200">{children}</p>,
+          p: ({ children }) => <p className="text-foreground/85">{children}</p>,
           ul: ({ children }) => (
-            <ul className="list-disc space-y-2 pl-5 text-slate-200">{children}</ul>
+            <ul className="list-disc space-y-2 pl-5 text-foreground/85">{children}</ul>
           ),
           code: ({ children }) => (
-            <code className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-xs text-cyan-100">
+            <code className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-xs text-primary">
               {children}
             </code>
           ),
           pre: ({ children }) => (
-            <pre className="overflow-x-auto rounded-md border border-white/10 bg-black/20 p-4">
+            <pre className="overflow-x-auto rounded-md border border-border bg-card p-4">
               {children}
             </pre>
           ),
