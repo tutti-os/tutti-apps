@@ -36,15 +36,19 @@
 
 ### 数据与缓存
 
-MVP 推荐：
+MVP 固定使用：
 
-- `SQLite` / `libSQL`
+- `SQLite`
 - `Drizzle ORM`
+- `better-sqlite3`
 
-后续多人使用或部署到生产：
+存储原则：
 
-- `PostgreSQL`
-- Redis / Upstash Redis 做热点缓存
+- SQLite 数据文件只在服务端访问，不能从浏览器直接读写。
+- 本地开发默认放在 `data/trendreader.sqlite`。
+- 作为 Nextop app 运行时放在 `NEXTOP_APP_DATA_DIR/trendreader.sqlite`。
+- SQLite 同时承担数据存储和缓存快照职责，MVP 不引入 PostgreSQL 或 Redis。
+- 如果后续部署到无持久磁盘的平台，需要把 SQLite 文件放到该平台支持的持久卷，或者迁移到兼容 SQLite 的托管存储。
 
 ## 3. 总体架构
 
@@ -74,7 +78,7 @@ rankingService
   - repo ranking inside category
         |
         v
-DB / cache snapshots
+SQLite database / cache snapshots
         |
         v
 TanStack Start UI
@@ -138,6 +142,7 @@ app/
     schema.ts
     client.server.ts
     migrations/
+    migrate.server.ts
 
   lib/
     env.server.ts
@@ -213,6 +218,26 @@ export type ReadmePreviewCache = {
 
 ## 6. 数据库表设计
 
+数据库使用 SQLite。所有 JSON 字段先以 `text` 存储，由应用层序列化和反序列化；时间字段统一存 ISO datetime 字符串。MVP 使用 Drizzle migrations 管理 schema，应用启动或刷新任务开始前执行迁移检查。
+
+推荐文件路径：
+
+```txt
+local dev:
+  data/trendreader.sqlite
+
+Nextop runtime:
+  $NEXTOP_APP_DATA_DIR/trendreader.sqlite
+```
+
+SQLite 访问边界：
+
+- 所有数据库调用放在 `db/*.server.ts` 或 feature `*.server.ts` 内。
+- 客户端组件只能通过 Server Functions / Server Routes 读取数据。
+- 写入集中在 refresh job、README cache update、classification/ranking snapshot 生成。
+- 避免长事务；批量 upsert 按 repo/category 分段提交。
+- 初始化时建议设置 `journal_mode = WAL` 和 `busy_timeout`，减少刷新任务与页面读取之间的锁冲突。
+
 ### repos
 
 ```txt
@@ -234,6 +259,14 @@ updated_at          datetime
 fetched_at          datetime not null
 ```
 
+建议索引：
+
+```txt
+unique index repos_full_name_idx on repos(full_name)
+index repos_language_idx on repos(language)
+index repos_fetched_at_idx on repos(fetched_at)
+```
+
 ### trend_snapshots
 
 ```txt
@@ -244,6 +277,13 @@ language            text
 rank_raw            integer not null
 stars_gained        integer not null default 0
 captured_at         datetime not null
+```
+
+建议索引：
+
+```txt
+index trend_snapshots_board_idx on trend_snapshots(since, language, captured_at)
+index trend_snapshots_repo_idx on trend_snapshots(repo_id, captured_at)
 ```
 
 ### readme_cache
@@ -283,6 +323,12 @@ computed_at         datetime not null
 primary key(repo_id, category_id)
 ```
 
+建议索引：
+
+```txt
+index category_scores_primary_idx on category_scores(category_id, is_primary, confidence)
+```
+
 ### category_snapshots
 
 ```txt
@@ -294,6 +340,12 @@ momentum            real not null
 repo_count          integer not null
 top_repo_ids_json   text not null
 captured_at         datetime not null
+```
+
+建议索引：
+
+```txt
+index category_snapshots_board_idx on category_snapshots(since, language, captured_at)
 ```
 
 ## 7. 分类体系设计
@@ -801,6 +853,25 @@ avatar
 - 不把所有 section 都包成 Card；这个产品主结构是 panes + rows + sections。
 
 ## 13. 后端模块设计
+
+### db
+
+```ts
+type DbRuntime = {
+  sqlitePath: string
+  runMigrations(): Promise<void>
+}
+```
+
+职责：
+
+- 初始化 SQLite 数据库文件。
+- 应用 Drizzle migrations。
+- 设置 SQLite pragmas，例如 `journal_mode = WAL` 和 `busy_timeout`。
+- 暴露服务端-only 的 Drizzle client。
+- 根据运行环境解析数据库路径：
+  - `NEXTOP_APP_DATA_DIR/trendreader.sqlite`
+  - `data/trendreader.sqlite`
 
 ### githubService
 
