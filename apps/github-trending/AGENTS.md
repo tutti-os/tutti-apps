@@ -27,6 +27,9 @@ to the right panel unless the product plan changes.
 
 The planned framework is TanStack Start with Tailwind CSS and shadcn/ui.
 
+When available, use the global `tanstack-start` skill for TanStack Start
+scaffolding, routing, server functions, Vite config, and deployment decisions.
+
 Use:
 
 - TanStack Router/Start for routes, loaders, server functions, and server routes.
