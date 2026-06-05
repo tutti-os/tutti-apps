@@ -28,7 +28,7 @@ to the right panel unless the product plan changes.
 
 ## Framework Direction
 
-The planned framework is TanStack Start with Tailwind CSS and shadcn/ui.
+The current app is implemented with TanStack Start, Tailwind CSS, and shadcn/ui.
 
 When available, use the installed DeckardGer TanStack agent skills:
 
@@ -79,21 +79,21 @@ The app's Nextop package source lives in `nextop-package/`.
 
 - `nextop-package/nextop.app.json`: source manifest.
 - `nextop-package/bootstrap.sh`: runtime entrypoint copied into the package.
+- `nextop-package/server.mjs`: package-local Nextop wrapper that serves
+  `dist/` assets and delegates app requests to the TanStack Start server build.
 - `nextop-package/AGENTS.md`: runtime package guide.
 - `nextop-package/icon.svg`: App Center icon.
-- `nextop-package/static` and `nextop-package/server`: placeholder package
-  assets until the TanStack Start app is implemented.
 
-Do not treat `nextop-package/server` as the long-term app server. Once TanStack
-Start is scaffolded, package the app's build output instead:
+Do not add a package-local app server under `nextop-package/server`. The real
+application routes, API routes, and Server Functions live at the app root.
 
 - app source and Vite/TanStack Start config stay at `apps/github-trending`.
 - `pnpm package:nextop --app github-trending` should copy the build output into
-  `build/nextop-app/github-trending/package/.output`.
-- `nextop-package/bootstrap.sh` should execute
-  `$NEXTOP_APP_PACKAGE_DIR/.output/server/index.mjs`.
-- remove `nextop-package/server` and `nextop-package/static` when `.output` is
-  the packaged runtime.
+  `build/nextop-app/github-trending/package/server` and
+  `build/nextop-app/github-trending/package/dist`.
+- `nextop-package/bootstrap.sh` executes
+  `$NEXTOP_APP_PACKAGE_DIR/server.mjs`.
+- SQLite durable data belongs in `NEXTOP_APP_DATA_DIR/trendreader.sqlite`.
 
 Root `nextop.publish.json` enables this app for production and staging release
 workflows.

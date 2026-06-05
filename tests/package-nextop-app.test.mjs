@@ -4,6 +4,7 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   symlink,
   writeFile,
 } from "node:fs/promises";
@@ -56,6 +57,7 @@ test("validatePackageRoot requires the files Nextop imports", async () => {
   );
   await writeFile(path.join(packageRoot, "AGENTS.md"), "Package guide\n");
   await writeFile(path.join(packageRoot, "bootstrap.sh"), "#!/bin/sh\n");
+  await writeFile(path.join(packageRoot, "server.mjs"), "export {}\n");
   await chmod(path.join(packageRoot, "bootstrap.sh"), 0o755);
 
   await validatePackageRoot(packageRoot);
@@ -84,19 +86,27 @@ test("packageNextopApp creates a valid github-trending package", async () => {
     "utf8",
   );
   const agents = await readFile(path.join(packageRoot, "AGENTS.md"), "utf8");
-  const index = await readFile(
-    path.join(packageRoot, "dist", "index.html"),
+  const wrapper = await readFile(path.join(packageRoot, "server.mjs"), "utf8");
+  const server = await readFile(
+    path.join(packageRoot, "server", "server.js"),
+    "utf8",
+  );
+  const assetNames = await readdir(path.join(packageRoot, "dist", "assets"));
+  const cssAsset = assetNames.find((assetName) => assetName.endsWith(".css"));
+  assert.ok(cssAsset);
+  const clientAssets = await readFile(
+    path.join(packageRoot, "dist", "assets", cssAsset),
     "utf8",
   );
 
   assert.equal(manifest.appId, "github-trending");
   assert.equal(manifest.runtime.bootstrap, "bootstrap.sh");
   assert.match(bootstrap, /NEXTOP_APP_PACKAGE_DIR/);
-  assert.match(
-    bootstrap,
-    /exec node "\$NEXTOP_APP_PACKAGE_DIR\/server\/server\.mjs"/,
-  );
+  assert.match(bootstrap, /exec node "\$NEXTOP_APP_PACKAGE_DIR\/server\.mjs"/);
   assert.match(agents, /GitHub Trending Reader/);
-  assert.match(index, /TanStack Start/);
+  assert.match(agents, /NEXTOP_APP_DATA_DIR\/trendreader\.sqlite/);
+  assert.match(wrapper, /server\/server\.js/);
+  assert.match(server, /createServerEntry/);
+  assert.match(clientAssets, /--color-background/);
   assert.match(zipPath, /github-trending-0\.0\.0\.zip$/);
 });

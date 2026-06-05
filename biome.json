@@ -1,34 +1,17 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "files": {
-    "ignoreUnknown": true,
-    "ignore": [
-      "**/node_modules/**",
-      "**/.turbo/**",
-      "**/.next/**",
-      "**/.output/**",
-      "**/build/**",
-      "**/dist/**",
-      "**/out/**"
-    ],
-    "include": [
-      "**/*.js",
-      "**/*.mjs",
-      "**/*.cjs",
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.json",
-      "**/*.jsonc"
-    ]
-  },
   "formatter": {
-    "enabled": true,
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "indentWidth": 2
   },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true
-    }
+  "files": {
+    "ignore": [
+      ".turbo/**",
+      "apps/**/.turbo/**",
+      "apps/**/.output/**",
+      "apps/**/dist/**",
+      "apps/**/src/routeTree.gen.ts",
+      "build/**"
+    ]
   }
 }

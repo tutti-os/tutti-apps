@@ -14,7 +14,7 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 
 | App | Path | Status | Notes |
 | --- | --- | --- | --- |
-| GitHub Trending Reader | `apps/github-trending` | Planning | Category-first GitHub Trending reader with README preview and README-only detail panel. |
+| GitHub Trending Reader | `apps/github-trending` | MVP | Category-first GitHub Trending reader with SQLite-backed README cache and README-only detail panel. |
 
 ## Documentation
 

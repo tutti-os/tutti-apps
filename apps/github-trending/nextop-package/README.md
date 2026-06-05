@@ -5,16 +5,12 @@ command.
 
 Files here are copied into `build/nextop-app/github-trending/package`.
 
-The app implementation is still planned. Until the TanStack Start app exists,
-the package serves a static placeholder page that documents the intended
-product boundary.
+The package command builds the TanStack Start app first, then copies:
 
-The current `server/` and `static/` folders are placeholder-only assets. After
-the TanStack Start app is implemented, the package command should copy the app's
-build output into `.output/`, and `bootstrap.sh` should launch:
+- `apps/github-trending/dist/server` to package `server/`
+- `apps/github-trending/dist/client` to package `dist/`
+- production runtime dependencies to package `node_modules/`
 
-```sh
-node "$NEXTOP_APP_PACKAGE_DIR/.output/server/index.mjs"
-```
-
-At that point remove `server/` and `static/` from this package source directory.
+`server.mjs` is a thin Nextop runtime wrapper. It serves static client assets
+from `dist/`, delegates SSR and Server Functions to `server/server.js`, and
+exposes `/api/health` for the Nextop runtime health check.

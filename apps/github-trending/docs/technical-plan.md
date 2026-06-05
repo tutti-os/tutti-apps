@@ -14,6 +14,18 @@
 
 不采用 iframe 直接嵌入 GitHub 仓库页面。GitHub 页面当前有 `x-frame-options: deny` 和 `frame-ancestors 'none'`，普通 Web 应用无法稳定 iframe 嵌入 GitHub repo 页面。
 
+### 1.1 当前 MVP 实现状态
+
+当前仓库已经落地第一版可运行 MVP：
+
+- TanStack Start 页面、Server Functions、Server Routes 已接入。
+- UI 使用 Tailwind CSS v4 semantic tokens 和 shadcn/ui 基础组件。
+- 桌面为三栏命令中心：分类侧栏、分类聚合列表、README-only 右侧阅读区。
+- 窄屏会纵向堆叠，避免横向裁切。
+- SQLite 数据文件由服务端访问，本地默认 `data/trendreader.sqlite`，Nextop 运行时使用 `NEXTOP_APP_DATA_DIR/trendreader.sqlite`。
+- 当前数据源是 GitHub Trending HTML + GitHub REST README/metadata 的服务端尝试，写入 SQLite cache；当 GitHub 网络、限流或 parser 失败时回退到 SQLite-backed seed/cache。
+- ETag、增量刷新、完整 GitHub REST enrichment 和更严格 parser 监控仍属于下一阶段。
+
 ## 2. 技术选型
 
 ### 前后端框架
@@ -49,6 +61,16 @@ MVP 固定使用：
 - 作为 Nextop app 运行时放在 `NEXTOP_APP_DATA_DIR/trendreader.sqlite`。
 - SQLite 同时承担数据存储和缓存快照职责，MVP 不引入 PostgreSQL 或 Redis。
 - 如果后续部署到无持久磁盘的平台，需要把 SQLite 文件放到该平台支持的持久卷，或者迁移到兼容 SQLite 的托管存储。
+
+当前 MVP 的表结构已经包括：
+
+- `repos`
+- `trend_snapshots`
+- `category_scores`
+- `category_snapshots`
+- `readme_cache`
+
+UI 读取 `category_snapshots` 和 `readme_cache`，其它表用于保留后续 GitHub 抓取、补全、分类和排序的落点。
 
 ## 3. 总体架构
 

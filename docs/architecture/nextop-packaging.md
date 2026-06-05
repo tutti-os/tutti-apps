@@ -12,9 +12,8 @@ apps/<app-id>/
     nextop.app.json
     AGENTS.md
     bootstrap.sh
+    server.mjs
     icon.svg
-    static/
-    server/
 ```
 
 Required files:
@@ -24,18 +23,21 @@ Required files:
 - `AGENTS.md`: package-level runtime guide for future agents inspecting the
   installed package.
 - `bootstrap.sh`: executable entrypoint called by Nextop.
+- `server.mjs`: optional package wrapper for frameworks that build request
+  handlers instead of self-listening servers.
 - `icon.svg`: App Center icon.
 
 Optional files:
 
-- `static/`: copied to packaged `dist/`.
-- `server/`: copied to packaged `server/`.
+- Framework build output can be copied from the app root into packaged `dist/`
+  and `server/`.
+- Production runtime dependencies can be copied into packaged `node_modules/`
+  when the server build externalizes Node dependencies.
 
-`static/` and `server/` are useful for placeholder packages only. A real
-TanStack Start app should not keep a hand-written runtime server in
-`nextop-package/server`. The app source, Vite config, and TanStack Start build
-belong at the app root, and the package command should copy the app build output
-into the package directory.
+The app source, Vite config, and TanStack Start build belong at the app root.
+Do not keep a hand-written app server in `nextop-package/server`; use a thin
+wrapper such as `server.mjs` only to adapt the framework handler to the Nextop
+host/port contract.
 
 Expected TanStack Start package shape after implementation:
 
@@ -55,22 +57,22 @@ build/nextop-app/<app-id>/package/
   nextop.app.json
   AGENTS.md
   bootstrap.sh
+  server.mjs
   icon.svg
-  .output/
-    server/
-      index.mjs
+  dist/
+  server/
+    server.js
+  node_modules/
 ```
 
-At that point `bootstrap.sh` should start the TanStack Start output:
+For GitHub Trending, `bootstrap.sh` starts the Nextop wrapper:
 
 ```sh
-exec node "$NEXTOP_APP_PACKAGE_DIR/.output/server/index.mjs"
+exec node "$NEXTOP_APP_PACKAGE_DIR/server.mjs"
 ```
 
-The current `github-trending` package still has `nextop-package/static` and
-`nextop-package/server` only so the placeholder package can launch before the
-TanStack Start app exists. Remove those folders when the real app build is
-packaged.
+The wrapper serves `dist/`, delegates SSR and Server Functions to
+`server/server.js`, and exposes `/api/health`.
 
 ## Publish Configuration
 
@@ -137,8 +139,9 @@ nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main
 
 ## Safety Rules
 
-- Package roots must contain `nextop.app.json`, `AGENTS.md`, and executable
-  `bootstrap.sh`.
-- Package roots must not contain symlinks.
+- Package roots must contain `nextop.app.json`, `AGENTS.md`, executable
+  `bootstrap.sh`, and the runtime entrypoint referenced by the bootstrap script.
+- Package application files must not contain symlinks. Packaged `node_modules`
+  may keep package-manager-internal symlinks when required by the runtime.
 - App packages should treat `NEXTOP_APP_PACKAGE_DIR` as read-only.
 - Durable runtime data belongs under `NEXTOP_APP_DATA_DIR`.
