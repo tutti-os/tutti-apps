@@ -31,6 +31,47 @@ Optional files:
 - `static/`: copied to packaged `dist/`.
 - `server/`: copied to packaged `server/`.
 
+`static/` and `server/` are useful for placeholder packages only. A real
+TanStack Start app should not keep a hand-written runtime server in
+`nextop-package/server`. The app source, Vite config, and TanStack Start build
+belong at the app root, and the package command should copy the app build output
+into the package directory.
+
+Expected TanStack Start package shape after implementation:
+
+```txt
+apps/<app-id>/
+  src/
+  app/
+  vite.config.ts
+  package.json
+  nextop-package/
+    nextop.app.json
+    AGENTS.md
+    bootstrap.sh
+    icon.svg
+
+build/nextop-app/<app-id>/package/
+  nextop.app.json
+  AGENTS.md
+  bootstrap.sh
+  icon.svg
+  .output/
+    server/
+      index.mjs
+```
+
+At that point `bootstrap.sh` should start the TanStack Start output:
+
+```sh
+exec node "$NEXTOP_APP_PACKAGE_DIR/.output/server/index.mjs"
+```
+
+The current `github-trending` package still has `nextop-package/static` and
+`nextop-package/server` only so the placeholder package can launch before the
+TanStack Start app exists. Remove those folders when the real app build is
+packaged.
+
 ## Publish Configuration
 
 Root `nextop.publish.json` defines which apps are publishable and which apps are

@@ -79,6 +79,17 @@ The app's Nextop package source lives in `nextop-package/`.
 - `nextop-package/static` and `nextop-package/server`: placeholder package
   assets until the TanStack Start app is implemented.
 
+Do not treat `nextop-package/server` as the long-term app server. Once TanStack
+Start is scaffolded, package the app's build output instead:
+
+- app source and Vite/TanStack Start config stay at `apps/github-trending`.
+- `pnpm package:nextop --app github-trending` should copy the build output into
+  `build/nextop-app/github-trending/package/.output`.
+- `nextop-package/bootstrap.sh` should execute
+  `$NEXTOP_APP_PACKAGE_DIR/.output/server/index.mjs`.
+- remove `nextop-package/server` and `nextop-package/static` when `.output` is
+  the packaged runtime.
+
 Root `nextop.publish.json` enables this app for production and staging release
 workflows.
 
