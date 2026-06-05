@@ -29,8 +29,16 @@ to the right panel unless the product plan changes.
 
 The planned framework is TanStack Start with Tailwind CSS and shadcn/ui.
 
-When available, use the global `tanstack-start` skill for TanStack Start
-scaffolding, routing, server functions, Vite config, and deployment decisions.
+When available, use the installed DeckardGer TanStack agent skills:
+
+- `tanstack-start-best-practices` for TanStack Start scaffolding, server
+  functions, middleware, SSR, Vite config, and deployment decisions.
+- `tanstack-router-best-practices` for file routes, loaders, search params,
+  navigation, and route-level type safety.
+- `tanstack-query-best-practices` for query keys, caching, mutations,
+  invalidation, and client/server data state.
+- `tanstack-integration-best-practices` for Query + Router + Start data flow,
+  loader prefetching, SSR hydration, and cache ownership.
 
 Use:
 
