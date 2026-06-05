@@ -7,6 +7,7 @@ should look before changing module boundaries.
 
 - `project-structure.md`: workspace shape and ownership rules.
 - `build-system.md`: why the root uses Turbo and how app-level builds work.
+- `nextop-packaging.md`: package source layout, local packaging, and release workflows.
 
 ## Current Architecture Summary
 

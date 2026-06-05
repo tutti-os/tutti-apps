@@ -21,6 +21,7 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 - Repository architecture: `docs/architecture/README.md`
 - Project structure: `docs/architecture/project-structure.md`
 - Build system: `docs/architecture/build-system.md`
+- Nextop app packaging: `docs/architecture/nextop-packaging.md`
 - Agent workflow conventions: `docs/conventions/agent-workflow.md`
 - Root agent guide: `AGENTS.md`
 - GitHub Trending plan: `apps/github-trending/docs/technical-plan.md`
@@ -31,6 +32,7 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 pnpm install
 pnpm dev
 pnpm build
+pnpm package:nextop --app github-trending
 pnpm test
 pnpm typecheck
 pnpm lint
@@ -53,6 +55,10 @@ pnpm --filter @nextop-apps/github-trending test
 - Apps may depend on packages with `workspace:*`.
 - Cross-app imports are not allowed; move shared code into `packages/*`.
 - Each app should keep its product/technical docs under `apps/<app-id>/docs`.
+- Each publishable app keeps Nextop package source files under
+  `apps/<app-id>/nextop`.
+- Root `nextop.publish.json` configures which apps can be published and which
+  app each environment publishes by default.
 - Repository-wide architecture and conventions belong in `docs/*`.
 - Root scripts should remain generic and call `turbo run <task>`.
 

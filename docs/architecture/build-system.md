@@ -63,6 +63,15 @@ pnpm --filter @nextop-apps/github-trending dev
 pnpm --filter @nextop-apps/github-trending build
 ```
 
+Nextop app packaging is intentionally a separate root command because the
+release workflow needs a repository-level app resolver:
+
+```bash
+pnpm package:nextop --app github-trending
+```
+
+See `nextop-packaging.md` for the package source layout and Actions workflow.
+
 ## Framework Selection
 
 Use this default decision rule:

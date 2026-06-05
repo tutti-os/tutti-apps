@@ -16,6 +16,7 @@ the nearest directory-level `AGENTS.md`.
 - Repository architecture: `docs/architecture/README.md`
 - Project structure: `docs/architecture/project-structure.md`
 - Build system: `docs/architecture/build-system.md`
+- Nextop app packaging: `docs/architecture/nextop-packaging.md`
 - Agent workflow conventions: `docs/conventions/agent-workflow.md`
 - Directory-level guidance: `apps/AGENTS.md`, `packages/AGENTS.md`
 - GitHub Trending app plan: `apps/github-trending/docs/technical-plan.md`
@@ -34,6 +35,9 @@ Rule of thumb:
 - Code moves into `packages/*` only when there is a real shared boundary.
 - Documentation that teaches future agents how the repository works belongs in
   `docs/architecture` or `docs/conventions`.
+- Publishable app package sources belong in `apps/<app-id>/nextop`.
+- The root `nextop.publish.json` file controls which apps can be published and
+  the default app for each release environment.
 
 ## Routing Guide
 
@@ -60,6 +64,8 @@ Use this root file for repository-wide defaults only.
 - Keep root scripts generic and delegated through Turbo.
 - When structural rules change, update the matching document under
   `docs/architecture` or `docs/conventions`.
+- When Nextop app packaging behavior changes, update
+  `docs/architecture/nextop-packaging.md`.
 - When a fix resolves a recurring bug pattern or agent trap, add the durable
   note to `docs/conventions/agent-workflow.md`.
 
@@ -101,6 +107,7 @@ browser.
 pnpm install
 pnpm dev
 pnpm build
+pnpm package:nextop --app github-trending
 pnpm test
 pnpm typecheck
 pnpm lint

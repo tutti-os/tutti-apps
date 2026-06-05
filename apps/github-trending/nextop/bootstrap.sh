@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+
+: "${NEXTOP_APP_PACKAGE_DIR:?}"
+: "${NEXTOP_APP_HOST:?}"
+: "${NEXTOP_APP_PORT:?}"
+: "${NEXTOP_APP_DATA_DIR:?}"
+
+export HOST="$NEXTOP_APP_HOST"
+export PORT="$NEXTOP_APP_PORT"
+export GITHUB_TRENDING_DATA_DIR="$NEXTOP_APP_DATA_DIR"
+export GITHUB_TRENDING_PUBLIC_DIR="$NEXTOP_APP_PACKAGE_DIR/dist"
+
+exec node "$NEXTOP_APP_PACKAGE_DIR/server/server.mjs"

@@ -1,0 +1,53 @@
+name: Publish Nextop App Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_id:
+        description: Nextop app id to publish.
+        required: false
+        default: github-trending
+        type: string
+      release_version:
+        description: Optional release version override. Defaults to manifest.version + short git sha.
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      app_id: ${{ steps.target.outputs.app_id }}
+      package_command: ${{ steps.target.outputs.package_command }}
+      package_dir: ${{ steps.target.outputs.package_dir }}
+      icon_path: ${{ steps.target.outputs.icon_path }}
+    steps:
+      - name: Checkout app repository
+        uses: actions/checkout@v6
+
+      - name: Resolve publish target
+        id: target
+        env:
+          INPUT_APP_ID: ${{ github.event.inputs.app_id || '' }}
+        run: node scripts/resolve-nextop-publish-target.mjs --environment staging --app "${INPUT_APP_ID}"
+
+  publish:
+    needs: resolve
+    uses: nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main
+    with:
+      app_id: ${{ needs.resolve.outputs.app_id }}
+      package_command: ${{ needs.resolve.outputs.package_command }}
+      package_dir: ${{ needs.resolve.outputs.package_dir }}
+      icon_path: ${{ needs.resolve.outputs.icon_path }}
+      release_version: ${{ github.event.inputs.release_version || '' }}
+      runner: macos-latest
+      pnpm_version: 10.26.2
+      aws_region: ${{ vars.NEXTOP_APP_RELEASES_STAGING_AWS_REGION || vars.NEXTOP_APP_RELEASES_AWS_REGION }}
+      aws_role_arn: ${{ vars.NEXTOP_APP_RELEASES_STAGING_AWS_ROLE_ARN || vars.NEXTOP_APP_RELEASES_AWS_ROLE_ARN }}
+      s3_bucket: ${{ vars.NEXTOP_APP_RELEASES_STAGING_S3_BUCKET || vars.NEXTOP_APP_RELEASES_S3_BUCKET }}
+      s3_prefix: ${{ vars.NEXTOP_APP_RELEASES_STAGING_S3_PREFIX || 'nextop-app-releases-staging' }}
+      release_assets_base_url: ${{ vars.NEXTOP_APP_RELEASES_STAGING_BASE_URL || 'https://d1x7gb6wqsqmnm.cloudfront.net/nextop-app-releases-staging' }}

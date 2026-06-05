@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "nextop.app.manifest.v1",
+  "appId": "github-trending",
+  "version": "0.0.0",
+  "name": "GitHub Trending Reader",
+  "description": "Category-first GitHub Trending reader with README previews.",
+  "icon": {
+    "type": "asset",
+    "src": "icon.svg"
+  },
+  "runtime": {
+    "kind": "custom",
+    "bootstrap": "bootstrap.sh",
+    "healthcheckPath": "/api/health"
+  },
+  "launch": {
+    "mode": "workspace-open"
+  },
+  "author": {
+    "name": "Nextop"
+  },
+  "tags": ["github", "trending", "developer-tools", "readme"]
+}

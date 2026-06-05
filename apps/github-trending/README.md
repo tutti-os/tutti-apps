@@ -15,6 +15,23 @@ MVP layout:
 
 The right panel intentionally excludes issues, pull requests, discussions, related repos, release cards, and AI summary cards in the first version.
 
+## Nextop Packaging
+
+The app's Nextop package source lives in `nextop/`.
+
+```bash
+pnpm package:nextop --app github-trending
+```
+
+Package output:
+
+```txt
+build/nextop-app/github-trending/package/
+build/nextop-app/github-trending/github-trending-<version>.zip
+```
+
+Root `nextop.publish.json` controls which environments can publish this app.
+
 ## Tech Direction
 
 - TanStack Start
