@@ -14,6 +14,7 @@
 
 - Product/architecture spec: `/Users/wwcome/work/demo/github-trending-reader-tech-plan.md`
 - Repo-local copy: `/Users/wwcome/work/demo/nextop-apps/apps/github-trending/docs/technical-plan.md`
+- Design guidance: `/Users/wwcome/work/demo/nextop-apps/apps/github-trending/docs/design.md`
 - Visual direction: dark `TrendReader` command-center screenshot supplied in the user prompt
 - Packaging rules: `/Users/wwcome/work/demo/nextop-apps/docs/architecture/nextop-packaging.md`
 - App rules: `/Users/wwcome/work/demo/nextop-apps/apps/github-trending/AGENTS.md`
@@ -1471,6 +1472,7 @@ Report:
 - [ ] The plan keeps GitHub token and SQLite on the server side.
 - [ ] The plan uses TanStack Start Server Functions and Server Routes.
 - [ ] The plan uses TanStack Query query options and route loader prefetch.
+- [ ] The implementation follows `apps/github-trending/docs/design.md` for semantic tokens, component states, accessibility, and prohibited patterns.
 - [ ] The plan replaces placeholder `nextop-package/server` with `.output` during implementation.
 - [ ] The plan includes browser verification for the supplied visual style.
 - [ ] The plan includes subagent review after implementation.

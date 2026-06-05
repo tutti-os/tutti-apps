@@ -20,6 +20,7 @@ to the right panel unless the product plan changes.
 
 - App overview: `README.md`
 - Technical plan: `docs/technical-plan.md`
+- Design guidance: `docs/design.md`
 - Docs index: `docs/README.md`
 - Nextop package source: `nextop-package/`
 - Repository build-system context: `../../docs/architecture/build-system.md`
@@ -46,6 +47,10 @@ Use:
 - TanStack Query for client data state and request deduplication.
 - Tailwind CSS and shadcn/ui for UI.
 - Sanitized markdown rendering for README content.
+
+Before implementing UI components, read `docs/design.md`. It defines the
+semantic Tailwind/shadcn tokens, required component states, accessibility
+acceptance criteria, and prohibited styling patterns for this app.
 
 ## Module Boundary
 
