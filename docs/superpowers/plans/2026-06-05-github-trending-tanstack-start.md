@@ -22,6 +22,7 @@
 
 - Build the app screen first, not a marketing page.
 - Use mock/seed data in the first app implementation, but route it through the same feature services that real GitHub/SQLite data will use.
+- Real data should enter through a server-only pipeline: GitHub Trending HTML as the primary candidate source, GitHub Search REST API as degraded fallback, GitHub REST API for repo/topics/languages/README enrichment, then SQLite materialized snapshots for UI reads.
 - Keep the right panel README-only. Do not add issues, PRs, discussions, releases, related repos, or AI summary cards.
 - Keep `README thumbnail preview` in repo rows as structured visual previews, not generated screenshots.
 - Use SQLite design and module boundaries, but do not require a live GitHub token or external crawler for the first UI pass.
@@ -1084,6 +1085,81 @@ pnpm --filter @nextop-apps/github-trending typecheck
 git add apps/github-trending
 git commit -m "Add SQLite storage foundation"
 ```
+
+## Future Task: Connect Real GitHub Data Source
+
+This is intentionally after the first UI/package implementation. Do not block the first usable app on live GitHub ingestion.
+
+**Files:**
+
+- Create: `apps/github-trending/src/features/github/github.client.server.ts`
+- Create: `apps/github-trending/src/features/github/github.types.ts`
+- Create: `apps/github-trending/src/features/trending/trending.parser.server.ts`
+- Create: `apps/github-trending/src/features/trending/trending.source.server.ts`
+- Create: `apps/github-trending/src/features/readme/readme.server.ts`
+- Create: `apps/github-trending/src/features/classification/classify.server.ts`
+- Create: `apps/github-trending/src/features/ranking/ranking.server.ts`
+- Modify: `apps/github-trending/src/features/trending/trending.functions.ts`
+
+- [ ] **Step 1: Implement primary candidate source**
+
+Fetch GitHub Trending HTML on the server:
+
+```txt
+https://github.com/trending
+https://github.com/trending/<language>?since=daily|weekly|monthly
+```
+
+Parse:
+
+- `owner`
+- `repo`
+- `description`
+- `language`
+- `starsGained`
+- `rankRaw`
+- `repoUrl`
+
+Save the raw response hash with each refresh so parser breakage can be diagnosed without storing unnecessary page content.
+
+- [ ] **Step 2: Add GitHub Search fallback**
+
+When the Trending parser fails or is rate-limited, use GitHub Search REST API to build a degraded candidate list:
+
+```txt
+q=created:>=YYYY-MM-DD language:<language>
+q=pushed:>=YYYY-MM-DD language:<language>
+sort=stars|updated
+order=desc
+```
+
+Mark the board cache status as `fallback` or `stale` so the UI can show that this is not the official Trending ordering.
+
+- [ ] **Step 3: Enrich candidates with GitHub REST API**
+
+Use server-side `GITHUB_TOKEN` only:
+
+```txt
+GET /repos/{owner}/{repo}
+GET /repos/{owner}/{repo}/topics
+GET /repos/{owner}/{repo}/languages
+GET /repos/{owner}/{repo}/readme
+```
+
+Support ETag / conditional requests and never expose token-bearing requests to the browser.
+
+- [ ] **Step 4: Materialize SQLite snapshots**
+
+Write enriched data into:
+
+- `repos`
+- `trend_snapshots`
+- `readme_cache`
+- `readme_preview_cache`
+- `category_scores`
+- `category_snapshots`
+
+The UI should continue reading through Server Functions, not directly from live GitHub calls.
 
 ## Task 6: Migrate Nextop Package to TanStack Start Output
 

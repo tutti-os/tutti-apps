@@ -88,6 +88,58 @@ TanStack Start UI
   - README panel
 ```
 
+### 3.1 数据源获取策略
+
+数据源分成四层，不直接让浏览器访问 GitHub，也不把 GitHub token 下发到客户端。
+
+1. 候选仓库入口：优先抓取 `https://github.com/trending` 的 HTML。
+   - 请求参数映射：
+     - `since=daily|weekly|monthly`
+     - `language=<github language slug>`
+   - 解析字段：
+     - `owner`
+     - `repo`
+     - `description`
+     - `language`
+     - `starsGained`
+     - `rankRaw`
+     - `repoUrl`
+   - 这是最接近 GitHub Trending 产品结果的来源，但 GitHub 没有官方 Trending API，所以 parser 要隔离在 `trending.parser.server.ts`，并保存 raw response hash 方便排查结构变化。
+
+2. 候选仓库兜底：GitHub Search REST API。
+   - 当 Trending HTML parser 失效或被限流时，用 Search API 生成候选集合。
+   - 查询思路：
+     - daily: `created:>=YYYY-MM-DD` 或 `pushed:>=YYYY-MM-DD`
+     - language filter: `language:<language>`
+     - 排序优先 `stars` / `updated`
+   - 这个结果不等同于 GitHub Trending，只作为 degraded fallback，UI 需要显示 `Showing fallback data` 或 `Showing cached data`。
+
+3. 仓库补全：GitHub REST API enrichment。
+   - `GET /repos/{owner}/{repo}` 获取 metadata、stars、forks、license、default branch、pushed_at。
+   - `GET /repos/{owner}/{repo}/topics` 获取 topics。
+   - `GET /repos/{owner}/{repo}/languages` 获取语言分布。
+   - `GET /repos/{owner}/{repo}/readme` 获取 README content 和 sha。
+   - 所有请求由服务端 `githubService` 统一处理，读取服务端 `GITHUB_TOKEN`，支持 ETag / conditional request。
+
+4. 本地物化：SQLite 快照。
+   - `repos` 保存仓库基础信息。
+   - `trend_snapshots` 保存每次 Trending/Search 候选快照。
+   - `readme_cache` 按 `repo_id + sha` 缓存 README。
+   - `category_scores` 保存分类得分和 reasons。
+   - `category_snapshots` 保存 UI 可直接读取的分类聚合结果。
+
+MVP 执行顺序：
+
+```txt
+manual refresh
+  -> trendingSource.fetchTrending()
+  -> githubService.enrich()
+  -> readmeService.cacheBySha()
+  -> classificationService.score()
+  -> rankingService.materializeCategorySnapshots()
+  -> UI reads from SQLite via Server Functions
+```
+
 ## 4. 推荐目录结构
 
 ```txt
