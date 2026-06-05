@@ -26,6 +26,7 @@
 - Keep `README thumbnail preview` in repo rows as structured visual previews, not generated screenshots.
 - Use SQLite design and module boundaries, but do not require a live GitHub token or external crawler for the first UI pass.
 - Replace the placeholder Nextop package `server/` and `static/` only after TanStack Start build succeeds and `.output/server/index.mjs` is packaged.
+- Use Tailwind utilities directly in TSX for app visuals. Do not add CSS Modules, custom global business classes, or app-specific global CSS; keep the stylesheet to the Tailwind entry only.
 
 ## File Map
 
@@ -37,7 +38,7 @@ Create:
 - `apps/github-trending/src/routes/index.tsx` - dashboard route with search params and loader.
 - `apps/github-trending/src/routes/api.trending.ts` - JSON server route for category board data.
 - `apps/github-trending/src/routes/api.repos.$owner.$repo.readme.ts` - JSON server route for README data.
-- `apps/github-trending/src/styles.css` - Tailwind v4 import, dark design tokens, markdown styling.
+- `apps/github-trending/src/styles.css` - minimal Tailwind v4 entry file.
 - `apps/github-trending/src/components/app-shell.tsx` - three-pane application frame.
 - `apps/github-trending/src/components/command-bar.tsx` - search, range, language, refresh/open controls.
 - `apps/github-trending/src/components/category-sidebar.tsx` - category, saved collection, pinned topic navigation.
@@ -247,7 +248,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="min-h-screen bg-[#061114] text-[#e9f7f4] antialiased">
         {children}
         <Scripts />
       </body>
@@ -270,65 +271,21 @@ export const Route = createFileRoute("/")({
 })
 
 function IndexRoute() {
-  return <main className="min-h-screen bg-app text-app-foreground">TrendReader</main>
+  return <main className="min-h-screen bg-[#061114] text-[#e9f7f4]">TrendReader</main>
 }
 ```
 
 Expected: initial route compiles before UI components exist.
 
-- [ ] **Step 6: Add global styles**
+- [ ] **Step 6: Add minimal Tailwind entry**
 
 Create `apps/github-trending/src/styles.css`:
 
 ```css
 @import "tailwindcss";
-
-:root {
-  color-scheme: dark;
-  --app-bg: #061114;
-  --app-panel: #0b1b20;
-  --app-panel-strong: #10272d;
-  --app-border: rgba(132, 180, 177, 0.2);
-  --app-border-strong: rgba(45, 219, 202, 0.55);
-  --app-foreground: #e9f7f4;
-  --app-muted: #8fa8a6;
-  --app-green: #45f08a;
-  --app-cyan: #2dd4bf;
-  --app-blue: #60a5fa;
-  --app-yellow: #facc15;
-  --app-orange: #fb923c;
-}
-
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(45, 212, 191, 0.12), transparent 34rem),
-    radial-gradient(circle at 86% 18%, rgba(69, 240, 138, 0.08), transparent 30rem),
-    var(--app-bg);
-  color: var(--app-foreground);
-  font-family:
-    "IBM Plex Sans", "SF Pro Text", ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-.bg-app {
-  background: var(--app-bg);
-}
-
-.text-app-foreground {
-  color: var(--app-foreground);
-}
 ```
 
-Expected: Tailwind compiles, app has dark design tokens.
+Expected: Tailwind compiles. All visual styling, including dark colors, borders, glows, typography, pane backgrounds, and markdown element styling, is expressed with Tailwind utility classes in TSX.
 
 - [ ] **Step 7: Verify scaffold**
 
@@ -717,7 +674,7 @@ describe("format helpers", () => {
 
 - [ ] **Step 3: Add local UI primitives**
 
-Create `button`, `badge`, `separator`, and `scroll-area` components with `cn()` and small variant props. Keep them local under `src/components/ui` so shadcn style is available without depending on generated registry files.
+Create `button`, `badge`, `separator`, and `scroll-area` components with `cn()` and small variant props. Keep them local under `src/components/ui` so shadcn style is available without depending on generated registry files. These primitives should use Tailwind utility classes directly and must not rely on CSS Modules or global business classes.
 
 The `Button` primitive should support this minimum shape:
 
@@ -766,7 +723,7 @@ Implement components with these responsibilities:
 - `CategorySection`: heading, repo count, momentum sparkline, repo rows.
 - `RepoRow`: selected state, metadata, language dot, topics, compact README thumbnail.
 - `ReadmePanel`: selected repo header, README markdown only, no issue/PR/release tabs.
-- `MarkdownRenderer`: `react-markdown` + `remark-gfm` + `rehype-sanitize`.
+- `MarkdownRenderer`: `react-markdown` + `remark-gfm` + `rehype-sanitize`, styled through the `components` prop with Tailwind utilities instead of `.markdown-body` CSS.
 
 Expected: component tree is visually close to the screenshot but not a pixel copy.
 
@@ -924,8 +881,37 @@ type MarkdownRendererProps = {
 
 export function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
   return (
-    <div className="markdown-body">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>
+    <div className="space-y-5 text-sm leading-7 text-slate-200">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeSanitize]}
+        components={{
+          h1: ({ children }) => (
+            <h1 className="text-3xl font-semibold tracking-normal text-white">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="pt-3 text-xl font-semibold tracking-normal text-white">
+              {children}
+            </h2>
+          ),
+          p: ({ children }) => <p className="text-slate-200">{children}</p>,
+          ul: ({ children }) => (
+            <ul className="list-disc space-y-2 pl-5 text-slate-200">{children}</ul>
+          ),
+          code: ({ children }) => (
+            <code className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-xs text-cyan-100">
+              {children}
+            </code>
+          ),
+          pre: ({ children }) => (
+            <pre className="overflow-x-auto rounded-md border border-white/10 bg-black/20 p-4">
+              {children}
+            </pre>
+          ),
+        }}
+      >
         {markdown}
       </ReactMarkdown>
     </div>
@@ -933,7 +919,7 @@ export function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
 }
 ```
 
-Expected: README content is rendered without injecting untrusted HTML.
+Expected: README content is rendered without injecting untrusted HTML and without global markdown CSS.
 
 - [ ] **Step 4: Verify API routes**
 
