@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "nextop.app.manifest.v1",
+  "appId": "daily-tech-radar",
+  "version": "0.0.0",
+  "name": "每日产品雷达",
+  "description": "Product Hunt and GitHub daily discovery cards.",
+  "icon": {
+    "type": "asset",
+    "src": "icon.svg"
+  },
+  "runtime": {
+    "kind": "custom",
+    "bootstrap": "bootstrap.sh",
+    "healthcheckPath": "/api/health"
+  },
+  "launch": {
+    "mode": "workspace-open"
+  },
+  "author": {
+    "name": "Nextop"
+  },
+  "tags": ["daily-tech-radar", "producthunt", "github", "trends"]
+}
