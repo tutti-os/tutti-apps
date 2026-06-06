@@ -21,6 +21,82 @@ importers:
         specifier: ^3.0.7
         version: 3.2.6(@types/debug@4.1.13)(@types/node@22.19.19)(jiti@2.7.0)(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.19.19)(typescript@5.9.3))
 
+  apps/daily-tech-radar:
+    dependencies:
+      '@nextop-os/daily-tech-radar':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@tanstack/react-query':
+        specifier: ^5.90.12
+        version: 5.101.0(react@19.2.7)
+      '@tanstack/react-router':
+        specifier: ^1.170.11
+        version: 1.170.11(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@tanstack/react-start':
+        specifier: ^1.168.20
+        version: 1.168.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite@8.0.16(@types/node@22.19.19)(esbuild@0.27.7)(jiti@2.7.0))
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: ^1.0.1
+        version: 1.17.0(react@19.2.7)
+      radix-ui:
+        specifier: ^1.4.3
+        version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.7(react@19.2.7)
+      tailwind-merge:
+        specifier: ^3.5.0
+        version: 3.6.0
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.3.0
+        version: 4.3.0(vite@8.0.16(@types/node@22.19.19)(esbuild@0.27.7)(jiti@2.7.0))
+      '@tanstack/start-plugin':
+        specifier: ^1.111.2
+        version: 1.111.2(@types/node@22.19.19)(jiti@2.7.0)(lightningcss@1.32.0)
+      '@types/node':
+        specifier: ^22.10.7
+        version: 22.19.19
+      '@types/react':
+        specifier: ^19.0.8
+        version: 19.2.16
+      '@types/react-dom':
+        specifier: ^19.0.3
+        version: 19.2.3(@types/react@19.2.16)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.2
+        version: 6.0.2(vite@8.0.16(@types/node@22.19.19)(esbuild@0.27.7)(jiti@2.7.0))
+      shadcn:
+        specifier: ^4.10.0
+        version: 4.10.0(@types/node@22.19.19)(typescript@5.9.3)
+      tailwindcss:
+        specifier: ^4.3.0
+        version: 4.3.0
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@22.19.19)(esbuild@0.27.7)(jiti@2.7.0)
+      vitest:
+        specifier: ^3.0.7
+        version: 3.2.6(@types/debug@4.1.13)(@types/node@22.19.19)(jiti@2.7.0)(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.19.19)(typescript@5.9.3))
+
   apps/github-trending:
     dependencies:
       '@fontsource-variable/geist':
@@ -732,6 +808,9 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
+
+  '@nextop-os/daily-tech-radar@0.1.0':
+    resolution: {integrity: sha512-ljIuUTsJr9ZyhGUvcUg/IbIyqolvS8N4LnHbJVML9vv1Z2a+UrsGtKhAqBPl8EGbyPMAM8bD8pAwVpHZtDknMw==}
 
   '@noble/ciphers@1.3.0':
     resolution: {integrity: sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==}
@@ -4774,6 +4853,8 @@ snapshots:
       '@emnapi/runtime': 1.10.0
       '@tybys/wasm-util': 0.10.2
     optional: true
+
+  '@nextop-os/daily-tech-radar@0.1.0': {}
 
   '@noble/ciphers@1.3.0': {}
 

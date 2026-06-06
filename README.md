@@ -14,6 +14,7 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 
 | App | Path | Status | Notes |
 | --- | --- | --- | --- |
+| 每日产品雷达 | `apps/daily-tech-radar` | MVP | Product Hunt and GitHub daily discovery cards backed by `@nextop-os/daily-tech-radar`. |
 | GitHub Trending Reader | `apps/github-trending` | MVP | Category-first GitHub Trending reader with SQLite-backed README cache and README-only detail panel. |
 
 ## Documentation
