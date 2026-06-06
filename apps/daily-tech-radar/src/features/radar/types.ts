@@ -13,6 +13,7 @@ export type RadarViewMode = "grid" | "compact";
 
 export type RadarCard = {
   categories: string[];
+  coverStyle?: "image" | "semantic";
   coverUrl?: string | null;
   date: string;
   description: string;
