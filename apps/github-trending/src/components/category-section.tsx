@@ -18,12 +18,12 @@ export function CategorySection({
   return (
     <section
       aria-labelledby={`${category.id}-heading`}
-      className="overflow-hidden rounded-lg border border-border bg-card"
+      className="steep-panel overflow-hidden rounded-[2.5rem] border border-border bg-card/95 text-card-foreground backdrop-blur"
       id={category.id}
     >
-      <header className="flex min-h-14 flex-wrap items-center gap-3 px-4 py-3">
+      <header className="flex min-h-16 flex-wrap items-center gap-3 px-6 py-5">
         <h2
-          className="text-xl font-semibold tracking-normal text-foreground"
+          className="text-xl font-semibold tracking-normal text-card-foreground"
           id={`${category.id}-heading`}
         >
           {category.label}
@@ -33,12 +33,17 @@ export function CategorySection({
         </span>
         <span className="ml-auto text-sm text-muted-foreground max-sm:ml-0">
           Momentum{" "}
-          <span className="font-mono text-foreground">{category.momentum}</span>
+          <span className="font-mono text-card-foreground">
+            {category.momentum}
+          </span>
         </span>
-        <Badge variant={category.tone === "hot" ? "default" : "secondary"}>
+        <Badge
+          className="rounded-full"
+          variant={category.tone === "hot" ? "default" : "secondary"}
+        >
           {category.tone === "hot" ? "Hot" : "Trending"}
         </Badge>
-        <span className="font-mono text-sm text-accent">
+        <span className="font-mono text-sm text-accent-foreground">
           {formatDelta(category.delta)}
         </span>
       </header>

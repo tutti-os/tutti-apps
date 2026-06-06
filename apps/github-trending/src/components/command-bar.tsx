@@ -3,6 +3,7 @@ import {
   RefreshCwIcon,
   SearchIcon,
   SettingsIcon,
+  TrendingUpIcon,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -59,13 +60,13 @@ export function CommandBar({
   since,
 }: CommandBarProps) {
   return (
-    <header className="flex min-h-14 flex-wrap items-center gap-3 border-b border-border bg-background px-4 py-2 lg:flex-nowrap">
+    <header className="steep-soft-panel mx-5 mt-5 flex min-h-16 flex-wrap items-center gap-3 rounded-[2rem] border border-border bg-card/90 px-5 py-3 text-foreground backdrop-blur lg:flex-nowrap">
       <div className="flex min-w-0 items-center gap-3 sm:min-w-52">
-        <div className="flex size-8 items-center justify-center rounded-md border border-primary/40 bg-primary/15 text-sm font-semibold text-primary">
-          T
+        <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+          <TrendingUpIcon aria-hidden="true" className="size-5" />
         </div>
         <div className="min-w-0">
-          <div className="truncate font-semibold text-foreground">
+          <div className="truncate text-lg font-semibold text-foreground">
             TrendReader
           </div>
           <div className="truncate text-xs text-muted-foreground">
@@ -84,7 +85,7 @@ export function CommandBar({
           className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
         />
         <Input
-          className="h-9 rounded-md border-border bg-card pl-9 text-sm"
+          className="h-10 rounded-full border-input bg-card pl-9 text-sm text-foreground placeholder:text-muted-foreground"
           id="repo-search"
           name="repo-search"
           onChange={(event) => onSearchChange(event.target.value)}
@@ -95,14 +96,18 @@ export function CommandBar({
 
       <ToggleGroup
         aria-label="Trend range"
-        className="max-sm:order-4"
+        className="rounded-full bg-muted p-1 max-sm:order-4"
         onValueChange={(value) => value && onSinceChange(value as TrendRange)}
         type="single"
         value={since}
         variant="outline"
       >
         {ranges.map((range) => (
-          <ToggleGroupItem key={range} value={range}>
+          <ToggleGroupItem
+            className="rounded-full text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+            key={range}
+            value={range}
+          >
             {formatRange(range)}
           </ToggleGroupItem>
         ))}
@@ -111,7 +116,7 @@ export function CommandBar({
       <Select name="language" onValueChange={onLanguageChange} value={language}>
         <SelectTrigger
           aria-label="Language"
-          className="w-36 bg-card"
+          className="h-10 w-36 rounded-full border-input bg-card text-foreground"
           id="language-select"
         >
           <SelectValue placeholder="Language" />
@@ -129,6 +134,7 @@ export function CommandBar({
 
       <Button
         aria-busy={refreshing}
+        className="rounded-full"
         disabled={refreshing}
         onClick={onRefresh}
         variant="outline"
@@ -137,7 +143,7 @@ export function CommandBar({
         {refreshing ? "Refreshing" : "Refresh"}
       </Button>
 
-      <Button asChild variant="outline">
+      <Button asChild className="rounded-full" variant="default">
         <a
           href="https://github.com/trending"
           rel="noreferrer noopener"
@@ -149,10 +155,10 @@ export function CommandBar({
       </Button>
 
       <Badge
-        className="hidden h-9 gap-2 rounded-md px-3 xl:inline-flex"
+        className="hidden h-10 gap-2 rounded-full border-border bg-card px-3 text-card-foreground xl:inline-flex"
         variant="outline"
       >
-        <span className="size-2 rounded-full bg-accent" />
+        <span className="size-2 rounded-full bg-accent-foreground" />
         {cacheStatusLabels[cacheStatus]}
         <span className="text-muted-foreground">
           {formatUtcTime(capturedAt)}
@@ -161,7 +167,12 @@ export function CommandBar({
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button aria-label="Settings" size="icon" variant="outline">
+          <Button
+            aria-label="Settings"
+            className="rounded-full"
+            size="icon"
+            variant="outline"
+          >
             <SettingsIcon />
           </Button>
         </TooltipTrigger>

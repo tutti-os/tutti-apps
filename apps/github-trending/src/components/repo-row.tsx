@@ -17,18 +17,23 @@ export function RepoRow({ index, onSelect, repo, selected }: RepoRowProps) {
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-20 w-full grid-cols-[2rem_minmax(0,1fr)] items-center gap-3 border-t border-border px-3 py-3 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:grid-cols-[2rem_minmax(16rem,1fr)_7rem_7rem_6rem_9rem]",
-        selected
-          ? "border-primary/60 bg-primary/10 shadow-[inset_0_0_0_1px_var(--primary)]"
-          : "hover:bg-muted/50",
+        "grid min-h-20 w-full grid-cols-[2rem_minmax(0,1fr)] items-center gap-3 border-t border-border/80 px-6 py-3.5 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:grid-cols-[2rem_minmax(10rem,1fr)_5rem_7rem] xl:grid-cols-[2rem_minmax(12rem,1fr)_5rem_7rem_6rem] 2xl:grid-cols-[2rem_minmax(12rem,1fr)_5rem_7rem_6rem_8rem]",
+        selected ? "bg-accent/85" : "hover:bg-muted/45",
       )}
       onClick={() => onSelect(repo.id)}
       type="button"
     >
-      <span className="font-mono text-muted-foreground">{index + 1}</span>
+      <span
+        className={cn(
+          "font-mono text-muted-foreground",
+          selected && "text-accent-foreground",
+        )}
+      >
+        {index + 1}
+      </span>
 
       <span className="min-w-0">
-        <span className="block truncate font-medium text-foreground">
+        <span className="block truncate font-semibold text-card-foreground">
           {repo.fullName}
         </span>
         <span className="mt-1 block truncate text-xs text-muted-foreground">
@@ -45,7 +50,7 @@ export function RepoRow({ index, onSelect, repo, selected }: RepoRowProps) {
         </span>
       </span>
 
-      <span className="font-mono text-accent max-lg:col-start-2">
+      <span className="font-mono font-semibold text-accent-foreground max-lg:col-start-2">
         {formatStarsGained(repo.starsGained)}
       </span>
 
@@ -54,12 +59,12 @@ export function RepoRow({ index, onSelect, repo, selected }: RepoRowProps) {
         {repo.language}
       </span>
 
-      <span className="text-muted-foreground max-lg:hidden">
+      <span className="text-muted-foreground max-xl:hidden">
         {repo.license}
       </span>
 
-      <span className="rounded-md border border-border bg-card p-2 max-lg:hidden">
-        <span className="block truncate text-xs font-medium text-foreground">
+      <span className="rounded-2xl border border-border bg-muted p-3 max-2xl:hidden">
+        <span className="block truncate text-xs font-medium text-card-foreground">
           {repo.readmePreview.title}
         </span>
         <span className="mt-1 block truncate font-mono text-[0.7rem] text-primary">

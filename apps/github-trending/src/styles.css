@@ -1,13 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: "Geist Variable", sans-serif;
+  --font-sans:
+    Sohne, ui-sans-serif, system-ui, -apple-system, system-ui,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -51,39 +54,39 @@
 
 :root,
 .dark {
-  --background: #061114;
-  --foreground: #e9f7f4;
-  --card: #0b1b20;
-  --card-foreground: #e9f7f4;
-  --popover: #0b1b20;
-  --popover-foreground: #e9f7f4;
-  --primary: #2dd4bf;
-  --primary-foreground: #031414;
-  --secondary: #10272d;
-  --secondary-foreground: #d7ece8;
-  --muted: #10272d;
-  --muted-foreground: #8fa8a6;
-  --accent: #45f08a;
-  --accent-foreground: #031414;
-  --destructive: #fb7185;
-  --destructive-foreground: #fff1f2;
-  --border: #264247;
-  --input: #1b343a;
-  --ring: #2dd4bf;
-  --chart-1: #45f08a;
-  --chart-2: #2dd4bf;
-  --chart-3: #60a5fa;
-  --chart-4: #facc15;
-  --chart-5: #fb923c;
-  --radius: 0.625rem;
-  --sidebar: #071419;
-  --sidebar-foreground: #e9f7f4;
-  --sidebar-primary: #2dd4bf;
-  --sidebar-primary-foreground: #031414;
-  --sidebar-accent: #10272d;
-  --sidebar-accent-foreground: #d7ece8;
-  --sidebar-border: #264247;
-  --sidebar-ring: #2dd4bf;
+  --background: #fbfbfa;
+  --foreground: #17191c;
+  --card: #ffffff;
+  --card-foreground: #17191c;
+  --popover: #ffffff;
+  --popover-foreground: #17191c;
+  --primary: #17191c;
+  --primary-foreground: #ffffff;
+  --secondary: #eef0f3;
+  --secondary-foreground: #17191c;
+  --muted: #eef0f3;
+  --muted-foreground: #777b86;
+  --accent: #dfeeff;
+  --accent-foreground: #16406f;
+  --destructive: #b3261e;
+  --destructive-foreground: #ffffff;
+  --border: #e3e6eb;
+  --input: #d8dce3;
+  --ring: #7aa8e8;
+  --chart-1: #16406f;
+  --chart-2: #7b3f30;
+  --chart-3: #d97706;
+  --chart-4: #777b86;
+  --chart-5: #cdd8e8;
+  --radius: 1.125rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #17191c;
+  --sidebar-primary: #17191c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2f4f7;
+  --sidebar-accent-foreground: #17191c;
+  --sidebar-border: #e3e6eb;
+  --sidebar-ring: #7aa8e8;
 }
 
 @layer base {
@@ -97,5 +100,32 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  ::selection {
+    @apply bg-accent text-accent-foreground;
+  }
+}
+
+@layer components {
+  .steep-shell {
+    background: radial-gradient(
+        circle at 36% -12%,
+        rgb(255 153 122 / 24%),
+        transparent 34%
+      ),
+      radial-gradient(
+        circle at 86% 16%,
+        rgb(223 238 255 / 62%),
+        transparent 30%
+      ), linear-gradient(180deg, #fbfbfa 0%, #f7f8fb 100%);
+  }
+
+  .steep-soft-panel {
+    box-shadow: 0 18px 48px rgb(23 25 28 / 6%);
+  }
+
+  .steep-panel {
+    box-shadow: 0 28px 80px rgb(23 25 28 / 8%);
   }
 }

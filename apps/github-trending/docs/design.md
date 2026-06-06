@@ -1,143 +1,128 @@
-# TrendReader Design Guidance
+# TrendReader Steep-Style Design Guidance
 
 ## Context and Goals
 
-TrendReader is a category-first GitHub Trending README reader for developers and technical teams. The interface must feel like a dense, calm command center: left navigation for categories, center grouped repository board, and a README-only reading panel on the right.
+TrendReader must keep its category-first GitHub Trending README reader workflow while adopting the Steep-inspired design intent: AI-analytics clarity, fast insight scanning, and zero visual chaos.
 
-The design intent is to make trend discovery scannable, keyboard-friendly, and implementation-ready without drifting into marketing-page composition.
+The supplied Steep extraction targets a marketing surface with low-confidence audience inference. For TrendReader, the implementation must adapt the visual language to an authenticated developer/operator app: dense enough for repeated use, calm enough for long README reading, and clear enough for fast repository comparison.
 
 Non-negotiable goals:
 
 - The app must use semantic Tailwind/shadcn tokens, not raw color utilities inside components.
-- The app must preserve the three-pane command-center mental model on desktop.
-- The right panel must stay README-only in MVP.
-- The category board must aggregate by product category before ranking repositories.
-- Every interactive component must define default, hover, focus-visible, active, disabled, loading, and error behavior.
-- Every accessibility rule must be testable during implementation.
-
-Known page component density:
-
-- links: 62
-- cards or card-like repeated surfaces: 44
-- buttons: 10
-- inputs: 3
-- navigation groups: 2
-- lists: 1
+- Fixed palette, typography, radius, and motion values must live in `src/styles.css`.
+- The desktop app must preserve the command bar, category sidebar, grouped board, and README panel.
+- The right panel must stay README-only for MVP.
+- Repositories must be grouped by product category before ranking.
+- Interactive controls must expose default, hover, focus-visible, active, disabled, loading, and error states.
+- Accessibility requirements must be testable in implementation.
 
 ## Design Tokens and Foundations
 
 ### Token Strategy
 
-Use Tailwind CSS v4 semantic theme tokens as the only place where fixed color values are defined.
+Components must consume semantic classes such as `bg-background`, `text-foreground`, `bg-card`, `text-card-foreground`, `border-border`, `text-muted-foreground`, `bg-primary`, `text-primary-foreground`, `bg-accent`, and `text-accent-foreground`.
 
-Component code must consume tokens with classes such as:
+Component code must not use raw arbitrary color classes such as `bg-[#04172b]`, `text-[#17191c]`, or `bg-[#ffffff]/5`.
 
-- `bg-background`
-- `text-foreground`
-- `bg-card`
-- `text-card-foreground`
-- `border-border`
-- `bg-muted`
-- `text-muted-foreground`
-- `bg-primary`
-- `text-primary`
-- `ring-ring`
-- `text-destructive`
+### Brand Mapping
 
-Component code must not use raw arbitrary color classes such as `bg-[#061114]`, `text-[#e9f7f4]`, `border-[#264247]`, or one-off palette shortcuts for core surfaces.
+Source brand:
 
-### Tailwind Theme Tokens
+- Product/brand: Steep: AI analytics for faster insights and zero chaos
+- URL: `https://steep.app/`
+- Audience: authenticated users and operators
+- Product surface: marketing site
 
-Define the fixed visual palette in `src/styles.css`:
+TrendReader mapping:
 
-```css
-@import "tailwindcss";
+- Product type: developer/operator research app.
+- Primary task: find trending repositories, understand category momentum, and read the selected README.
+- Visual intent: clean, functional, implementation-oriented, and insight-first.
 
-@theme {
-  --color-background: #061114;
-  --color-foreground: #e9f7f4;
-  --color-card: #0b1b20;
-  --color-card-foreground: #e9f7f4;
-  --color-popover: #0b1b20;
-  --color-popover-foreground: #e9f7f4;
-  --color-primary: #2dd4bf;
-  --color-primary-foreground: #031414;
-  --color-secondary: #10272d;
-  --color-secondary-foreground: #d7ece8;
-  --color-muted: #10272d;
-  --color-muted-foreground: #8fa8a6;
-  --color-accent: #45f08a;
-  --color-accent-foreground: #031414;
-  --color-destructive: #fb7185;
-  --color-destructive-foreground: #fff1f2;
-  --color-border: #264247;
-  --color-input: #1b343a;
-  --color-ring: #2dd4bf;
-  --color-chart-1: #45f08a;
-  --color-chart-2: #2dd4bf;
-  --color-chart-3: #60a5fa;
-  --color-chart-4: #facc15;
-  --color-chart-5: #fb923c;
-}
-```
+### Core Palette
+
+The Steep-derived palette maps to TrendReader tokens as a light-first system:
+
+- `color.text.primary=#17191c`: `--foreground`, `--card-foreground`, primary labels, and key metrics
+- `color.text.secondary=#777b86`: `--muted-foreground`, secondary labels, helper copy, metadata
+- `color.surface.base=#000000`: reference for dark CTA/mark treatment; implemented as `--primary` with a softened `#17191c` app value
+- `color.text.inverse=#ffffff`: `--primary-foreground`, text on dark pills and selected controls
+- `color.surface.raised=#04172b`: reference for deep analytical accents and code blocks, not the page background
+- `color.surface.strong=oklab(0.999994 0.0000455678 0.0000200868 / 0.05)`: subtle tint, hover state, and low-noise panel separation
+
+Rules:
+
+- The app background and command chrome must stay light, clean, and low-noise.
+- Content panels must use dark text on light cards.
+- Primary actions and selected navigation must use a dark pill treatment, matching Steep's `Get started` CTA pattern.
+- Major app regions should feel like floating work surfaces on a warm white wash, using light borders and soft shadows instead of hard full-height dividers.
+- Selected repository rows should read as pale blue analytical cards, not as heavy bordered table rows.
+- Data emphasis should use neutral blue, violet, or amber chart tokens instead of green as a theme color.
+- Components must use token utilities, not one-off palette shortcuts.
 
 ### Typography
 
-Use a technical sans-serif stack optimized for dashboard scanning:
+Use the Steep stack:
 
-- `font.family.primary`: Geist, DM Sans, Roboto, -apple-system, system-ui, Segoe UI, Helvetica, Arial, sans-serif
-- `font.family.mono`: JetBrains Mono, SFMono-Regular, ui-monospace, Menlo, Consolas, monospace
-- `font.size.xs`: `text-xs`
-- `font.size.sm`: `text-sm`
-- `font.size.base`: `text-base`
-- `font.size.md`: `text-lg`
-- `font.size.lg`: `text-xl`
-- `font.size.xl`: `text-2xl`
-
-Rules:
-
-- Dashboard text must avoid oversized hero typography.
-- Repository names should use `text-sm` or `text-base` with medium weight.
-- Numeric ranking, stars, and deltas should use `font-mono` where compact comparison matters.
-- Long names must use `truncate` with accessible full labels via `title` or tooltip.
-- Letter spacing must remain normal unless a native shadcn component already requires otherwise.
-
-### Spacing
-
-Use Tailwind spacing tokens only:
-
-- compact row gaps: `gap-1`, `gap-1.5`, `gap-2`
-- section gaps: `gap-3`, `gap-4`
-- pane padding: `p-3`, `p-4`, `px-4`, `py-3`
-- top bar height: `h-14` minimum
-- icon buttons: `size-9`
-- repo rows: stable `min-h-20`
+- `font.family.primary`: Sohne
+- `font.family.stack`: Sohne, ui-sans-serif, system-ui, -apple-system, system-ui, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji
+- `font.size.xs`: `15px`
+- `font.size.sm`: `16px`
+- `font.size.md`: `17px`
+- `font.size.lg`: `18px`
+- `font.size.xl`: `20px`
+- `font.size.2xl`: `44px`
+- `font.size.3xl`: `64px`
+- `font.size.4xl`: `90px`
 
 Rules:
 
-- Layout must use `gap-*`, not `space-x-*` or `space-y-*`.
-- Equal width and height controls must use `size-*`.
-- Repeated rows must use stable min heights so hover, tags, badges, and loading states do not shift the board.
-- Page sections must not use nested cards. Use panes, rows, separators, and section headers.
+- Product chrome must use compact 15px to 16px text.
+- Category headings should stay around 20px.
+- README h1 may use the 44px step on wide screens but must scale down on mobile.
+- Repository names must use semibold weight.
+- Numeric ranking, stars, deltas, and cache timestamps should use `font-mono` where comparison matters.
+- Long repository names must truncate with enough surrounding context to remain understandable.
+- Letter spacing must remain normal.
 
-### Radius, Border, Shadow, and Motion
+### Spacing, Radius, Motion
 
-Tokens:
+Spacing tokens:
 
-- small control radius: `rounded-md`
-- pane radius: `rounded-lg`
-- tag radius: `rounded`
-- border: `border-border`
-- focus ring: `ring-ring`
-- transition: `transition-colors`, `transition-transform`, or `transition-opacity`
+- `space.1=2px`
+- `space.2=4px`
+- `space.3=6px`
+- `space.4=8px`
+- `space.5=12px`
+- `space.6=14px`
+- `space.7=20px`
+- `space.8=290.89px`
 
 Rules:
 
-- Cards and panes must stay at `rounded-lg` or below.
-- Shadows should be minimal. Prefer borders and subtle background contrast.
-- Active press feedback should use `active:scale-[0.98]` or `active:translate-y-px`.
-- Motion must use transform and opacity only.
-- Infinite decoration or large background animation must not be used in the dashboard MVP.
+- Compact controls should use `gap-1`, `gap-1.5`, `gap-2`, and `px-3`.
+- Pane padding should use `p-4`, `px-5`, `py-4`, or `p-5`.
+- The large `space.8` value is a marketing extraction artifact and must not be used for app layout spacing.
+
+Radius:
+
+- `radius.xs=16777200px`
+- Compact controls, chips, badges, and search fields must use pill geometry.
+- Large content panes should cap visual radius to avoid unusable capsule panels.
+
+Motion:
+
+- `motion.duration.instant=150ms`
+- `motion.duration.fast=200ms`
+- `motion.duration.normal=300ms`
+- `motion.duration.slow=500ms`
+
+Rules:
+
+- Controls must use quick color and transform feedback.
+- Active controls should use tactile press feedback.
+- No decorative animation, glow fields, or background blobs.
+- Motion must respect `prefers-reduced-motion`.
 
 ## Component-Level Rules
 
@@ -145,376 +130,142 @@ Rules:
 
 Anatomy:
 
-- top command bar
-- left category sidebar
-- center category board
-- right README panel
-
-Desktop behavior:
-
-- The shell must use a stable grid.
-- The sidebar must stay narrow and scannable.
-- The board must own the primary scroll area.
-- The README panel must scroll internally.
-
-Responsive behavior:
-
-- At narrow widths, panes should stack as command bar, category selector, board, README.
-- Horizontal overflow must not appear on mobile.
-- The README panel should collapse below the board unless a dedicated detail route is introduced.
+- light top command bar
+- light category sidebar
+- light grouped category board
+- light README reader panel
 
 States:
 
-- default: all panes visible with cached data status.
-- loading: panes keep dimensions and show skeleton rows.
-- error: command bar shows a retry action and affected panes show inline error copy.
-- empty: center board shows an empty state with refresh action.
+- Default must show all panes on desktop.
+- Loading must preserve dimensions and use `aria-busy`.
+- Error must expose retryable inline copy.
+- Empty must show a clear refresh action.
+
+Responsive behavior:
+
+- Desktop must preserve the four-region model.
+- Narrow widths must stack command bar, categories, board, and README.
+- Mobile must not create horizontal overflow.
 
 ### Command Bar
 
 Anatomy:
 
-- product identity
-- search input
-- range toggle
-- language select
-- refresh button
-- open GitHub button
+- brand mark and product name
+- repository search
+- time range toggle
+- language selector
+- refresh action
+- GitHub action
 - cache status
-- settings button
+- settings icon button
 
 States:
 
-- default: controls are enabled and visually quiet.
-- hover: buttons should use `hover:bg-muted/70` and keep contrast.
-- focus-visible: controls must show `ring-2 ring-ring ring-offset-2 ring-offset-background`.
-- active: buttons must provide tactile transform feedback.
-- disabled: controls must use `disabled:opacity-50 disabled:pointer-events-none`.
-- loading: refresh button must show a text or icon state with `aria-busy="true"`.
-- error: refresh area must expose a retryable error message.
-
-Keyboard behavior:
-
-- Tab must move through controls in visual order.
-- Enter must activate buttons.
-- Escape should clear search focus when the search input is active.
-- Range selection should use arrow keys if implemented with ToggleGroup.
-
-Pointer and touch behavior:
-
-- Hit targets must be at least `size-9`.
-- Touch controls must not rely on hover-only affordances.
-- Tooltips must not be the only way to understand core actions.
-
-### Search Input
-
-Anatomy:
-
-- leading search icon
-- input text
-- optional keyboard hint
-- clear action when non-empty
-
-States:
-
-- default: `bg-card border-border text-foreground`.
-- hover: border should move toward `border-primary/50`.
-- focus-visible: input must show tokenized ring.
-- active: cursor placement only; no layout shift.
-- disabled: muted background and no pointer events.
-- loading: optional inline spinner or shimmer, not a layout-changing state.
-- error: border and helper text must use `destructive`.
+- Default must use a light surface with dark primary text.
+- Primary command actions should use dark pill treatment with inverse text.
+- Hover should use subtle strong-surface tint.
+- Focus-visible must show a visible ring token.
+- Active must provide tactile press feedback.
+- Disabled must lower opacity and block pointer interaction.
+- Loading must set `aria-busy="true"` and visible refresh copy.
+- Error must expose retryable status copy near the affected action.
 
 Behavior:
 
-- Search should debounce client-side filtering.
-- Long queries must scroll inside the input, not resize it.
-- Empty search must show all categories.
+- Search must filter repositories, owners, topics, and language text.
+- Toggle choices must remain mutually exclusive.
+- External links must open safely with `rel="noreferrer noopener"`.
 
-### Category Sidebar Item
+### Category Sidebar
 
-Anatomy:
+Rules:
 
-- icon
-- category label
-- repo count
-- momentum delta
+- Sidebar must use a light navigation surface.
+- Active category must use dark inverse pill treatment with high contrast.
+- Deltas must use a chart emphasis token, not green theme color.
+- Saved collections and pinned topics must remain compact and keyboard reachable.
+- Long labels must truncate.
 
-States:
+### Category Board
 
-- default: transparent background with muted metadata.
-- hover: `bg-muted/70`.
-- focus-visible: visible ring.
-- active: selected item uses `bg-primary/15 border-primary/50 text-foreground`.
-- disabled: opacity reduction and no pointer events.
-- loading: skeleton label and count.
-- error: inline error item with retry if category data is unavailable.
+Rules:
 
-Behavior:
-
-- Enter and Space must select the category.
-- The active category must expose `aria-current="true"` or equivalent state.
-- Counts must remain aligned for scanability.
-
-### Category Section
-
-Anatomy:
-
-- category title
-- repo count
-- momentum value
-- tone badge
-- sparkline
-- repo row list
-
-States:
-
-- default: bordered section with stable header.
-- hover: section itself should not be clickable unless the whole section has a defined action.
-- focus-visible: only interactive children receive focus.
-- loading: skeleton header plus skeleton rows.
-- error: inline category-level error with retry.
-- empty: show no-repos state inside the section.
-
-Responsive behavior:
-
-- Sparkline may hide on mobile.
-- Repo metadata columns should collapse into two lines before truncating important names.
-
-### Repo Row
-
-Anatomy:
-
-- rank
-- owner/repo name
-- description
-- stars gained
-- language
-- license
-- topics
-- structured README preview
-
-States:
-
-- default: `border-border` row with readable metadata.
-- hover: row background should use `bg-muted/50`.
-- focus-visible: row must show a visible ring or outline.
-- active: selected row must use a primary border or inset marker.
-- disabled: only for unavailable repos; metadata should explain why.
-- loading: skeleton row with fixed height.
-- error: row-level README or metadata error must not break row layout.
-
-Behavior:
-
-- Enter and Space must select the row.
-- Opening GitHub must be a separate button or link, not the entire row.
-- Long repo names must truncate in the middle container and keep owner visible when possible.
-- README preview must be structured text, not an iframe and not a remote screenshot in MVP.
+- Categories must be grouped before repositories are ranked.
+- Category headers must show label, repo count, momentum, tone, and delta.
+- Hot/trending badges must use semantic badge variants.
+- Deltas must use chart emphasis tokens.
+- Rows must have stable height, visible focus, hover, active, and selected states.
+- README preview strips inside rows must read as lightweight document previews.
 
 ### README Panel
 
-Anatomy:
-
-- selected repo header
-- minimal metadata
-- Open on GitHub action
-- README markdown content
-
 Rules:
 
-- The panel must not include issue, PR, discussion, release, related repo, or AI summary modules in MVP.
-- README content must be sanitized before render.
-- Long README content must scroll inside the panel.
-- Empty selection must show a quiet prompt to select a repo.
+- The right panel must contain README content only plus minimal repo header actions.
+- Markdown headings must use dark card text on light reader surface.
+- Inline code and code blocks must use raised dark surfaces with inverse text where helpful.
+- Links must be descriptive, keyboard focusable, and safe for external targets.
+- Long code lines must scroll horizontally instead of overflowing the page.
 
-States:
+## Accessibility Requirements and Acceptance Criteria
 
-- default: selected README rendered.
-- hover: only links and buttons change state.
-- focus-visible: links and code-copy actions must show visible focus.
-- active: action buttons use tactile feedback.
-- disabled: unavailable README actions must explain why.
-- loading: skeleton heading and paragraph blocks.
-- error: show README error with Open on GitHub fallback.
-
-### Markdown Renderer
-
-Rules:
-
-- Styling must use `react-markdown` `components` mappings with Tailwind semantic tokens.
-- The implementation must not depend on `.markdown-body` global CSS.
-- Headings must be compact enough for a side panel.
-- Code blocks must scroll horizontally without widening the panel.
-- Links must be descriptive, underlined on focus or hover, and open external targets safely.
-
-States:
-
-- default: rendered sanitized markdown.
-- loading: skeleton blocks matching expected content density.
-- error: readable fallback message.
-- empty: "README not available" state with Open on GitHub action.
-
-### Button
-
-Variants:
-
-- default: primary action
-- outline: secondary action
-- ghost: low-emphasis action
-- icon: compact tool action
-
-States:
-
-- default: semantic token background, border, and text.
-- hover: background or border contrast increases.
-- focus-visible: visible token ring.
-- active: tactile transform.
-- disabled: opacity and pointer lock.
-- loading: `aria-busy="true"` and stable width.
-- error: destructive variant only when the button action is destructive or retry-failed.
-
-Behavior:
-
-- Buttons with icons must include accessible labels.
-- Icon-only buttons must have `aria-label`.
-- Loading buttons must not duplicate submissions.
-
-### Badge
-
-Variants:
-
-- neutral metadata
-- primary category match
-- accent momentum
-- destructive error
-
-States:
-
-- default: compact, readable metadata.
-- hover: only interactive badges may change state.
-- focus-visible: only focusable badges receive ring.
-- active: only interactive badges use press feedback.
-- disabled: muted badge.
-- loading: skeleton pill.
-- error: destructive token.
-
-Rules:
-
-- Badges must not be used as buttons unless implemented as buttons.
-- Text inside badges must truncate if the badge is constrained.
-
-## Accessibility Requirements and Testable Acceptance Criteria
-
-Target: WCAG 2.2 AA.
-
-Keyboard:
-
-- All interactive controls must be reachable with Tab.
-- Focus order must match visual order: command bar, sidebar, board, README panel.
-- Enter or Space must activate row selection and buttons.
-- Escape should dismiss open popovers or menu overlays.
-
-Focus:
-
-- Every interactive element must have a visible `focus-visible` style.
-- Focus indicators must not rely on color alone.
-- Focus rings must have at least 2px visual thickness or equivalent contrast.
-
-Contrast:
-
-- Body text must meet 4.5:1 contrast against its background.
-- Large text and icon labels must meet 3:1 contrast.
-- Disabled controls must remain understandable but do not need to meet active contrast.
-
-Semantics:
-
-- The app must expose landmarks for main content and navigation.
-- Category navigation must use list or navigation semantics.
-- Repo rows must use button or link semantics when clickable.
-- Loading regions must expose `aria-busy` where appropriate.
-- Error messages must be associated with the failed control or region.
+- Every interactive control must be reachable with Tab.
+- Every control must have an accessible name.
+- Focus-visible styles must be visible against light chrome and light cards.
+- Text contrast must pass WCAG 2.2 AA.
+- Form controls must have `id` or `name` where browser validation expects it.
+- External links must include safe `rel` attributes.
+- Mobile layout must report no horizontal overflow.
+- Disabled controls must be programmatically disabled, not only visually muted.
+- Loading controls must expose busy state to assistive technology.
 
 Pass/fail checks:
 
-- Pass if the full app can be operated without a mouse.
-- Pass if selected category and selected repo are announced by assistive tech.
-- Pass if browser zoom at 200% does not hide controls or create horizontal page scrolling.
-- Pass if reduced-motion settings do not remove essential feedback.
-- Fail if any interactive element lacks a visible focus state.
-- Fail if README content can inject unsanitized HTML.
-- Fail if external links omit safe external-link attributes.
+- Keyboard can move through command bar, category buttons, repo rows, README links, and external actions.
+- A selected repo row remains visually distinct without relying on color alone.
+- README code blocks do not clip content.
+- 320px mobile viewport has no horizontal page scroll.
 
 ## Content and Tone Standards
 
-Tone: concise, confident, implementation-focused.
+Tone must be concise, confident, and implementation-focused.
 
-Labels:
+Good:
 
-- Use "Refresh", not "Go".
-- Use "Open on GitHub", not "Open".
-- Use "Showing cached data", not "Cache issue".
-- Use "README unavailable", not "Something went wrong".
+- `Cache updated`
+- `Showing fallback data`
+- `Search repositories, owners, topics`
+- `Open GitHub`
+- `Momentum`
 
-Repository descriptions:
+Avoid:
 
-- Keep descriptions to one sentence when shown in rows.
-- Truncate long text visually but preserve accessible full text.
-- Do not invent metrics in production data; show cached or unavailable state instead.
-
-Error copy examples:
-
-- "README unavailable. Open the repository on GitHub to read it there."
-- "Trending source unavailable. Showing cached data from the last successful refresh."
-- "GitHub rate limit reached. Try refreshing later."
+- ambiguous actions such as `Go`, `More`, or `Click here`
+- marketing explanations inside the app surface
+- decorative copy that does not help trend reading
 
 ## Anti-Patterns and Prohibited Implementations
 
-- Do not use iframe embeds for GitHub repositories or README content.
-- Do not add issue, PR, discussion, release, related repo, or AI summary widgets to the README panel in MVP.
-- Do not use raw color utilities in component code for core UI surfaces.
-- Do not create CSS Modules for component styling.
-- Do not add `.app-*` global business classes.
-- Do not make the first screen a landing page.
-- Do not wrap every section in Card components.
-- Do not rely on hover-only controls.
-- Do not hide focus outlines.
-- Do not use ambiguous icon-only buttons without labels.
-- Do not allow repo rows to resize when loading, selected, or hovered.
-- Do not fetch GitHub data from the browser with a token.
-- Do not render unsanitized README HTML.
-
-## Migration Notes
-
-- Start with seed data but keep the service boundaries identical to the real data path.
-- Map visual colors into Tailwind semantic tokens before writing UI components.
-- Prefer shadcn primitives where available; customize through tokens and variants.
-- Keep README rendering local and sanitized.
-- Keep package-specific runtime details outside UI components.
-
-## Edge-Case Handling
-
-- No categories: show an empty state with refresh.
-- Category has no repos: show category-level empty copy.
-- Repo missing README: show README unavailable state and Open on GitHub.
-- Rate limit: show cached or stale data status.
-- Parser failure: show fallback or cached data status.
-- Very long repo names: truncate and preserve full accessible label.
-- Very long README lines: code blocks scroll horizontally.
-- Mobile viewport: panes stack without page-level horizontal overflow.
+- Do not embed GitHub pages in iframes.
+- Do not add a marketing hero or landing page before the app surface.
+- Do not put unrelated repository metadata panels beside the README in MVP.
+- Do not use raw hex colors inside components.
+- Do not use green as the primary theme color.
+- Do not use low-contrast gray text on light surfaces.
+- Do not hide focus indicators.
+- Do not introduce one-off spacing or typography exceptions.
 
 ## QA Checklist
 
-- [ ] Semantic tokens are defined in `src/styles.css`.
-- [ ] Component code uses semantic Tailwind classes instead of raw color values.
-- [ ] No CSS Modules or `.app-*` global classes are introduced.
-- [ ] Command bar controls have default, hover, focus-visible, active, disabled, loading, and error states.
-- [ ] Repo rows have default, hover, focus-visible, active, disabled, loading, and error states.
-- [ ] README panel is README-only.
-- [ ] README markdown is sanitized.
-- [ ] Keyboard-only navigation works across command bar, sidebar, board, and README panel.
-- [ ] Browser zoom at 200% is usable.
-- [ ] Mobile layout has no horizontal overflow.
-- [ ] Loading states preserve layout dimensions.
-- [ ] Error states include retry or Open on GitHub fallback where appropriate.
-- [ ] External links use safe attributes.
-- [ ] The implementation matches the dark command-center visual direction without copying the screenshot pixel-for-pixel.
+- Desktop shows top command bar, left categories, center grouped board, and right README panel.
+- Mobile stacks without horizontal overflow.
+- Search filters repositories without layout shift.
+- Range, language, refresh, category, and repo controls are keyboard reachable.
+- Clicking a repo updates URL and README content.
+- GitHub Trending/API fallback states display accurate cache copy.
+- Steep token mapping is present in `src/styles.css`.
+- Components use semantic Tailwind/shadcn tokens instead of raw hex classes.
+- Chrome console has no errors.
+- `pnpm lint`, `pnpm --filter @nextop-apps/github-trending typecheck`, and app build pass.

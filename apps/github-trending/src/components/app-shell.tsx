@@ -57,7 +57,7 @@ export function AppShell({
     searchQuery.trim().length > 0 ? filteredCategories : board.categories;
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background text-foreground lg:h-[100dvh] lg:min-h-[720px] lg:overflow-hidden">
+    <div className="steep-shell flex min-h-dvh flex-col text-foreground lg:h-[100dvh] lg:min-h-[720px] lg:overflow-hidden">
       <CommandBar
         cacheStatus={board.cacheStatus}
         capturedAt={board.capturedAt}
@@ -70,7 +70,7 @@ export function AppShell({
         searchQuery={searchQuery}
         since={since}
       />
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row lg:overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col gap-5 p-5 lg:flex-row lg:overflow-hidden">
         <CategorySidebar
           activeCategoryId={
             visibleCategories.some(

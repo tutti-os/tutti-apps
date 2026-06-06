@@ -15,8 +15,8 @@ export function CategoryBoard({
   selectedRepoId,
 }: CategoryBoardProps) {
   return (
-    <ScrollArea className="min-h-0 w-full flex-1">
-      <main className="flex flex-col gap-3 p-3" id="category-board">
+    <ScrollArea className="min-h-0 min-w-0 flex-1">
+      <main className="flex flex-col gap-5" id="category-board">
         {categories.map((category) => (
           <CategorySection
             category={category}
