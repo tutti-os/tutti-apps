@@ -59,15 +59,15 @@ pnpm typecheck
 App commands can be run directly with filters:
 
 ```bash
-pnpm --filter @nextop-apps/github-trending dev
-pnpm --filter @nextop-apps/github-trending build
+pnpm --filter @nextop-apps/daily-tech-radar dev
+pnpm --filter @nextop-apps/daily-tech-radar build
 ```
 
 Nextop app packaging is intentionally a separate root command because the
 release workflow needs a repository-level app resolver:
 
 ```bash
-pnpm package:nextop --app github-trending
+pnpm package:nextop --app daily-tech-radar
 ```
 
 See `nextop-packaging.md` for the package source layout and Actions workflow.
@@ -83,6 +83,5 @@ Use this default decision rule:
 - Vite SPA: static prototypes or client-only apps that do not need a server
   runtime.
 
-The GitHub Trending Reader is currently planned for TanStack Start because it is
-a data-heavy tool with category filtering, README fetching, and typed
-server/client data boundaries.
+Daily Tech Radar uses TanStack Start because it is a data-heavy tool with trend
+filtering, card detail views, and typed server/client data boundaries.

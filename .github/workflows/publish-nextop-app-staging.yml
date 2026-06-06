@@ -6,7 +6,7 @@ on:
       app_id:
         description: Nextop app id to publish.
         required: false
-        default: github-trending
+        default: daily-tech-radar
         type: string
       release_version:
         description: Optional release version override. Defaults to manifest.version + short git sha.

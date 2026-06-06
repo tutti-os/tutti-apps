@@ -11,10 +11,6 @@ Product scope:
 - source/date/category/search/view filters
 - prototype-style card grid, compact list, detail drawer, and favorites
 
-`apps/github-trending` is only an architecture reference for TanStack Start,
-Query, Server Functions, and Nextop packaging. Do not copy its command bar,
-category board, repo rows, README panel, SQLite cache, or GitHub refresh logic.
-
 ## Validation
 
 ```bash

@@ -19,7 +19,6 @@ the nearest directory-level `AGENTS.md`.
 - Nextop app packaging: `docs/architecture/nextop-packaging.md`
 - Agent workflow conventions: `docs/conventions/agent-workflow.md`
 - Directory-level guidance: `apps/AGENTS.md`, `packages/AGENTS.md`
-- GitHub Trending app plan: `apps/github-trending/docs/technical-plan.md`
 
 ## Repository Shape
 
@@ -44,7 +43,6 @@ Rule of thumb:
 Read the closest `AGENTS.md` before editing files in that area:
 
 - `apps/*` -> `apps/AGENTS.md`
-- `apps/github-trending/*` -> `apps/github-trending/AGENTS.md`
 - `packages/*` -> `packages/AGENTS.md`
 - `docs/*` -> this root file plus the local docs index
 
@@ -107,16 +105,16 @@ browser.
 pnpm install
 pnpm dev
 pnpm build
-pnpm package:nextop --app github-trending
+pnpm package:nextop --app daily-tech-radar
 pnpm test
 pnpm typecheck
 pnpm lint
 ```
 
 ```bash
-pnpm --filter @nextop-apps/github-trending dev
-pnpm --filter @nextop-apps/github-trending typecheck
-pnpm --filter @nextop-apps/github-trending test
+pnpm --filter @nextop-apps/daily-tech-radar dev
+pnpm --filter @nextop-apps/daily-tech-radar typecheck
+pnpm --filter @nextop-apps/daily-tech-radar test
 ```
 
 ## Git Commit Policy

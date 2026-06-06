@@ -19,11 +19,10 @@ packages named `shared`, `common`, or `utils`.
 
 Likely future packages:
 
-- `packages/github`: GitHub REST client and normalized GitHub types.
 - `packages/trend-classification`: taxonomy, category scoring, and ranking.
 - `packages/config`: shared TS/Tailwind/Biome config if repetition appears.
 
-Do not promote code out of `apps/github-trending` until a second app or a clear
+Do not promote code out of an app until a second app or a clear
 app-independent boundary needs it.
 
 ## Validation

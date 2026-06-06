@@ -5,7 +5,7 @@
 ```txt
 nextop-apps/
   apps/
-    github-trending/
+    daily-tech-radar/
       docs/
       nextop-package/
       src/
@@ -62,15 +62,14 @@ Avoid vague package names such as `shared`, `common`, or `utils`.
 
 ## Current App Boundary
 
-`apps/github-trending` owns the GitHub Trending Reader.
+`apps/daily-tech-radar` owns Daily Tech Radar.
 
 First-version product boundary:
 
-- category-first GitHub Trending board
-- repo row README preview
-- README-only right panel
-- GitHub API integration and README rendering
-- Nextop package source under `apps/github-trending/nextop-package`
+- Product Hunt and GitHub daily discovery cards
+- card grid and detail drawer UI
+- Daily Tech Radar SDK integration
+- Nextop package source under `apps/daily-tech-radar/nextop-package`
 
-If future apps need GitHub API access, promote the GitHub client into a package
-such as `packages/github`.
+If future apps need shared trend data access, promote the boundary into a
+domain package under `packages/*`.

@@ -31,7 +31,7 @@ test("production Nextop app workflow publishes configured apps on main", async (
 
   assert.equal(workflow.name, "Publish Nextop App Production");
   assert.deepEqual(on.push.branches, ["main"]);
-  assert.equal(on.workflow_dispatch.inputs.app_id.default, "github-trending");
+  assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(
     publish.uses,
     "nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main",
@@ -66,7 +66,7 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
 
   assert.equal(workflow.name, "Publish Nextop App Staging");
   assert.equal(on.push, undefined);
-  assert.equal(on.workflow_dispatch.inputs.app_id.default, "github-trending");
+  assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(
     publish.uses,
     "nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main",
