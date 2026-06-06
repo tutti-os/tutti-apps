@@ -11,7 +11,3 @@ agent decisions.
 - `architecture/nextop-packaging.md`: Nextop app package source and release workflow.
 - `conventions/README.md`: convention docs entry point.
 - `conventions/agent-workflow.md`: how agents should record and maintain context.
-
-App-specific plans stay with the app:
-
-- `apps/github-trending/docs/technical-plan.md`

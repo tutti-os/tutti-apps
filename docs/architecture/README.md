@@ -16,7 +16,7 @@ should look before changing module boundaries.
 ```txt
 nextop-apps/
   apps/
-    github-trending/
+    daily-tech-radar/
   packages/
   docs/
 ```

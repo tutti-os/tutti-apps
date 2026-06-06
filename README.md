@@ -15,7 +15,6 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 | App | Path | Status | Notes |
 | --- | --- | --- | --- |
 | 每日产品雷达 | `apps/daily-tech-radar` | MVP | Product Hunt and GitHub daily discovery cards backed by `@nextop-os/daily-tech-radar`. |
-| GitHub Trending Reader | `apps/github-trending` | MVP | Category-first GitHub Trending reader with SQLite-backed README cache and README-only detail panel. |
 
 ## Documentation
 
@@ -25,7 +24,6 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 - Nextop app packaging: `docs/architecture/nextop-packaging.md`
 - Agent workflow conventions: `docs/conventions/agent-workflow.md`
 - Root agent guide: `AGENTS.md`
-- GitHub Trending plan: `apps/github-trending/docs/technical-plan.md`
 
 ## Commands
 
@@ -33,7 +31,7 @@ This repository follows the same broad workspace shape as `ai-media-canvas`:
 pnpm install
 pnpm dev
 pnpm build
-pnpm package:nextop --app github-trending
+pnpm package:nextop --app daily-tech-radar
 pnpm test
 pnpm typecheck
 pnpm lint
@@ -42,9 +40,9 @@ pnpm lint
 Run a single app by filtering:
 
 ```bash
-pnpm --filter @nextop-apps/github-trending dev
-pnpm --filter @nextop-apps/github-trending typecheck
-pnpm --filter @nextop-apps/github-trending test
+pnpm --filter @nextop-apps/daily-tech-radar dev
+pnpm --filter @nextop-apps/daily-tech-radar typecheck
+pnpm --filter @nextop-apps/daily-tech-radar test
 ```
 
 ## Monorepo Conventions
@@ -72,9 +70,8 @@ framework build tool inside each app package.
 - Content-heavy SEO sites: consider Next.js.
 - Static prototypes: Vite SPA is acceptable when no server runtime is needed.
 
-The GitHub Trending Reader is planned as a TanStack Start app because it is a
-data-heavy dashboard with server functions, API routes, and strong TanStack
-Query/Router fit.
+Daily Tech Radar is a TanStack Start app because it is a data-heavy dashboard
+with server functions, API routes, and strong TanStack Query/Router fit.
 
 ## Validation Bar
 

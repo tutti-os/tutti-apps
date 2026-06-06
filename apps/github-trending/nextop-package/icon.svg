@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="TrendReader">
-  <rect width="128" height="128" rx="32" fill="#fbfbfa"/>
-  <rect x="16" y="16" width="96" height="96" rx="30" fill="#ffffff"/>
-  <path d="M38 83V43h14v40h-6V50h-2v33h-6Zm22 0V43h31v8H75v32h-6V51h-3v32h-6Z" fill="#17191c"/>
-  <path d="M35 92h58" stroke="#dfeeff" stroke-width="7" stroke-linecap="round"/>
-  <path d="M81 42h13v13" stroke="#17191c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M61 65l12-12 8 8 13-13" stroke="#17191c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>

@@ -65,7 +65,7 @@ build/nextop-app/<app-id>/package/
   node_modules/
 ```
 
-For GitHub Trending, `bootstrap.sh` starts the Nextop wrapper:
+For Daily Tech Radar, `bootstrap.sh` starts the Nextop wrapper:
 
 ```sh
 exec node "$NEXTOP_APP_PACKAGE_DIR/server.mjs"
@@ -82,17 +82,17 @@ enabled for each release environment.
 ```json
 {
   "apps": {
-    "github-trending": {
-      "packageCommand": "pnpm package:nextop --app github-trending",
-      "packageSourceDir": "apps/github-trending/nextop-package",
-      "packageDir": "build/nextop-app/github-trending/package",
-      "iconPath": "build/nextop-app/github-trending/package/icon.svg"
+    "daily-tech-radar": {
+      "packageCommand": "pnpm package:nextop --app daily-tech-radar",
+      "packageSourceDir": "apps/daily-tech-radar/nextop-package",
+      "packageDir": "build/nextop-app/daily-tech-radar/package",
+      "iconPath": "build/nextop-app/daily-tech-radar/package/icon.svg"
     }
   },
   "environments": {
     "production": {
-      "defaultAppId": "github-trending",
-      "appIds": ["github-trending"]
+      "defaultAppId": "daily-tech-radar",
+      "appIds": ["daily-tech-radar"]
     }
   }
 }
@@ -103,7 +103,7 @@ Add a new app to this file before enabling it in release workflows.
 ## Local Packaging
 
 ```bash
-pnpm package:nextop --app github-trending
+pnpm package:nextop --app daily-tech-radar
 ```
 
 Output:
