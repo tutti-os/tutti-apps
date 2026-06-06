@@ -1,11 +1,19 @@
 import {
+  BotIcon,
+  BoxesIcon,
+  Code2Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  FileTextIcon,
   ExternalLinkIcon,
   Grid2X2Icon,
   HeartIcon,
+  ImageIcon,
   ListIcon,
   SearchIcon,
+  ShieldCheckIcon,
+  ShoppingBagIcon,
+  SparklesIcon,
   XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -399,17 +407,7 @@ function RadarCardView({
       <Cover card={card} />
       <div className="radar-card-body">
         <div className="radar-title-row">
-          {card.type === "producthunt" ? (
-            card.iconUrl ? (
-              <img className="radar-app-icon" src={card.iconUrl} alt="" />
-            ) : (
-              <div className="radar-app-icon generated" />
-            )
-          ) : (
-            <div className="radar-repo-icon">
-              {card.name.slice(0, 2).toUpperCase()}
-            </div>
-          )}
+          <CardAvatar card={card} />
           <div className="radar-card-heading">
             <h3>{card.title}</h3>
             <div className="radar-source">
@@ -440,11 +438,72 @@ function RadarCardView({
 
 function Cover({ card }: { card: RadarCard }) {
   const badge = card.type === "github" ? card.language || "GitHub" : "Product Hunt";
+  const useSemanticCover = card.type === "github" && card.coverStyle === "semantic";
 
   return (
-    <div className={`radar-cover ${card.type === "github" ? "repo" : ""}`}>
-      {card.coverUrl ? <img src={card.coverUrl} alt="" /> : null}
+    <div
+      className={`radar-cover ${card.type === "github" ? "repo" : ""} ${
+        useSemanticCover ? "semantic" : ""
+      }`}
+    >
+      {useSemanticCover ? (
+        <SemanticCover card={card} />
+      ) : card.coverUrl ? (
+        <img src={card.coverUrl} alt="" />
+      ) : null}
       <span className="radar-badge">{badge}</span>
+    </div>
+  );
+}
+
+function CardAvatar({ card }: { card: RadarCard }) {
+  const [failed, setFailed] = useState(false);
+
+  if (card.type === "producthunt") {
+    return card.iconUrl && !failed ? (
+      <img
+        className="radar-app-icon"
+        src={card.iconUrl}
+        alt=""
+        onError={() => setFailed(true)}
+      />
+    ) : (
+      <div className="radar-app-icon generated" />
+    );
+  }
+
+  return card.iconUrl && !failed ? (
+    <img
+      className="radar-repo-icon image"
+      src={card.iconUrl}
+      alt=""
+      onError={() => setFailed(true)}
+    />
+  ) : (
+    <div className="radar-repo-icon">{card.name.slice(0, 2).toUpperCase()}</div>
+  );
+}
+
+function SemanticCover({ card }: { card: RadarCard }) {
+  const model = semanticCoverModel(card);
+  const Icon = model.icon;
+
+  return (
+    <div className={`radar-semantic-cover ${model.tone}`}>
+      <div className="radar-semantic-copy">
+        <span>{model.kicker}</span>
+        <strong>{model.title}</strong>
+      </div>
+      <div className="radar-semantic-flow" aria-hidden="true">
+        <span>{model.steps[0]}</span>
+        <i />
+        <span>{model.steps[1]}</span>
+        <i />
+        <span>{model.steps[2]}</span>
+      </div>
+      <div className="radar-semantic-icon" aria-hidden="true">
+        <Icon size={26} />
+      </div>
     </div>
   );
 }
@@ -513,6 +572,8 @@ function DetailDrawer({
               ) : (
                 <img src={activeMedia.url} alt="" />
               )
+            ) : card.coverStyle === "semantic" ? (
+              <SemanticCover card={card} />
             ) : null}
             {media.length > 1 ? (
               <div className="radar-gallery-controls">
@@ -646,4 +707,93 @@ function formatCount(value?: number) {
     return `${Math.round(value / 100) / 10}k`;
   }
   return String(value);
+}
+
+function semanticCoverModel(card: RadarCard) {
+  const text = [
+    card.title,
+    card.description,
+    ...card.categories,
+    ...card.keywords,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (text.includes("ocr") || text.includes("document") || text.includes("pdf")) {
+    return {
+      icon: FileTextIcon,
+      kicker: "Document AI",
+      steps: ["PDF/图片", "OCR 解析", "结构化数据"],
+      title: "把文档变成可用数据",
+      tone: "paper",
+    };
+  }
+
+  if (text.includes("image") || text.includes("图像") || text.includes("生成")) {
+    return {
+      icon: ImageIcon,
+      kicker: "Visual AI",
+      steps: ["提示词", "生成", "视觉资产"],
+      title: "生成与处理视觉内容",
+      tone: "visual",
+    };
+  }
+
+  if (text.includes("ecommerce") || text.includes("store") || text.includes("商店")) {
+    return {
+      icon: ShoppingBagIcon,
+      kicker: "Commerce Ops",
+      steps: ["商品", "代理执行", "订单/客服"],
+      title: "自动化电商运营流程",
+      tone: "commerce",
+    };
+  }
+
+  if (text.includes("security") || text.includes("privacy") || text.includes("安全")) {
+    return {
+      icon: ShieldCheckIcon,
+      kicker: "Security",
+      steps: ["风险", "检测", "防护"],
+      title: "发现并降低安全风险",
+      tone: "secure",
+    };
+  }
+
+  if (text.includes("agent") || text.includes("mcp") || text.includes("workflow")) {
+    return {
+      icon: BotIcon,
+      kicker: "AI Agent",
+      steps: ["任务", "代理规划", "自动执行"],
+      title: "让代理接手复杂工作流",
+      tone: "agent",
+    };
+  }
+
+  if (text.includes("model") || text.includes("llm") || text.includes("ai")) {
+    return {
+      icon: SparklesIcon,
+      kicker: "AI Model",
+      steps: ["数据", "模型推理", "结果"],
+      title: "用模型完成智能分析",
+      tone: "model",
+    };
+  }
+
+  if (text.includes("api") || text.includes("framework") || text.includes("typescript")) {
+    return {
+      icon: Code2Icon,
+      kicker: "Developer Tool",
+      steps: ["代码", "集成", "发布"],
+      title: "加速开发与集成",
+      tone: "dev",
+    };
+  }
+
+  return {
+    icon: BoxesIcon,
+    kicker: "Open Source",
+    steps: ["项目", "能力", "落地"],
+    title: "把开源能力接入产品",
+    tone: "default",
+  };
 }

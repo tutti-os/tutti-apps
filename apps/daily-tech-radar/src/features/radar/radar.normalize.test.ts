@@ -176,12 +176,13 @@ describe("radar normalization", () => {
 
     expect(card).toMatchObject({
       categories: ["AI代理", "开发工具", "AI"],
-      coverUrl: "https://example.com/banner-thumb.png",
+      coverStyle: "semantic",
+      coverUrl: null,
       description: "Self-improving AI agent with a built-in learning loop.",
       iconUrl: "https://github.com/NousResearch.png",
       id: "github:nousresearch-hermes-agent",
       language: "Python",
-      media: [{ type: "image", url: "https://example.com/banner-thumb.png" }],
+      media: [],
       metrics: { forks: 31423, score: 118, stars: 183193, starsGained: 1845 },
       name: "hermes-agent",
       owner: "NousResearch",
@@ -191,6 +192,32 @@ describe("radar normalization", () => {
       summary: "The agent that grows with you",
       title: "NousResearch / hermes-agent",
       type: "github",
+    });
+  });
+
+  it("keeps generated GitHub product covers when the data package provides one", () => {
+    const repo = {
+      ...githubPackage.repos[0]!,
+      visual: {
+        alt: "Generated product cover for Hermes Agent",
+        kind: "agnes_generated" as const,
+        sourceUrl: null,
+        thumbUrl: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
+        url: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
+      },
+    };
+
+    const card = normalizeGitHubRepo(repo, githubPackage);
+
+    expect(card).toMatchObject({
+      coverStyle: "image",
+      coverUrl: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
+      media: [
+        {
+          type: "image",
+          url: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
+        },
+      ],
     });
   });
 

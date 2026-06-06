@@ -89,10 +89,7 @@ export function normalizeGitHubRepo(
       repo.metadata.language,
       ...keywords,
     ]);
-  const coverUrl =
-    repo.visual.thumbUrl ??
-    repo.visual.url ??
-    `https://opengraph.githubassets.com/daily-tech-radar/${repo.owner}/${repo.name}`;
+  const cover = getGitHubCover(repo);
   const score = repo.rank.score;
   const description = repo.readmeSignals.summary || repo.metadata.description;
   const summary =
@@ -102,7 +99,8 @@ export function normalizeGitHubRepo(
 
   return {
     categories,
-    coverUrl,
+    coverStyle: cover.style,
+    coverUrl: cover.url,
     date: trendPackage.packageId.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? "",
     description,
     homepageUrl: repo.homepageUrl ?? null,
@@ -110,11 +108,11 @@ export function normalizeGitHubRepo(
     id: `github:${repo.id}`,
     keywords,
     language: repo.metadata.language,
-    media: coverUrl
+    media: cover.url
       ? [
           {
             type: "image",
-            url: coverUrl,
+            url: cover.url,
           },
         ]
       : [],
@@ -135,6 +133,48 @@ export function normalizeGitHubRepo(
     title: `${repo.owner} / ${repo.name}`,
     type: "github",
   };
+}
+
+function getGitHubCover(repo: GitHubTrendRepo): {
+  style: "image" | "semantic";
+  url: string | null;
+} {
+  const visualUrl = repo.visual.thumbUrl ?? repo.visual.url ?? null;
+
+  if (visualUrl && !shouldUseSemanticGitHubCover(repo, visualUrl)) {
+    return {
+      style: "image",
+      url: visualUrl,
+    };
+  }
+
+  if (!visualUrl && repo.avatarUrl) {
+    return {
+      style: "image",
+      url: `https://opengraph.githubassets.com/daily-tech-radar/${repo.owner}/${repo.name}`,
+    };
+  }
+
+  return {
+    style: "semantic",
+    url: null,
+  };
+}
+
+function shouldUseSemanticGitHubCover(repo: GitHubTrendRepo, visualUrl: string) {
+  const text = [
+    visualUrl,
+    repo.visual.sourceUrl,
+    repo.visual.alt,
+    repo.visual.kind,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    /(^|[-_/])(banner|readme-banner|logo)([-_.:/]|$)/.test(text)
+  );
 }
 
 export function buildRadarBoard(input: BoardInput): RadarBoard {

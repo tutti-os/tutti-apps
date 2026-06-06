@@ -248,10 +248,13 @@ input:focus-visible {
 }
 
 .radar-signal {
-  border: 0;
   padding: 22px;
-  color: var(--brown);
-  background: rgba(251, 225, 209, 0.62);
+  color: var(--ink);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(247, 247, 248, 0.5)),
+    radial-gradient(circle at 12% 16%, rgba(211, 227, 252, 0.42), transparent 34%),
+    radial-gradient(circle at 86% 20%, rgba(251, 225, 209, 0.48), transparent 38%);
+  backdrop-filter: blur(18px);
 }
 
 .radar-signal h2,
@@ -264,7 +267,7 @@ input:focus-visible {
 .radar-signal p,
 .radar-scope-card p {
   margin: 9px 0 0;
-  color: rgba(93, 42, 26, 0.68);
+  color: rgba(23, 25, 28, 0.68);
   font-size: 13px;
   line-height: 1.45;
 }
@@ -288,8 +291,8 @@ input:focus-visible {
   min-height: 72px;
   border-radius: 18px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(93, 42, 26, 0.08);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(4, 23, 43, 0.08);
 }
 
 .radar-metric b {
@@ -414,8 +417,9 @@ input:focus-visible {
 
 .radar-cover {
   position: relative;
-  height: 128px;
+  height: 172px;
   overflow: hidden;
+  border-bottom: 1px solid rgba(4, 23, 43, 0.06);
   background:
     linear-gradient(135deg, rgba(211, 227, 252, 0.96), rgba(251, 225, 209, 0.96)),
     linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
@@ -432,8 +436,22 @@ input:focus-visible {
 .radar-drawer-hero video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+}
+
+.radar-cover img {
+  object-fit: cover;
+}
+
+.radar-cover.repo img,
+.radar-drawer-hero img,
+.radar-drawer-hero video {
+  object-fit: contain;
+  background: #f7f7f8;
+}
+
+.radar-cover.semantic {
+  background: transparent;
 }
 
 .radar-badge {
@@ -485,6 +503,11 @@ input:focus-visible {
 
 .radar-repo-icon {
   border-radius: 50%;
+}
+
+.radar-repo-icon.image {
+  object-fit: cover;
+  background: white;
 }
 
 .radar-card-heading {
@@ -607,9 +630,138 @@ input:focus-visible {
 
 .radar-drawer-hero {
   position: relative;
-  height: 190px;
+  height: min(36vh, 330px);
+  min-height: 260px;
   overflow: hidden;
   background: #f2f2f3;
+}
+
+.radar-semantic-cover {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  min-height: 172px;
+  padding: 18px;
+  overflow: hidden;
+  color: #15202b;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(211, 227, 252, 0.54)),
+    radial-gradient(circle at 82% 18%, rgba(251, 225, 209, 0.78), transparent 34%);
+}
+
+.radar-semantic-cover::before {
+  content: "";
+  position: absolute;
+  inset: 16px 18px auto auto;
+  width: 92px;
+  height: 92px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.54);
+  border: 1px solid rgba(4, 23, 43, 0.08);
+}
+
+.radar-semantic-cover.agent {
+  background:
+    linear-gradient(135deg, #f8fbff, #dcecff),
+    radial-gradient(circle at 76% 26%, rgba(239, 233, 255, 0.9), transparent 38%);
+}
+
+.radar-semantic-cover.paper {
+  background:
+    linear-gradient(135deg, #ffffff, #eef3f9),
+    radial-gradient(circle at 78% 22%, rgba(211, 227, 252, 0.9), transparent 38%);
+}
+
+.radar-semantic-cover.visual {
+  background:
+    linear-gradient(135deg, #fff7fb, #e8f2ff),
+    radial-gradient(circle at 78% 20%, rgba(255, 126, 93, 0.28), transparent 38%);
+}
+
+.radar-semantic-cover.commerce {
+  background:
+    linear-gradient(135deg, #fffaf5, #e7f1eb),
+    radial-gradient(circle at 82% 22%, rgba(251, 225, 209, 0.9), transparent 38%);
+}
+
+.radar-semantic-cover.secure {
+  background:
+    linear-gradient(135deg, #f8fffc, #e3f0ea),
+    radial-gradient(circle at 82% 24%, rgba(211, 227, 252, 0.68), transparent 38%);
+}
+
+.radar-semantic-cover.model,
+.radar-semantic-cover.dev,
+.radar-semantic-cover.default {
+  background:
+    linear-gradient(135deg, #f8fbff, #f2f2f3),
+    radial-gradient(circle at 82% 22%, rgba(238, 233, 255, 0.86), transparent 38%);
+}
+
+.radar-semantic-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 72%;
+}
+
+.radar-semantic-copy span {
+  display: block;
+  color: rgba(23, 25, 28, 0.56);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.radar-semantic-copy strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 1.12;
+}
+
+.radar-semantic-flow {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  display: grid;
+  grid-template-columns: 1fr 18px 1fr 18px 1fr;
+  gap: 6px;
+  align-items: center;
+  max-width: 92%;
+}
+
+.radar-semantic-flow span {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0 8px;
+  border: 1px solid rgba(4, 23, 43, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(23, 25, 28, 0.78);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.radar-semantic-flow i {
+  height: 1px;
+  background: rgba(4, 23, 43, 0.24);
+}
+
+.radar-semantic-icon {
+  position: absolute;
+  z-index: 1;
+  right: 42px;
+  top: 42px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: rgba(23, 25, 28, 0.88);
+  color: white;
 }
 
 .radar-gallery-controls {
@@ -726,7 +878,7 @@ input:focus-visible {
   }
 
   .radar-grid.compact .radar-cover {
-    height: 128px;
+    height: 172px;
   }
 }
 
