@@ -10,13 +10,15 @@ import {
   Grid2X2Icon,
   ImageIcon,
   ListIcon,
+  LoaderCircleIcon,
+  RotateCcwIcon,
   SearchIcon,
   ShieldCheckIcon,
   ShoppingBagIcon,
   SparklesIcon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 
 import {
@@ -59,6 +61,27 @@ const sourceLabels: Record<RadarSource, string> = {
   github: "GitHub",
   producthunt: "Product Hunt",
 };
+
+const galleryImageLoadingDelayMs = 150;
+
+type GalleryImageProbe = Pick<HTMLImageElement, "complete" | "naturalWidth">;
+
+export function getGalleryImageLoadState(
+  src: string | null | undefined,
+  loadedImageSrcs: ReadonlySet<string>,
+  probe?: GalleryImageProbe,
+) {
+  const imageIsLoaded = Boolean(
+    src &&
+      (loadedImageSrcs.has(src) ||
+        (probe?.complete === true && probe.naturalWidth > 0)),
+  );
+
+  return {
+    imageIsLoaded,
+    shouldPreload: Boolean(src && !imageIsLoaded),
+  };
+}
 
 export function AppShell({
   board,
@@ -114,9 +137,6 @@ export function AppShell({
         <RadarSidebar
           board={board}
           date={searchState.date || board.date}
-          source={searchState.source}
-          category={effectiveCategory}
-          visibleCount={visibleCards.length}
           onDateChange={(date) => updateState({ category: "all", date })}
         />
         <div>
@@ -337,21 +357,13 @@ function Toolbar({
 
 function RadarSidebar({
   board,
-  category,
   date,
   onDateChange,
-  source,
-  visibleCount,
 }: {
   board: RadarBoard;
-  category: string;
   date: string;
   onDateChange: (date: string) => void;
-  source: RadarSource;
-  visibleCount: number;
 }) {
-  const sourceLabel = source === "all" ? "全部来源" : sourceLabels[source];
-  const categoryLabel = category === "all" ? "全部分类" : category;
   const quickDates = board.availableDates.slice(0, 5);
   const hasMoreDates = board.availableDates.length > quickDates.length;
 
@@ -394,13 +406,6 @@ function RadarSidebar({
             />
           ) : null}
         </div>
-      </div>
-      <div className="radar-scope-card">
-        <h3>当前范围</h3>
-        <p>
-          正在查看 {date} 的 {sourceLabel} / {categoryLabel}，共 {visibleCount}{" "}
-          张卡片。
-        </p>
       </div>
     </aside>
   );
@@ -637,17 +642,97 @@ export function DetailDrawer({
   onClose: () => void;
 }) {
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
-  const media = card?.media?.length
-    ? card.media
-    : card?.coverUrl
-      ? [{ type: "image", url: card.coverUrl }]
-      : [];
+  const [displayedMedia, setDisplayedMedia] = useState<
+    NonNullable<RadarCard["media"]>[number] | null
+  >(null);
+  const [imageLoadError, setImageLoadError] = useState(false);
+  const [imageLoadRetry, setImageLoadRetry] = useState(0);
+  const [imageIsLoading, setImageIsLoading] = useState(false);
+  const loadedImageSrcs = useRef<Set<string>>(new Set());
+  const imageLoadRequestId = useRef(0);
+  const media = useMemo(
+    () =>
+      card?.media?.length
+        ? card.media
+        : card?.coverUrl
+          ? [{ type: "image", url: card.coverUrl }]
+          : [],
+    [card?.coverUrl, card?.media],
+  );
   const activeMedia = media[activeMediaIndex] ?? media[0];
+  const heroMedia = displayedMedia ?? activeMedia;
   const secondaryTags = card ? secondaryDisplayTags(card) : [];
 
   useEffect(() => {
     setActiveMediaIndex(0);
+    setDisplayedMedia(null);
+    setImageLoadError(false);
+    setImageIsLoading(false);
   }, [card?.id]);
+
+  useEffect(() => {
+    const imageSrc = activeMedia?.videoUrl ? null : activeMedia?.url;
+    const requestId = imageLoadRequestId.current + 1;
+    imageLoadRequestId.current = requestId;
+    setImageLoadError(false);
+
+    if (!activeMedia) {
+      setDisplayedMedia(null);
+      setImageIsLoading(false);
+      return;
+    }
+
+    if (!imageSrc) {
+      setDisplayedMedia(activeMedia);
+      setImageIsLoading(false);
+      return;
+    }
+
+    const image = new Image();
+    image.src = imageSrc;
+    const loadState = getGalleryImageLoadState(
+      imageSrc,
+      loadedImageSrcs.current,
+      image,
+    );
+
+    if (!loadState.shouldPreload) {
+      loadedImageSrcs.current.add(imageSrc);
+      setDisplayedMedia(activeMedia);
+      setImageIsLoading(false);
+      return;
+    }
+
+    const loadingTimer = window.setTimeout(() => {
+      if (imageLoadRequestId.current === requestId) {
+        setImageIsLoading(true);
+      }
+    }, galleryImageLoadingDelayMs);
+
+    image.onload = () => {
+      if (imageLoadRequestId.current !== requestId) {
+        return;
+      }
+      window.clearTimeout(loadingTimer);
+      loadedImageSrcs.current.add(imageSrc);
+      setDisplayedMedia(activeMedia);
+      setImageIsLoading(false);
+    };
+    image.onerror = () => {
+      if (imageLoadRequestId.current !== requestId) {
+        return;
+      }
+      window.clearTimeout(loadingTimer);
+      setImageLoadError(true);
+      setImageIsLoading(false);
+    };
+
+    return () => {
+      window.clearTimeout(loadingTimer);
+      image.onload = null;
+      image.onerror = null;
+    };
+  }, [activeMedia, imageLoadRetry]);
 
   function changeMediaIndex(direction: -1 | 1) {
     setActiveMediaIndex(
@@ -670,10 +755,14 @@ export function DetailDrawer({
       </button>
       {card ? (
         <div className="radar-drawer-inner">
-          <div className="radar-drawer-hero">
-            {activeMedia ? (
-              activeMedia.videoUrl ? (
-                <video controls poster={activeMedia.url} src={activeMedia.videoUrl} />
+          <div
+            className={`radar-drawer-hero ${
+              imageIsLoading ? "media-loading" : ""
+            } ${imageLoadError ? "media-error" : ""}`}
+          >
+            {heroMedia ? (
+              heroMedia.videoUrl ? (
+                <video controls poster={heroMedia.url} src={heroMedia.videoUrl} />
               ) : (
                 <Zoom
                   a11yNameButtonUnzoom="关闭大图"
@@ -709,11 +798,33 @@ export function DetailDrawer({
                   )}
                   zoomMargin={28}
                 >
-                  <img src={activeMedia.url} alt={card.title} />
+                  <img src={heroMedia.url} alt={card.title} />
                 </Zoom>
               )
             ) : card.coverStyle === "semantic" ? (
               <SemanticCover card={card} />
+            ) : null}
+            {imageIsLoading ? (
+              <div
+                aria-label="正在加载产品图"
+                className="radar-gallery-loading"
+                role="status"
+              >
+                <LoaderCircleIcon aria-hidden="true" size={18} />
+              </div>
+            ) : null}
+            {imageLoadError ? (
+              <div className="radar-gallery-error" role="status">
+                <span>图片加载失败</span>
+                <button
+                  aria-label="重试加载产品图"
+                  className="radar-gallery-button"
+                  onClick={() => setImageLoadRetry((retry) => retry + 1)}
+                  type="button"
+                >
+                  <RotateCcwIcon size={15} />
+                </button>
+              </div>
             ) : null}
             {media.length > 1 ? (
               <div className="radar-gallery-controls">
