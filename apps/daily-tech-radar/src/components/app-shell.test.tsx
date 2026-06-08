@@ -2,7 +2,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 import type { RadarBoard, RadarCard } from "@/features/radar/types";
-import { AppShell, DetailDrawer, formatDateChipLabel } from "./app-shell";
+import {
+  AppShell,
+  DetailDrawer,
+  formatDateChipLabel,
+  getGalleryImageLoadState,
+} from "./app-shell";
 
 const card: RadarCard = {
   categories: ["开发工具", "安全隐私"],
@@ -32,6 +37,38 @@ describe("DetailDrawer", () => {
     expect(html.indexOf("打开来源")).toBeLessThan(
       html.indexOf(card.description),
     );
+  });
+
+  it("does not show visible loading for an image that has already loaded", () => {
+    const loadedImageSrcs = new Set(["https://example.com/loaded.avif"]);
+
+    expect(
+      getGalleryImageLoadState("https://example.com/loaded.avif", loadedImageSrcs),
+    ).toEqual({
+      imageIsLoaded: true,
+      shouldPreload: false,
+    });
+  });
+
+  it("preloads uncached images before allowing the loading indicator", () => {
+    const loadedImageSrcs = new Set<string>();
+
+    expect(
+      getGalleryImageLoadState("https://example.com/slow.avif", loadedImageSrcs),
+    ).toEqual({
+      imageIsLoaded: false,
+      shouldPreload: true,
+    });
+    expect(
+      getGalleryImageLoadState(
+        "https://example.com/from-browser-cache.avif",
+        loadedImageSrcs,
+        { complete: true, naturalWidth: 1200 },
+      ),
+    ).toEqual({
+      imageIsLoaded: true,
+      shouldPreload: false,
+    });
   });
 });
 
@@ -73,6 +110,39 @@ describe("AppShell", () => {
     );
 
     expect(html).not.toContain("可收藏");
+  });
+
+  it("does not render the current scope sidebar card", () => {
+    const board: RadarBoard = {
+      availableDates: ["2026-06-05"],
+      cards: [card],
+      categories: [{ count: 1, label: "开发工具" }],
+      date: "2026-06-05",
+      generatedAt: "2026-06-06T00:00:00.000Z",
+      locale: "zh-CN",
+      metrics: {
+        aiPercent: 100,
+        githubCount: 0,
+        productHuntCount: 1,
+      },
+    };
+
+    const html = renderToStaticMarkup(
+      <AppShell
+        board={board}
+        searchState={{
+          category: "all",
+          date: "2026-06-05",
+          query: "",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
+    );
+
+    expect(html).not.toContain("当前范围");
+    expect(html).not.toContain("正在查看");
   });
 
   it("limits quick dates to the latest five entries", () => {

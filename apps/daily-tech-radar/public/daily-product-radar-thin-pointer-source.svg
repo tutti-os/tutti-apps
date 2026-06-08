@@ -1,0 +1,35 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ink" x1="320" y1="242" x2="734" y2="770" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#24282C"/>
+      <stop offset="0.48" stop-color="#111417"/>
+      <stop offset="1" stop-color="#050708"/>
+    </linearGradient>
+    <linearGradient id="core" x1="466" y1="432" x2="554" y2="596" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#343A3F"/>
+      <stop offset="0.58" stop-color="#111417"/>
+      <stop offset="1" stop-color="#050708"/>
+    </linearGradient>
+    <filter id="markShadow" x="116" y="150" width="792" height="736" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="15" flood-color="#050708" flood-opacity="0.3"/>
+      <feDropShadow dx="0" dy="-4" stdDeviation="3" flood-color="#FFFFFF" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" rx="210" fill="#FAFAF8"/>
+
+  <g filter="url(#markShadow)" stroke="url(#ink)" stroke-width="54" stroke-linecap="round">
+    <path d="M306 300C226 392 226 632 306 724"/>
+    <path d="M394 362C336 432 336 592 394 662"/>
+    <path d="M462 430C430 474 430 550 462 594"/>
+    <path d="M718 300C798 392 798 632 718 724"/>
+    <path d="M630 362C688 432 688 592 630 662"/>
+    <path d="M562 430C594 474 594 550 562 594"/>
+  </g>
+
+  <g filter="url(#markShadow)">
+    <circle cx="512" cy="512" r="82" fill="url(#core)"/>
+    <circle cx="512" cy="512" r="48" fill="#3C454C"/>
+    <circle cx="495" cy="492" r="18" fill="#73808A" fill-opacity="0.44"/>
+  </g>
+</svg>
