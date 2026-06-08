@@ -6,6 +6,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import "react-medium-image-zoom/dist/styles.css";
 
 import "../styles.css";
 import type { RouterContext } from "../router";

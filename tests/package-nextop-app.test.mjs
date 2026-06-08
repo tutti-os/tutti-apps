@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  access,
   chmod,
   mkdir,
   mkdtemp,
@@ -112,6 +113,10 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
     path.join(packageRoot, "server", "server.js"),
     "utf8",
   );
+  await assert.rejects(
+    access(path.join(packageRoot, "node_modules")),
+    /ENOENT/,
+  );
   const assetNames = await readdir(path.join(packageRoot, "dist", "assets"));
   const cssAsset = assetNames.find((assetName) => assetName.endsWith(".css"));
   assert.ok(cssAsset);
@@ -129,6 +134,8 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   assert.match(wrapper, /daily-tech-radar/);
   assert.match(wrapper, /server\/server\.js/);
   assert.match(server, /createServerEntry/);
+  assert.doesNotMatch(server, /from "@tanstack\/react-router"/);
+  assert.doesNotMatch(server, /from "react\/jsx-runtime"/);
   assert.match(clientAssets, /--ink/);
   assert.match(zipPath, /daily-tech-radar-0\.0\.0\.zip$/);
 });

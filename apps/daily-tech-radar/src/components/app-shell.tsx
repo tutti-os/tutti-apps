@@ -17,6 +17,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import Zoom from "react-medium-image-zoom";
 
 import {
   filterRadarCards,
@@ -648,6 +649,12 @@ export function DetailDrawer({
     setActiveMediaIndex(0);
   }, [card?.id]);
 
+  function changeMediaIndex(direction: -1 | 1) {
+    setActiveMediaIndex(
+      (currentIndex) => (currentIndex + direction + media.length) % media.length,
+    );
+  }
+
   return (
     <aside
       aria-hidden={card ? "false" : "true"}
@@ -668,7 +675,42 @@ export function DetailDrawer({
               activeMedia.videoUrl ? (
                 <video controls poster={activeMedia.url} src={activeMedia.videoUrl} />
               ) : (
-                <img src={activeMedia.url} alt="" />
+                <Zoom
+                  a11yNameButtonUnzoom="关闭大图"
+                  a11yNameButtonZoom="放大图片"
+                  ZoomContent={({ buttonUnzoom, img }) => (
+                    <div className="radar-zoom-content">
+                      {img}
+                      {media.length > 1 ? (
+                        <div className="radar-zoom-gallery-controls">
+                          <button
+                            aria-label="上一张大图"
+                            className="radar-gallery-button"
+                            onClick={() => changeMediaIndex(-1)}
+                            type="button"
+                          >
+                            <ChevronLeftIcon size={16} />
+                          </button>
+                          <span>
+                            {activeMediaIndex + 1}/{media.length}
+                          </span>
+                          <button
+                            aria-label="下一张大图"
+                            className="radar-gallery-button"
+                            onClick={() => changeMediaIndex(1)}
+                            type="button"
+                          >
+                            <ChevronRightIcon size={16} />
+                          </button>
+                        </div>
+                      ) : null}
+                      {buttonUnzoom}
+                    </div>
+                  )}
+                  zoomMargin={28}
+                >
+                  <img src={activeMedia.url} alt={card.title} />
+                </Zoom>
               )
             ) : card.coverStyle === "semantic" ? (
               <SemanticCover card={card} />
@@ -678,11 +720,7 @@ export function DetailDrawer({
                 <button
                   aria-label="上一张产品图"
                   className="radar-gallery-button"
-                  onClick={() =>
-                    setActiveMediaIndex(
-                      (activeMediaIndex - 1 + media.length) % media.length,
-                    )
-                  }
+                  onClick={() => changeMediaIndex(-1)}
                   type="button"
                 >
                   <ChevronLeftIcon size={16} />
@@ -693,9 +731,7 @@ export function DetailDrawer({
                 <button
                   aria-label="下一张产品图"
                   className="radar-gallery-button"
-                  onClick={() =>
-                    setActiveMediaIndex((activeMediaIndex + 1) % media.length)
-                  }
+                  onClick={() => changeMediaIndex(1)}
                   type="button"
                 >
                   <ChevronRightIcon size={16} />

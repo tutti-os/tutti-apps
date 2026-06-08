@@ -24,6 +24,7 @@ const REQUIRED_PACKAGE_FILES = [
   "bootstrap.sh",
   "server.mjs",
 ];
+const PNPM_FALLBACK_COMMANDS = ["/opt/homebrew/bin/pnpm", "/usr/local/bin/pnpm"];
 
 function parseArgs(argv = process.argv.slice(2)) {
   const args = {
@@ -129,7 +130,7 @@ export async function validatePackageRoot(packageRoot) {
   await assertNoSymlinks(packageRoot);
 }
 
-async function run(command, args, options = {}) {
+async function run(command, args, options = {}, fallbackCommands = []) {
   await new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd: rootDir,
@@ -137,7 +138,16 @@ async function run(command, args, options = {}) {
       shell: false,
       ...options,
     });
-    child.on("error", reject);
+    child.on("error", (error) => {
+      if (error?.code === "ENOENT" && fallbackCommands.length > 0) {
+        const [fallbackCommand, ...remainingFallbacks] = fallbackCommands;
+        run(fallbackCommand, args, options, remainingFallbacks)
+          .then(resolve)
+          .catch(reject);
+        return;
+      }
+      reject(error);
+    });
     child.on("exit", (code) => {
       if (code === 0) {
         resolve();
@@ -148,6 +158,10 @@ async function run(command, args, options = {}) {
       );
     });
   });
+}
+
+async function runPnpm(args, options = {}) {
+  return run("pnpm", args, options, PNPM_FALLBACK_COMMANDS);
 }
 
 async function readAppPackage(appConfig) {
@@ -185,11 +199,10 @@ async function copyManifestIcon({ manifest, packageSourceDir, packageRoot }) {
   await cp(path.join(packageSourceDir, iconSrc), path.join(packageRoot, iconSrc));
 }
 
-async function writeRuntimePackageJson({ appPackage, packageRoot }) {
+async function writeRuntimePackageJson({ packageRoot }) {
   const runtimePackage = {
     private: true,
     type: "module",
-    dependencies: appPackage.dependencies ?? {},
   };
 
   await writeFile(
@@ -198,27 +211,27 @@ async function writeRuntimePackageJson({ appPackage, packageRoot }) {
   );
 }
 
-async function prepareDeployDependencies({ appConfig, appId }) {
-  const deployDir = path.join(rootDir, "build/nextop-app", appId, "deploy");
-
-  await rm(deployDir, { force: true, recursive: true });
-  await run("pnpm", [
+async function bundleServer({ appConfig, appSourceDir, packageRoot }) {
+  await mkdir(path.join(packageRoot, "server"), { recursive: true });
+  await runPnpm([
     "--filter",
     appConfig.packageName,
-    "deploy",
-    "--prod",
-    "--legacy",
-    deployDir,
+    "exec",
+    "esbuild",
+    path.join(appSourceDir, "dist", "server", "server.js"),
+    "--bundle",
+    "--platform=node",
+    "--format=esm",
+    "--target=node22",
+    "--banner:js=import { createRequire as __nextopCreateRequire } from 'node:module'; const require = __nextopCreateRequire(import.meta.url);",
+    `--outfile=${path.join(packageRoot, "server", "server.js")}`,
   ]);
-
-  return deployDir;
 }
 
-async function writePackageFiles({ appConfig, appPackage, appId, version }) {
+async function writePackageFiles({ appConfig, version }) {
   const packageSourceDir = path.join(rootDir, appConfig.packageSourceDir);
   const packageRoot = path.join(rootDir, appConfig.packageDir);
   const appSourceDir = path.join(rootDir, appConfig.sourceDir);
-  const deployDir = await prepareDeployDependencies({ appConfig, appId });
 
   await rm(packageRoot, { force: true, recursive: true });
   await mkdir(packageRoot, { recursive: true });
@@ -244,21 +257,12 @@ async function writePackageFiles({ appConfig, appPackage, appId, version }) {
   );
   await copyManifestIcon({ manifest, packageSourceDir, packageRoot });
   await cp(
-    path.join(appSourceDir, "dist", "server"),
-    path.join(packageRoot, "server"),
-    { recursive: true },
-  );
-  await cp(
     path.join(appSourceDir, "dist", "client"),
     path.join(packageRoot, "dist"),
     { recursive: true },
   );
-  await cp(
-    path.join(deployDir, "node_modules"),
-    path.join(packageRoot, "node_modules"),
-    { recursive: true },
-  );
-  await writeRuntimePackageJson({ appPackage, packageRoot });
+  await bundleServer({ appConfig, appSourceDir, packageRoot });
+  await writeRuntimePackageJson({ packageRoot });
 
   await copyIfExists(
     path.join(packageSourceDir, "README.md"),
@@ -285,12 +289,10 @@ export async function packageNextopApp({ appId = "" } = {}) {
   const appPackage = await readAppPackage(app);
   const version = appPackage.version ?? "0.0.0";
 
-  await run("pnpm", ["--filter", app.packageName, "build"]);
+  await runPnpm(["--filter", app.packageName, "build"]);
 
   const { packageRoot } = await writePackageFiles({
     appConfig: app,
-    appId: resolvedAppId,
-    appPackage,
     version,
   });
   await validatePackageRoot(packageRoot);
