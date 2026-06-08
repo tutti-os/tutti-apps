@@ -7,6 +7,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "format": "biome format --write .",
+    "i18n:check": "pnpm --filter @nextop-apps/daily-tech-radar i18n:check",
     "lint": "biome check .",
     "package:nextop": "node scripts/package-nextop-app.mjs",
     "test:workspace": "node --test tests/*.test.mjs",

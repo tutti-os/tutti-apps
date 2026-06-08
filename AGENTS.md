@@ -67,6 +67,16 @@ Use this root file for repository-wide defaults only.
 - When a fix resolves a recurring bug pattern or agent trap, add the durable
   note to `docs/conventions/agent-workflow.md`.
 
+## Repository-Wide i18n Rules
+
+- New or changed UI-visible copy must use `react-i18next`; do not add bare
+  Chinese or English UI text directly in TSX.
+- When adding, renaming, or changing any translation key, update every supported
+  locale resource in the same change.
+- Keep interpolation inside i18n resources, for example
+  `t("card.open", { title })`; do not concatenate visible sentences in JSX.
+- Before finishing UI copy work, run the relevant app-level `i18n:check`.
+
 ## Build Boundary
 
 Turbo is the monorepo task orchestrator. It is not a replacement for app-level

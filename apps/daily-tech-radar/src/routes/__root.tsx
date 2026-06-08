@@ -8,21 +8,27 @@ import {
 import type { ReactNode } from "react";
 import "react-medium-image-zoom/dist/styles.css";
 
+import i18n from "@/i18n";
+
 import "../styles.css";
 import type { RouterContext } from "../router";
+
+const defaultTitle = i18n.t("app.title", { lng: "zh-CN", ns: "radar" });
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   head: () => ({
-    links: [{ rel: "icon", type: "image/png", href: "/icon.png?v=radar-clean" }],
+    links: [
+      { rel: "icon", type: "image/png", href: "/icon.png?v=radar-clean" },
+    ],
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         name: "description",
-        content: "每日产品雷达",
+        content: defaultTitle,
       },
-      { title: "每日产品雷达" },
+      { title: defaultTitle },
     ],
   }),
 });

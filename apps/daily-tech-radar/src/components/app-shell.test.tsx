@@ -43,7 +43,10 @@ describe("DetailDrawer", () => {
     const loadedImageSrcs = new Set(["https://example.com/loaded.avif"]);
 
     expect(
-      getGalleryImageLoadState("https://example.com/loaded.avif", loadedImageSrcs),
+      getGalleryImageLoadState(
+        "https://example.com/loaded.avif",
+        loadedImageSrcs,
+      ),
     ).toEqual({
       imageIsLoaded: true,
       shouldPreload: false,
@@ -54,7 +57,10 @@ describe("DetailDrawer", () => {
     const loadedImageSrcs = new Set<string>();
 
     expect(
-      getGalleryImageLoadState("https://example.com/slow.avif", loadedImageSrcs),
+      getGalleryImageLoadState(
+        "https://example.com/slow.avif",
+        loadedImageSrcs,
+      ),
     ).toEqual({
       imageIsLoaded: false,
       shouldPreload: true,
@@ -78,6 +84,15 @@ describe("AppShell", () => {
     expect(formatDateChipLabel("2026-06-07", "2026-06-08")).toBe("昨天");
     expect(formatDateChipLabel("2026-06-06", "2026-06-08")).toBe("前天");
     expect(formatDateChipLabel("2026-06-05", "2026-06-08")).toBe("3 天前");
+    expect(formatDateChipLabel("2026-06-08", "2026-06-08", "en-US")).toBe(
+      "Today",
+    );
+    expect(formatDateChipLabel("2026-06-07", "2026-06-08", "en-US")).toBe(
+      "Yesterday",
+    );
+    expect(formatDateChipLabel("2026-06-06", "2026-06-08", "en-US")).toBe(
+      "2 days ago",
+    );
   });
 
   it("does not advertise favorites while the favorite action is hidden", () => {
@@ -110,6 +125,48 @@ describe("AppShell", () => {
     );
 
     expect(html).not.toContain("可收藏");
+    expect(html).toContain("371 票");
+    expect(html).toContain("92 评论");
+    expect(html).not.toContain("371 votes");
+    expect(html).not.toContain("92 comments");
+  });
+
+  it("renders the shell chrome in English while preserving raw category filters", () => {
+    const board: RadarBoard = {
+      availableDates: ["2026-06-05"],
+      cards: [card],
+      categories: [{ count: 1, label: "开发工具" }],
+      date: "2026-06-05",
+      generatedAt: "2026-06-06T00:00:00.000Z",
+      locale: "en-US",
+      metrics: {
+        aiPercent: 100,
+        githubCount: 0,
+        productHuntCount: 1,
+      },
+    };
+
+    const html = renderToStaticMarkup(
+      <AppShell
+        board={board}
+        searchState={{
+          category: "all",
+          date: "2026-06-05",
+          locale: "en-US",
+          query: "",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
+    );
+
+    expect(html).toContain("Daily Product Radar");
+    expect(html).toContain("Discover new products");
+    expect(html).toContain("Developer Tools 1");
+    expect(html).toContain("Open Minimi");
+    expect(html).not.toContain("每日产品雷达");
+    expect(html).not.toContain("开发工具 1");
   });
 
   it("does not render the current scope sidebar card", () => {

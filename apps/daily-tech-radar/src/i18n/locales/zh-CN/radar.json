@@ -1,0 +1,145 @@
+{
+  "actions": {
+    "clearSearch": "清空搜索",
+    "closeDetail": "关闭详情",
+    "closeLargeImage": "关闭大图",
+    "nextImage": "下一张产品图",
+    "nextLargeImage": "下一张大图",
+    "openCard": "查看 {{title}}",
+    "openSource": "打开来源",
+    "previousImage": "上一张产品图",
+    "previousLargeImage": "上一张大图",
+    "retryImage": "重试加载产品图",
+    "zoomImage": "放大图片"
+  },
+  "app": {
+    "title": "每日产品雷达"
+  },
+  "card": {
+    "open": "查看 {{title}}"
+  },
+  "categories": {
+    "AI": "AI",
+    "AI代理": "AI代理",
+    "健康应用": "健康应用",
+    "其他": "其他",
+    "内容创作": "内容创作",
+    "商业智能": "商业智能",
+    "图像生成": "图像生成",
+    "安全隐私": "安全隐私",
+    "开发工具": "开发工具",
+    "开源模型": "开源模型",
+    "生产力": "生产力",
+    "电商自动化": "电商自动化",
+    "财务AI": "财务AI"
+  },
+  "date": {
+    "daysAgo": "{{count}} 天前",
+    "daysAgo_one": "{{count}} 天前",
+    "daysAgo_other": "{{count}} 天前",
+    "fallback": "日期",
+    "footer": "仅可选择有数据的日期",
+    "label": "日期",
+    "more": "更多日期",
+    "noDates": "暂无日期",
+    "today": "今天",
+    "twoDaysAgo": "前天",
+    "unit": "天",
+    "yesterday": "昨天"
+  },
+  "empty": {
+    "noData": "本地数据包还没有同步。同步后这里会展示当天 Product Hunt 和 GitHub 卡片。",
+    "withDate": "没有匹配的卡片，换个关键词或分类试试。"
+  },
+  "hero": {
+    "body": "汇总 Product Hunt 新品发布与 GitHub 热门仓库，按日期、分类和来源整理成一组可筛选、可点开的产品发现卡片。",
+    "line1": "发现今天",
+    "line2": "值得跟进的新产品"
+  },
+  "language": {
+    "chinese": "中文",
+    "english": "EN"
+  },
+  "media": {
+    "imageLoadFailed": "图片加载失败",
+    "productImageLoading": "正在加载产品图"
+  },
+  "metrics": {
+    "aiRelated": "AI 相关",
+    "comments": "评论",
+    "forks": "分叉",
+    "rank": "排名",
+    "score": "评分",
+    "stars": "星标",
+    "votes": "票"
+  },
+  "search": {
+    "a11y": "搜索产品、仓库、语言和标签",
+    "placeholder": "搜索 SellerClaw、agent、TypeScript、图像生成"
+  },
+  "semantic": {
+    "agent": {
+      "kicker": "AI Agent",
+      "steps": ["任务", "代理规划", "自动执行"],
+      "title": "让代理接手复杂工作流"
+    },
+    "commerce": {
+      "kicker": "Commerce Ops",
+      "steps": ["商品", "代理执行", "订单/客服"],
+      "title": "自动化电商运营流程"
+    },
+    "default": {
+      "kicker": "Open Source",
+      "steps": ["项目", "能力", "落地"],
+      "title": "把开源能力接入产品"
+    },
+    "dev": {
+      "kicker": "Developer Tool",
+      "steps": ["代码", "集成", "发布"],
+      "title": "加速开发与集成"
+    },
+    "model": {
+      "kicker": "AI Model",
+      "steps": ["数据", "模型推理", "结果"],
+      "title": "用模型完成智能分析"
+    },
+    "paper": {
+      "kicker": "Document AI",
+      "steps": ["PDF/图片", "OCR 解析", "结构化数据"],
+      "title": "把文档变成可用数据"
+    },
+    "secure": {
+      "kicker": "Security",
+      "steps": ["风险", "检测", "防护"],
+      "title": "发现并降低安全风险"
+    },
+    "visual": {
+      "kicker": "Visual AI",
+      "steps": ["提示词", "生成", "视觉资产"],
+      "title": "生成与处理视觉内容"
+    }
+  },
+  "signal": {
+    "body": "今天的机会集中在 AI agent、电商自动化、图像生成和开发者工具。",
+    "title": "今日发现信号"
+  },
+  "sources": {
+    "all": "全部",
+    "contentSources": "内容入口",
+    "crossSourceInsights": "跨来源洞察",
+    "github": "GitHub",
+    "githubRepos": "GitHub 仓库",
+    "productHunt": "Product Hunt",
+    "productHuntLaunches": "Product Hunt 发布",
+    "productLaunches": "新品发布"
+  },
+  "tags": {
+    "category": "分类",
+    "keywords": "关键词"
+  },
+  "view": {
+    "cards": "卡片",
+    "compact": "紧凑",
+    "mode": "视图模式"
+  }
+}

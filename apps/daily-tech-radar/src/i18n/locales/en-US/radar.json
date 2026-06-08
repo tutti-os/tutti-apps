@@ -1,0 +1,145 @@
+{
+  "actions": {
+    "clearSearch": "Clear search",
+    "closeDetail": "Close details",
+    "closeLargeImage": "Close large image",
+    "nextImage": "Next product image",
+    "nextLargeImage": "Next large image",
+    "openCard": "Open {{title}}",
+    "openSource": "Open source",
+    "previousImage": "Previous product image",
+    "previousLargeImage": "Previous large image",
+    "retryImage": "Retry product image",
+    "zoomImage": "Zoom image"
+  },
+  "app": {
+    "title": "Daily Product Radar"
+  },
+  "card": {
+    "open": "Open {{title}}"
+  },
+  "categories": {
+    "AI": "AI",
+    "AI代理": "AI Agents",
+    "健康应用": "Health Apps",
+    "其他": "Other",
+    "内容创作": "Content Creation",
+    "商业智能": "Business Intelligence",
+    "图像生成": "Image Generation",
+    "安全隐私": "Security & Privacy",
+    "开发工具": "Developer Tools",
+    "开源模型": "Open Models",
+    "生产力": "Productivity",
+    "电商自动化": "Ecommerce Automation",
+    "财务AI": "Finance AI"
+  },
+  "date": {
+    "daysAgo": "{{count}} days ago",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago",
+    "fallback": "Date",
+    "footer": "Only dates with data can be selected",
+    "label": "Date",
+    "more": "More dates",
+    "noDates": "No dates",
+    "today": "Today",
+    "twoDaysAgo": "2 days ago",
+    "unit": "days",
+    "yesterday": "Yesterday"
+  },
+  "empty": {
+    "noData": "The local data package has not synced yet. Product Hunt and GitHub cards will appear here after sync.",
+    "withDate": "No matching cards. Try another keyword or category."
+  },
+  "hero": {
+    "body": "Product Hunt launches and trending GitHub repositories, organized by date, category, and source into searchable discovery cards.",
+    "line1": "Discover new products",
+    "line2": "worth tracking today"
+  },
+  "language": {
+    "chinese": "中文",
+    "english": "EN"
+  },
+  "media": {
+    "imageLoadFailed": "Image failed to load",
+    "productImageLoading": "Loading product image"
+  },
+  "metrics": {
+    "aiRelated": "AI-related",
+    "comments": "comments",
+    "forks": "forks",
+    "rank": "rank",
+    "score": "score",
+    "stars": "stars",
+    "votes": "votes"
+  },
+  "search": {
+    "a11y": "Search products, repositories, languages, and tags",
+    "placeholder": "Search SellerClaw, agent, TypeScript, image generation"
+  },
+  "semantic": {
+    "agent": {
+      "kicker": "AI Agent",
+      "steps": ["Task", "Agent plan", "Execute"],
+      "title": "Let agents handle complex workflows"
+    },
+    "commerce": {
+      "kicker": "Commerce Ops",
+      "steps": ["Products", "Agent ops", "Orders/support"],
+      "title": "Automate ecommerce operations"
+    },
+    "default": {
+      "kicker": "Open Source",
+      "steps": ["Project", "Capability", "Ship"],
+      "title": "Bring open-source capabilities into products"
+    },
+    "dev": {
+      "kicker": "Developer Tool",
+      "steps": ["Code", "Integrate", "Ship"],
+      "title": "Accelerate development and integration"
+    },
+    "model": {
+      "kicker": "AI Model",
+      "steps": ["Data", "Model reasoning", "Result"],
+      "title": "Use models for intelligent analysis"
+    },
+    "paper": {
+      "kicker": "Document AI",
+      "steps": ["PDF/image", "OCR parse", "Structured data"],
+      "title": "Turn documents into usable data"
+    },
+    "secure": {
+      "kicker": "Security",
+      "steps": ["Risk", "Detect", "Protect"],
+      "title": "Find and reduce security risk"
+    },
+    "visual": {
+      "kicker": "Visual AI",
+      "steps": ["Prompt", "Generate", "Visual asset"],
+      "title": "Generate and process visual content"
+    }
+  },
+  "signal": {
+    "body": "Today's opportunities cluster around AI agents, ecommerce automation, image generation, and developer tools.",
+    "title": "Today's signals"
+  },
+  "sources": {
+    "all": "All",
+    "contentSources": "Sources",
+    "crossSourceInsights": "Cross-source insights",
+    "github": "GitHub",
+    "githubRepos": "GitHub repos",
+    "productHunt": "Product Hunt",
+    "productHuntLaunches": "Product Hunt launches",
+    "productLaunches": "Launches"
+  },
+  "tags": {
+    "category": "Categories",
+    "keywords": "Keywords"
+  },
+  "view": {
+    "cards": "Cards",
+    "compact": "Compact",
+    "mode": "View mode"
+  }
+}
