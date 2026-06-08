@@ -37,7 +37,7 @@ test("publish config registers daily-tech-radar as the default app", async () =>
   assert.equal(app.packageDir, "build/nextop-app/daily-tech-radar/package");
   assert.equal(
     app.iconPath,
-    "build/nextop-app/daily-tech-radar/package/icon.svg",
+    "build/nextop-app/daily-tech-radar/package/icon.png",
   );
   assert.deepEqual(config.environments.production.appIds, ["daily-tech-radar"]);
 });
@@ -55,7 +55,7 @@ test("publish config registers daily-tech-radar as an explicit app", async () =>
   assert.equal(app.packageDir, "build/nextop-app/daily-tech-radar/package");
   assert.equal(
     app.iconPath,
-    "build/nextop-app/daily-tech-radar/package/icon.svg",
+    "build/nextop-app/daily-tech-radar/package/icon.png",
   );
 });
 

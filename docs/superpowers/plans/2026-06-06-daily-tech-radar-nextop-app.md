@@ -253,7 +253,7 @@ Normalization rules:
 - Create: `apps/daily-tech-radar/nextop-package/server.mjs`
 - Create: `apps/daily-tech-radar/nextop-package/AGENTS.md`
 - Create: `apps/daily-tech-radar/nextop-package/README.md`
-- Create: `apps/daily-tech-radar/nextop-package/icon.svg`
+- Create: `apps/daily-tech-radar/nextop-package/icon.png`
 
 - [ ] Use `appId = "daily-tech-radar"`.
 - [ ] Manifest name should be `每日产品雷达`.

@@ -1,13 +1,13 @@
 import {
   BotIcon,
   BoxesIcon,
+  CalendarIcon,
   Code2Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
   FileTextIcon,
   ExternalLinkIcon,
   Grid2X2Icon,
-  HeartIcon,
   ImageIcon,
   ListIcon,
   SearchIcon,
@@ -32,6 +32,12 @@ import type {
   RadarSource,
   RadarViewMode,
 } from "@/features/radar/types";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type SearchState = {
   category: string;
@@ -59,7 +65,6 @@ export function AppShell({
   searchState,
 }: AppShellProps) {
   const [selectedCard, setSelectedCard] = useState<RadarCard | null>(null);
-  const [favorites, setFavorites] = useState<string[]>([]);
   const categories = useMemo(
     () => getVisibleCategories(board.cards, searchState.source),
     [board.cards, searchState.source],
@@ -74,13 +79,6 @@ export function AppShell({
     source: searchState.source,
   });
 
-  useEffect(() => {
-    const raw = window.localStorage.getItem("daily-tech-radar:favorites");
-    if (raw) {
-      setFavorites(JSON.parse(raw) as string[]);
-    }
-  }, []);
-
   function updateState(partial: Partial<SearchState>) {
     onSearchStateChange({
       ...searchState,
@@ -89,24 +87,14 @@ export function AppShell({
     });
   }
 
-  function toggleFavorite(cardId: string) {
-    const next = favorites.includes(cardId)
-      ? favorites.filter((id) => id !== cardId)
-      : [...favorites, cardId];
-    setFavorites(next);
-    window.localStorage.setItem(
-      "daily-tech-radar:favorites",
-      JSON.stringify(next),
-    );
-  }
-
   return (
     <main className="radar-app">
       <TopNav
+        availableDates={board.availableDates}
         date={searchState.date || board.date}
         source={searchState.source}
+        onDateChange={(date) => updateState({ category: "all", date })}
         onSourceChange={(source) => updateState({ category: "all", source })}
-        onTodayClick={() => updateState({ date: board.date })}
       />
       <HeroSection
         board={board}
@@ -133,7 +121,6 @@ export function AppShell({
         <div>
           <CardGrid
             cards={visibleCards}
-            favorites={favorites}
             view={searchState.view}
             onOpen={setSelectedCard}
           />
@@ -144,27 +131,23 @@ export function AppShell({
       </section>
       <DetailDrawer
         card={selectedCard}
-        favorite={selectedCard ? favorites.includes(selectedCard.id) : false}
         onClose={() => setSelectedCard(null)}
-        onFavorite={() => {
-          if (selectedCard) {
-            toggleFavorite(selectedCard.id);
-          }
-        }}
       />
     </main>
   );
 }
 
 function TopNav({
+  availableDates,
   date,
+  onDateChange,
   onSourceChange,
-  onTodayClick,
   source,
 }: {
+  availableDates: string[];
   date: string;
+  onDateChange: (date: string) => void;
   onSourceChange: (source: RadarSource) => void;
-  onTodayClick: () => void;
   source: RadarSource;
 }) {
   return (
@@ -184,9 +167,13 @@ function TopNav({
             {sourceLabels[item]}
           </button>
         ))}
-        <button className="radar-pill" onClick={onTodayClick} type="button">
-          {date}
-        </button>
+        <DatePicker
+          availableDates={availableDates}
+          className="radar-nav-date"
+          date={date}
+          label={date}
+          onDateChange={onDateChange}
+        />
       </div>
     </nav>
   );
@@ -203,30 +190,73 @@ function HeroSection({
   onQueryChange: (query: string) => void;
   query: string;
 }) {
+  const [draftQuery, setDraftQuery] = useState(query);
+  const [isComposing, setIsComposing] = useState(false);
+
+  useEffect(() => {
+    if (!isComposing) {
+      setDraftQuery(query);
+    }
+  }, [isComposing, query]);
+
+  function handleClear() {
+    setIsComposing(false);
+    setDraftQuery("");
+    onClear();
+  }
+
+  function handleQueryChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const nextQuery = event.currentTarget.value;
+    const nativeEvent = event.nativeEvent as InputEvent;
+
+    setDraftQuery(nextQuery);
+    if (!isComposing && !nativeEvent.isComposing) {
+      onQueryChange(nextQuery);
+    }
+  }
+
+  function handleCompositionEnd(
+    event: React.CompositionEvent<HTMLInputElement>,
+  ) {
+    const nextQuery = event.currentTarget.value;
+
+    setIsComposing(false);
+    setDraftQuery(nextQuery);
+    onQueryChange(nextQuery);
+  }
+
   return (
     <section className="radar-hero">
       <div>
-        <h1>每天发现值得试用与跟进的新产品。</h1>
+        <h1>
+          发现今天
+          <br />
+          值得跟进的新产品
+        </h1>
         <p>
           汇总 Product Hunt 新品发布与 GitHub
-          热门仓库，按日期、分类和来源整理成一组可筛选、可收藏、可点开的产品发现卡片。
+          热门仓库，按日期、分类和来源整理成一组可筛选、可点开的产品发现卡片。
         </p>
         <label className="radar-search">
           <SearchIcon aria-hidden="true" size={17} />
           <span className="sr-only">搜索产品、仓库、语言和标签</span>
           <input
-            onChange={(event) => onQueryChange(event.target.value)}
+            onChange={handleQueryChange}
+            onCompositionEnd={handleCompositionEnd}
+            onCompositionStart={() => setIsComposing(true)}
             placeholder="搜索 SellerClaw、agent、TypeScript、图像生成"
-            value={query}
+            value={draftQuery}
           />
-          <button
-            aria-label="清空搜索"
-            className="radar-icon-button"
-            onClick={onClear}
-            type="button"
-          >
-            <XIcon size={16} />
-          </button>
+          {draftQuery ? (
+            <button
+              aria-label="清空搜索"
+              className="radar-icon-button"
+              onClick={handleClear}
+              type="button"
+            >
+              <XIcon size={16} />
+            </button>
+          ) : null}
         </label>
       </div>
       <SignalPanel board={board} />
@@ -240,7 +270,7 @@ function SignalPanel({ board }: { board: RadarBoard }) {
       <h2>今日发现信号</h2>
       <p>今天的机会集中在 AI agent、电商自动化、图像生成和开发者工具。</p>
       <div className="radar-mini-metrics">
-        <Metric value={String(board.metrics.productHuntCount)} label="PH 产品" />
+        <Metric value={String(board.metrics.productHuntCount)} label="新品发布" />
         <Metric value={String(board.metrics.githubCount)} label="GitHub 仓库" />
         <Metric value={`${board.metrics.aiPercent}%`} label="AI 相关" />
       </div>
@@ -321,6 +351,8 @@ function RadarSidebar({
 }) {
   const sourceLabel = source === "all" ? "全部来源" : sourceLabels[source];
   const categoryLabel = category === "all" ? "全部分类" : category;
+  const quickDates = board.availableDates.slice(0, 5);
+  const hasMoreDates = board.availableDates.length > quickDates.length;
 
   return (
     <aside className="radar-sidebar">
@@ -342,17 +374,24 @@ function RadarSidebar({
       <div className="radar-sidebar-card">
         <h3>日期</h3>
         <div className="radar-date-list">
-          {board.availableDates.map((item, index) => (
+          {quickDates.map((item) => (
             <button
               className={`radar-pill ${date === item ? "active" : ""}`}
               key={item}
               onClick={() => onDateChange(item)}
               type="button"
             >
-              {index === 0 ? "今天" : index === 1 ? "昨天" : "前天"} ·{" "}
-              {item.slice(5)}
+              {formatDateChipLabel(item)} · {item.slice(5)}
             </button>
           ))}
+          {hasMoreDates ? (
+            <DatePicker
+              availableDates={board.availableDates}
+              date={date}
+              label="更多日期"
+              onDateChange={onDateChange}
+            />
+          ) : null}
         </div>
       </div>
       <div className="radar-scope-card">
@@ -366,14 +405,83 @@ function RadarSidebar({
   );
 }
 
+function DatePicker({
+  availableDates,
+  className = "",
+  date,
+  label,
+  onDateChange,
+}: {
+  availableDates: string[];
+  className?: string;
+  date: string;
+  label: string;
+  onDateChange: (date: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedDate = parseDateKey(date);
+  const latestDate = availableDates[0] ?? "";
+  const latestMonth = parseDateKey(selectedDate ? date : latestDate);
+  const [month, setMonth] = useState<Date | undefined>(latestMonth);
+  const availableDateSet = useMemo(
+    () => new Set(availableDates),
+    [availableDates],
+  );
+
+  function handleSelect(nextDate: Date | undefined) {
+    if (!nextDate) {
+      return;
+    }
+
+    const nextDateKey = dateKeyFromLocalDate(nextDate);
+    if (!availableDateSet.has(nextDateKey)) {
+      return;
+    }
+
+    onDateChange(nextDateKey);
+    setMonth(nextDate);
+    setOpen(false);
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          className={`radar-pill radar-date-trigger ${className}`}
+          disabled={!availableDates.length}
+          type="button"
+        >
+          <CalendarIcon aria-hidden="true" size={15} />
+          {availableDates.length ? label : "暂无日期"}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="radar-date-popover">
+        <Calendar
+          mode="single"
+          {...(selectedDate ? { selected: selectedDate } : {})}
+          {...(month ? { month } : {})}
+          onMonthChange={setMonth}
+          onSelect={handleSelect}
+          disabled={(calendarDate) =>
+            !availableDateSet.has(dateKeyFromLocalDate(calendarDate))
+          }
+          captionLayout="dropdown"
+        />
+        <div className="radar-date-popover-footer">
+          <span>仅可选择有数据的日期</span>
+          <strong>{availableDates.length} 天</strong>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function CardGrid({
   cards,
-  favorites,
   onOpen,
   view,
 }: {
   cards: RadarCard[];
-  favorites: string[];
   onOpen: (card: RadarCard) => void;
   view: RadarViewMode;
 }) {
@@ -382,7 +490,6 @@ function CardGrid({
       {cards.map((card) => (
         <RadarCardView
           card={card}
-          favorite={favorites.includes(card.id)}
           key={card.id}
           onOpen={() => onOpen(card)}
         />
@@ -393,11 +500,9 @@ function CardGrid({
 
 function RadarCardView({
   card,
-  favorite,
   onOpen,
 }: {
   card: RadarCard;
-  favorite: boolean;
   onOpen: () => void;
 }) {
   const tags = primaryDisplayTags(card);
@@ -410,10 +515,7 @@ function RadarCardView({
           <CardAvatar card={card} />
           <div className="radar-card-heading">
             <h3>{card.title}</h3>
-            <div className="radar-source">
-              {favorite ? "已收藏 · " : ""}
-              {card.sourceLabel}
-            </div>
+            <div className="radar-source">{card.sourceLabel}</div>
           </div>
         </div>
         <p className="radar-desc">{card.description}</p>
@@ -526,16 +628,12 @@ function Stats({ card }: { card: RadarCard }) {
   );
 }
 
-function DetailDrawer({
+export function DetailDrawer({
   card,
-  favorite,
   onClose,
-  onFavorite,
 }: {
   card: RadarCard | null;
-  favorite: boolean;
   onClose: () => void;
-  onFavorite: () => void;
 }) {
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const media = card?.media?.length
@@ -606,10 +704,23 @@ function DetailDrawer({
             ) : null}
           </div>
           <div className="radar-drawer-content">
-            <div className="radar-source">
-              {card.sourceLabel}
+            <div className="radar-drawer-title-row">
+              <div className="radar-drawer-title-copy">
+                <div className="radar-source">
+                  {card.sourceLabel}
+                </div>
+                <h2>{card.title}</h2>
+              </div>
+              <a
+                className="radar-pill primary radar-drawer-title-action"
+                href={card.sourceUrl}
+                rel="noreferrer noopener"
+                target="_blank"
+              >
+                <ExternalLinkIcon aria-hidden="true" size={15} />
+                打开来源
+              </a>
             </div>
-            <h2>{card.title}</h2>
             <p>{card.description}</p>
             <div className="radar-tag-group">
               <div className="radar-tag-label">分类</div>
@@ -637,25 +748,6 @@ function DetailDrawer({
               {drawerMetrics(card).map((metric) => (
                 <Metric key={metric.label} {...metric} />
               ))}
-            </div>
-            <div className="radar-drawer-actions">
-              <a
-                className="radar-pill primary"
-                href={card.sourceUrl}
-                rel="noreferrer noopener"
-                target="_blank"
-              >
-                <ExternalLinkIcon aria-hidden="true" size={15} />
-                打开来源
-              </a>
-              <button className="radar-pill" onClick={onFavorite} type="button">
-                <HeartIcon
-                  aria-hidden="true"
-                  fill={favorite ? "currentColor" : "none"}
-                  size={15}
-                />
-                {favorite ? "已收藏" : "加入收藏"}
-              </button>
             </div>
           </div>
         </div>
@@ -707,6 +799,59 @@ function formatCount(value?: number) {
     return `${Math.round(value / 100) / 10}k`;
   }
   return String(value);
+}
+
+export function formatDateChipLabel(
+  date: string,
+  today = dateKeyFromLocalDate(new Date()),
+) {
+  const targetDate = parseDateKey(date);
+  const todayDate = parseDateKey(today);
+
+  if (!targetDate || !todayDate) {
+    return "日期";
+  }
+
+  const dayDiff = Math.round(
+    (todayDate.getTime() - targetDate.getTime()) / 86_400_000,
+  );
+
+  if (dayDiff === 0) {
+    return "今天";
+  }
+  if (dayDiff === 1) {
+    return "昨天";
+  }
+  if (dayDiff === 2) {
+    return "前天";
+  }
+  if (dayDiff > 2 && dayDiff < 7) {
+    return `${dayDiff} 天前`;
+  }
+
+  return date.slice(5);
+}
+
+function parseDateKey(date: string) {
+  const parts = date.split("-").map(Number);
+  if (parts.length !== 3 || parts.some((part) => Number.isNaN(part))) {
+    return undefined;
+  }
+  const [year, month, day] = parts;
+
+  if (year === undefined || month === undefined || day === undefined) {
+    return undefined;
+  }
+
+  return new Date(year, month - 1, day);
+}
+
+function dateKeyFromLocalDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 function semanticCoverModel(card: RadarCard) {

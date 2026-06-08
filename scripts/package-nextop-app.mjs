@@ -176,6 +176,15 @@ async function writeManifest({ packageSourceDir, packageRoot, version }) {
   return manifest;
 }
 
+async function copyManifestIcon({ manifest, packageSourceDir, packageRoot }) {
+  const iconSrc = manifest.icon?.src;
+  if (!iconSrc) {
+    return;
+  }
+
+  await cp(path.join(packageSourceDir, iconSrc), path.join(packageRoot, iconSrc));
+}
+
 async function writeRuntimePackageJson({ appPackage, packageRoot }) {
   const runtimePackage = {
     private: true,
@@ -233,10 +242,7 @@ async function writePackageFiles({ appConfig, appPackage, appId, version }) {
     path.join(packageSourceDir, "server.mjs"),
     path.join(packageRoot, "server.mjs"),
   );
-  await cp(
-    path.join(packageSourceDir, "icon.svg"),
-    path.join(packageRoot, "icon.svg"),
-  );
+  await copyManifestIcon({ manifest, packageSourceDir, packageRoot });
   await cp(
     path.join(appSourceDir, "dist", "server"),
     path.join(packageRoot, "server"),

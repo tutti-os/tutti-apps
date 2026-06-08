@@ -13,6 +13,7 @@ import type { RouterContext } from "../router";
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   head: () => ({
+    links: [{ rel: "icon", type: "image/png", href: "/icon.png" }],
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },

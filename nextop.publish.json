@@ -7,7 +7,7 @@
       "sourceDir": "apps/daily-tech-radar",
       "packageSourceDir": "apps/daily-tech-radar/nextop-package",
       "packageDir": "build/nextop-app/daily-tech-radar/package",
-      "iconPath": "build/nextop-app/daily-tech-radar/package/icon.svg",
+      "iconPath": "build/nextop-app/daily-tech-radar/package/icon.png",
       "packageCommand": "pnpm package:nextop --app daily-tech-radar"
     }
   },

@@ -47,6 +47,7 @@ function IndexRoute() {
       }}
       onSearchStateChange={(next) => {
         navigate({
+          resetScroll: false,
           search: {
             date: next.date,
             filter: next.category,

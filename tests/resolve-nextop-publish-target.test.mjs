@@ -8,7 +8,7 @@ const config = {
     "daily-tech-radar": {
       packageCommand: "pnpm package:nextop --app daily-tech-radar",
       packageDir: "build/nextop-app/daily-tech-radar/package",
-      iconPath: "build/nextop-app/daily-tech-radar/package/icon.svg",
+      iconPath: "build/nextop-app/daily-tech-radar/package/icon.png",
     },
   },
   environments: {
@@ -26,7 +26,7 @@ test("resolvePublishTarget returns reusable workflow inputs", () => {
       app_id: "daily-tech-radar",
       package_command: "pnpm package:nextop --app daily-tech-radar",
       package_dir: "build/nextop-app/daily-tech-radar/package",
-      icon_path: "build/nextop-app/daily-tech-radar/package/icon.svg",
+      icon_path: "build/nextop-app/daily-tech-radar/package/icon.png",
     },
   );
 });
@@ -41,7 +41,7 @@ test("resolvePublishTarget returns daily-tech-radar when explicitly requested", 
       app_id: "daily-tech-radar",
       package_command: "pnpm package:nextop --app daily-tech-radar",
       package_dir: "build/nextop-app/daily-tech-radar/package",
-      icon_path: "build/nextop-app/daily-tech-radar/package/icon.svg",
+      icon_path: "build/nextop-app/daily-tech-radar/package/icon.png",
     },
   );
 });

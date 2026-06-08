@@ -6,7 +6,7 @@
   "description": "Product Hunt and GitHub daily discovery cards.",
   "icon": {
     "type": "asset",
-    "src": "icon.svg"
+    "src": "icon.png"
   },
   "runtime": {
     "kind": "custom",
