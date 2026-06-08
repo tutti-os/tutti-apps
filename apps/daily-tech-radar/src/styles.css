@@ -3,20 +3,42 @@
 @import "shadcn/tailwind.css";
 
 :root {
-  --ink: #17191c;
-  --muted: #777b86;
-  --soft: #f7f7f8;
-  --paper: #fafafb;
-  --panel: rgba(255, 255, 255, 0.94);
-  --line: rgba(4, 23, 43, 0.09);
-  --shadow: 0 10px 20px -16px rgba(4, 23, 43, 0.18);
+  --ink: #1c1d20;
+  --muted: #76777b;
+  --soft: #f5f5f3;
+  --paper: #fbfaf8;
+  --panel: rgba(255, 255, 255, 0.86);
+  --line: rgba(23, 25, 28, 0.075);
+  --shadow: 0 18px 36px -30px rgba(23, 25, 28, 0.24);
   --blue: #d3e3fc;
   --green: #e7f1eb;
   --peach: #fbe1d1;
   --lilac: #efe9ff;
   --brown: #5d2a1a;
   --black: #17191c;
-  --accent: #17191c;
+  --accent: #9f5138;
+  --control-bg: #f6f6f4;
+  --control-line: #ebe8e4;
+  --control-ink: #343536;
+  --control-active-bg: linear-gradient(
+    135deg,
+    rgba(211, 227, 252, 0.48) 0%,
+    rgba(255, 255, 255, 0.74) 46%,
+    rgba(251, 225, 209, 0.78) 100%
+  );
+  --control-active-line: rgba(174, 122, 104, 0.22);
+  --control-active-ink: #5f2d1f;
+  --view-active-bg: linear-gradient(
+    135deg,
+    rgba(211, 227, 252, 0.34) 0%,
+    rgba(255, 255, 255, 0.72) 48%,
+    rgba(251, 225, 209, 0.58) 100%
+  );
+  --view-active-line: rgba(174, 122, 104, 0.16);
+  --view-active-ink: #4b3832;
+  --date-bg: #f2f2f1;
+  --date-line: #e3e3e1;
+  --date-ink: #4a4a48;
   --font-sans: Sohne, ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-serif: Signifier, ui-serif, Georgia, Cambria, "Times New Roman", Times,
@@ -33,24 +55,24 @@ body {
   font-family: var(--font-sans);
   background:
     radial-gradient(
-      ellipse at 63% 26%,
-      rgba(255, 126, 93, 0.2) 0,
-      rgba(255, 126, 93, 0.09) 21%,
+      ellipse at 66% 24%,
+      rgba(255, 152, 122, 0.12) 0,
+      rgba(255, 152, 122, 0.05) 24%,
       transparent 43%
     ),
     radial-gradient(
-      ellipse at 36% 62%,
-      rgba(211, 227, 252, 0.36) 0,
-      rgba(211, 227, 252, 0.16) 27%,
+      ellipse at 34% 60%,
+      rgba(211, 227, 252, 0.24) 0,
+      rgba(211, 227, 252, 0.1) 28%,
       transparent 49%
     ),
     radial-gradient(
       ellipse at 74% 78%,
-      rgba(238, 233, 255, 0.28) 0,
-      rgba(238, 233, 255, 0.12) 24%,
+      rgba(238, 233, 255, 0.13) 0,
+      rgba(238, 233, 255, 0.05) 24%,
       transparent 48%
     ),
-    linear-gradient(180deg, #ffffff 0%, #fafafb 44%, #f7f7f8 100%);
+    linear-gradient(180deg, #ffffff 0%, #fbfaf8 50%, #f6f6f3 100%);
   background-attachment: fixed;
 }
 
@@ -59,7 +81,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
 }
 
@@ -97,7 +119,7 @@ input:focus-visible {
   max-width: 1264px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 22px 28px 56px;
+  padding: 22px 28px 64px;
 }
 
 .radar-nav {
@@ -112,14 +134,14 @@ input:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 560;
 }
 
 .radar-mark {
-  width: 24px;
-  height: 24px;
-  border: 3px solid var(--black);
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--black);
   border-radius: 50%;
   position: relative;
   flex: 0 0 auto;
@@ -129,18 +151,17 @@ input:focus-visible {
   content: "";
   position: absolute;
   left: 6px;
-  top: 9px;
-  width: 9px;
-  height: 9px;
-  border-left: 3px solid var(--black);
-  border-top: 3px solid var(--black);
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-left: 2.5px solid var(--black);
+  border-top: 2.5px solid var(--black);
   transform: rotate(45deg);
 }
 
 .radar-nav-actions,
 .radar-filters,
 .radar-tabs,
-.radar-drawer-actions,
 .radar-tags {
   display: flex;
   align-items: center;
@@ -154,12 +175,12 @@ input:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 40px;
-  border: 0;
+  min-height: 38px;
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.58);
   color: var(--ink);
-  padding: 0 16px;
+  padding: 0 15px;
   font-size: 14px;
   font-weight: 430;
   line-height: 1;
@@ -174,58 +195,80 @@ input:focus-visible {
 .radar-pill:hover,
 .radar-icon-button:hover {
   transform: translateY(-1px);
-  background: rgba(4, 23, 43, 0.05);
+  background: rgba(163, 85, 58, 0.07);
 }
 
-.radar-pill.active,
+.radar-pill.active {
+  background: var(--control-active-bg);
+  border-color: var(--control-active-line);
+  color: var(--control-active-ink);
+  box-shadow: none;
+  font-weight: 560;
+}
+
 .radar-pill.primary {
   background: var(--accent);
   color: white;
 }
 
+.radar-nav-actions .radar-pill.active {
+  background: var(--control-active-bg);
+  border-color: var(--control-active-line);
+  color: var(--control-active-ink);
+  box-shadow: none;
+}
+
+.radar-nav-actions .radar-pill:not(.active),
+.radar-filters .radar-pill:not(.active),
+.radar-tabs .radar-pill:not(.active) {
+  background: var(--control-bg);
+  border-color: var(--control-line);
+  color: var(--control-ink);
+}
+
 .radar-icon-button {
-  width: 40px;
+  width: 38px;
   padding: 0;
 }
 
 .radar-hero {
   display: grid;
   grid-template-columns: minmax(0, 0.98fr) minmax(310px, 0.52fr);
-  gap: 24px;
+  gap: 34px;
   align-items: end;
-  padding: 70px 0 30px;
+  padding: 68px 0 44px;
 }
 
 .radar-hero h1 {
-  max-width: 740px;
+  max-width: 660px;
   margin: 0;
   font-family: var(--font-serif);
-  font-size: clamp(54px, 6.8vw, 82px);
+  font-size: clamp(50px, 5.4vw, 68px);
   font-weight: 400;
-  line-height: 1.06;
+  line-height: 1.08;
   letter-spacing: 0;
 }
 
 .radar-hero p {
-  max-width: 620px;
-  margin: 20px 0 0;
-  color: #4c4c4c;
-  font-size: 18px;
-  line-height: 1.5;
+  max-width: 590px;
+  margin: 18px 0 0;
+  color: rgba(23, 25, 28, 0.62);
+  font-size: 17px;
+  line-height: 1.54;
 }
 
 .radar-search {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 62px;
+  min-height: 58px;
   margin-top: 24px;
-  max-width: 620px;
-  padding: 0 12px 0 20px;
+  max-width: 610px;
+  padding: 0 14px 0 19px;
   border: 1px solid var(--line);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 12px 22px -18px rgba(4, 23, 43, 0.2);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 26px -24px rgba(23, 25, 28, 0.22);
 }
 
 .radar-search input {
@@ -234,15 +277,19 @@ input:focus-visible {
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--ink);
+  color: rgba(23, 25, 28, 0.86);
   font-size: 14px;
+}
+
+.radar-search svg {
+  color: rgba(23, 25, 28, 0.72);
 }
 
 .radar-signal,
 .radar-sidebar-card,
 .radar-scope-card {
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: 20px;
   background: var(--panel);
   box-shadow: var(--shadow);
 }
@@ -251,17 +298,17 @@ input:focus-visible {
   padding: 22px;
   color: var(--ink);
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(247, 247, 248, 0.5)),
-    radial-gradient(circle at 12% 16%, rgba(211, 227, 252, 0.42), transparent 34%),
-    radial-gradient(circle at 86% 20%, rgba(251, 225, 209, 0.48), transparent 38%);
-  backdrop-filter: blur(18px);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(249, 249, 247, 0.58)),
+    radial-gradient(circle at 16% 18%, rgba(211, 227, 252, 0.24), transparent 38%),
+    radial-gradient(circle at 88% 18%, rgba(251, 225, 209, 0.2), transparent 40%);
+  backdrop-filter: blur(14px);
 }
 
 .radar-signal h2,
 .radar-scope-card h3 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 580;
 }
 
 .radar-signal p,
@@ -288,16 +335,17 @@ input:focus-visible {
 }
 
 .radar-metric {
-  min-height: 72px;
-  border-radius: 18px;
+  min-height: 70px;
+  border-radius: 16px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(4, 23, 43, 0.08);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(23, 25, 28, 0.065);
 }
 
 .radar-metric b {
   display: block;
-  font-size: 29px;
+  color: #18191b;
+  font-size: 28px;
   line-height: 1;
 }
 
@@ -314,24 +362,50 @@ input:focus-visible {
   position: sticky;
   top: 0;
   z-index: 4;
+  isolation: isolate;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 12px;
+  gap: 18px;
   align-items: center;
-  padding: 14px 0;
-  backdrop-filter: blur(20px);
+  padding: 8px 0 24px;
+}
+
+.radar-toolbar::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -8px;
+  right: calc((100% - 100vw) / 2);
+  bottom: 6px;
+  left: calc((100% - 100vw) / 2);
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(251, 250, 248, 0.34) 0%,
+    rgba(251, 250, 248, 0.2) 72%,
+    rgba(251, 250, 248, 0) 100%
+  );
+  backdrop-filter: blur(6px) saturate(0.96);
+  -webkit-backdrop-filter: blur(6px) saturate(0.96);
+  mask-image: linear-gradient(180deg, #000 0%, #000 76%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 76%,
+    transparent 100%
+  );
 }
 
 .radar-layout {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
-  gap: 24px;
+  gap: 28px;
   align-items: start;
 }
 
 .radar-sidebar {
   position: sticky;
-  top: 70px;
+  top: 128px;
   display: grid;
   gap: 12px;
 }
@@ -345,7 +419,7 @@ input:focus-visible {
   margin: 0 0 12px;
   color: var(--muted);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 560;
 }
 
 .radar-topic {
@@ -353,9 +427,9 @@ input:focus-visible {
   justify-content: space-between;
   gap: 10px;
   padding: 9px 0;
-  border-top: 1px solid rgba(4, 23, 43, 0.07);
+  border-top: 1px solid rgba(23, 25, 28, 0.06);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 560;
 }
 
 .radar-topic:first-of-type {
@@ -373,10 +447,64 @@ input:focus-visible {
   justify-content: flex-start;
 }
 
+.radar-date-trigger {
+  white-space: nowrap;
+}
+
+.radar-nav-date {
+  min-width: 124px;
+}
+
+.radar-date-list .radar-date-trigger {
+  justify-content: flex-start;
+}
+
+.radar-date-popover {
+  width: auto;
+  padding: 8px;
+  border-radius: 18px;
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 46px -26px rgba(23, 25, 28, 0.28);
+}
+
+.radar-date-popover [data-slot="calendar"] {
+  --cell-size: 36px;
+}
+
+.radar-date-popover-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 10px 6px;
+  border-top: 1px solid rgba(23, 25, 28, 0.06);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.radar-date-popover-footer strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.radar-tabs .radar-pill.active {
+  background: var(--view-active-bg);
+  border-color: var(--view-active-line);
+  color: var(--view-active-ink);
+}
+
+.radar-date-list .radar-pill.active {
+  background: var(--date-bg);
+  border-color: var(--date-line);
+  color: var(--date-ink);
+  box-shadow: none;
+}
+
 .radar-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 22px;
 }
 
 .radar-grid.compact {
@@ -401,10 +529,10 @@ input:focus-visible {
   position: relative;
   min-height: 336px;
   overflow: hidden;
-  border: 1px solid rgba(4, 23, 43, 0.1);
-  border-radius: 20px;
+  border: 1px solid rgba(23, 25, 28, 0.075);
+  border-radius: 18px;
   background: var(--panel);
-  box-shadow: 0 2px 8px rgba(4, 23, 43, 0.05);
+  box-shadow: 0 12px 24px -24px rgba(23, 25, 28, 0.22);
   transition:
     transform 160ms ease,
     box-shadow 160ms ease;
@@ -412,14 +540,14 @@ input:focus-visible {
 
 .radar-card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px -14px rgba(4, 23, 43, 0.2);
+  box-shadow: 0 18px 34px -26px rgba(23, 25, 28, 0.26);
 }
 
 .radar-cover {
   position: relative;
   height: 172px;
   overflow: hidden;
-  border-bottom: 1px solid rgba(4, 23, 43, 0.06);
+  border-bottom: 1px solid rgba(23, 25, 28, 0.06);
   background:
     linear-gradient(135deg, rgba(211, 227, 252, 0.96), rgba(251, 225, 209, 0.96)),
     linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
@@ -439,6 +567,16 @@ input:focus-visible {
   display: block;
 }
 
+.radar-drawer-hero [data-rmiz] {
+  width: 100%;
+  height: 100%;
+}
+
+.radar-drawer-hero [data-rmiz-content="found"] {
+  width: 100%;
+  height: 100%;
+}
+
 .radar-cover img {
   object-fit: cover;
 }
@@ -448,6 +586,10 @@ input:focus-visible {
 .radar-drawer-hero video {
   object-fit: contain;
   background: #f7f7f8;
+}
+
+.radar-drawer-hero [data-rmiz-content="found"] img {
+  cursor: zoom-in;
 }
 
 .radar-cover.semantic {
@@ -463,10 +605,10 @@ input:focus-visible {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(4, 23, 43, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(23, 25, 28, 0.07);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 560;
 }
 
 .radar-card-body {
@@ -516,9 +658,9 @@ input:focus-visible {
 
 .radar-card h3 {
   margin: 0;
-  font-size: 18px;
-  line-height: 1.08;
-  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.14;
+  font-weight: 580;
   overflow-wrap: anywhere;
 }
 
@@ -526,13 +668,13 @@ input:focus-visible {
   margin-top: 5px;
   color: var(--muted);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 560;
 }
 
 .radar-desc {
   min-height: 58px;
   margin: 14px 0 0;
-  color: var(--muted);
+  color: rgba(23, 25, 28, 0.58);
   font-size: 13px;
   line-height: 1.45;
   display: -webkit-box;
@@ -565,10 +707,10 @@ input:focus-visible {
   min-height: 25px;
   padding: 0 9px;
   border-radius: 999px;
-  background: #f2f2f3;
-  color: #4c4c4c;
+  background: rgba(23, 25, 28, 0.045);
+  color: rgba(23, 25, 28, 0.68);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 560;
 }
 
 .radar-stats {
@@ -577,10 +719,10 @@ input:focus-visible {
   gap: 10px;
   margin-top: 16px;
   padding-top: 12px;
-  border-top: 1px solid rgba(4, 23, 43, 0.08);
-  color: #4c4c4c;
+  border-top: 1px solid rgba(23, 25, 28, 0.065);
+  color: rgba(23, 25, 28, 0.64);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 560;
 }
 
 .radar-card-action {
@@ -595,10 +737,10 @@ input:focus-visible {
   margin-top: 16px;
   padding: 38px;
   border: 1px dashed var(--line);
-  border-radius: 24px;
+  border-radius: 20px;
   color: var(--muted);
   text-align: center;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.54);
 }
 
 .radar-drawer {
@@ -793,8 +935,50 @@ input:focus-visible {
   color: var(--ink);
 }
 
+.radar-zoom-content {
+  width: 100%;
+  height: 100%;
+}
+
+.radar-zoom-gallery-controls {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(23, 25, 28, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 650;
+  transform: translateX(-50%);
+  box-shadow: 0 12px 28px -18px rgba(23, 25, 28, 0.3);
+}
+
 .radar-drawer-content {
   padding: 22px;
+}
+
+.radar-drawer-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.radar-drawer-title-copy {
+  min-width: 0;
+}
+
+.radar-drawer-title-action {
+  flex: 0 0 auto;
+  margin-top: 6px;
+  white-space: nowrap;
 }
 
 .radar-drawer h2 {

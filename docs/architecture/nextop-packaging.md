@@ -13,7 +13,7 @@ apps/<app-id>/
     AGENTS.md
     bootstrap.sh
     server.mjs
-    icon.svg
+    icon.png
 ```
 
 Required files:
@@ -25,7 +25,7 @@ Required files:
 - `bootstrap.sh`: executable entrypoint called by Nextop.
 - `server.mjs`: optional package wrapper for frameworks that build request
   handlers instead of self-listening servers.
-- `icon.svg`: App Center icon.
+- `icon.png`: App Center icon.
 
 Optional files:
 
@@ -51,14 +51,14 @@ apps/<app-id>/
     nextop.app.json
     AGENTS.md
     bootstrap.sh
-    icon.svg
+    icon.png
 
 build/nextop-app/<app-id>/package/
   nextop.app.json
   AGENTS.md
   bootstrap.sh
   server.mjs
-  icon.svg
+  icon.png
   dist/
   server/
     server.js
@@ -86,7 +86,7 @@ enabled for each release environment.
       "packageCommand": "pnpm package:nextop --app daily-tech-radar",
       "packageSourceDir": "apps/daily-tech-radar/nextop-package",
       "packageDir": "build/nextop-app/daily-tech-radar/package",
-      "iconPath": "build/nextop-app/daily-tech-radar/package/icon.svg"
+      "iconPath": "build/nextop-app/daily-tech-radar/package/icon.png"
     }
   },
   "environments": {
