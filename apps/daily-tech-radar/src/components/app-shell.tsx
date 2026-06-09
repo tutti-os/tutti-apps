@@ -251,7 +251,7 @@ function TopNav({
         >
           <SelectTrigger
             aria-label={t("language.label")}
-            className="radar-pill min-w-[86px] border-[var(--control-line)] bg-[var(--control-bg)] text-[var(--control-ink)] shadow-none focus-visible:ring-0"
+            className="radar-pill min-w-[76px] gap-1.5 border-[var(--control-line)] bg-[var(--control-bg)] px-3 text-[var(--control-ink)] shadow-none focus-visible:ring-0"
           >
             <span data-slot="select-value">
               {locale === "zh-CN"
@@ -261,7 +261,7 @@ function TopNav({
           </SelectTrigger>
           <SelectContent
             align="center"
-            className="min-w-[86px] rounded-2xl border border-[var(--control-line)] bg-[var(--control-bg)] p-1.5 text-[var(--control-ink)] shadow-[0_18px_38px_-28px_rgba(23,25,28,0.42)]"
+            className="min-w-[82px] rounded-2xl border border-[var(--control-line)] bg-[var(--control-bg)] p-1.5 text-[var(--control-ink)] shadow-[0_18px_38px_-28px_rgba(23,25,28,0.42)]"
             sideOffset={8}
           >
             <SelectGroup className="flex flex-col gap-1.5">
