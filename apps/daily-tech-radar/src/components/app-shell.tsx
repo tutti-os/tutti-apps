@@ -261,18 +261,18 @@ function TopNav({
           </SelectTrigger>
           <SelectContent
             align="center"
-            className="min-w-[86px] rounded-2xl border border-[rgba(23,25,28,0.1)] bg-white/95 p-1 shadow-[0_18px_38px_-26px_rgba(23,25,28,0.55)] backdrop-blur-xl"
+            className="min-w-[86px] rounded-2xl border border-[var(--control-line)] bg-[var(--control-bg)] p-1 text-[var(--control-ink)] shadow-[0_18px_38px_-28px_rgba(23,25,28,0.42)]"
             sideOffset={8}
           >
             <SelectGroup>
               <SelectItem
-                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:bg-[rgba(163,85,58,0.08)]"
+                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:[background:var(--view-active-bg)] data-[state=checked]:[background:var(--control-active-bg)] data-[state=checked]:text-[var(--control-active-ink)] [&_[data-slot=select-item-indicator]]:text-[var(--control-active-ink)]"
                 value="zh-CN"
               >
                 {t("language.chinese")}
               </SelectItem>
               <SelectItem
-                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:bg-[rgba(163,85,58,0.08)]"
+                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:[background:var(--view-active-bg)] data-[state=checked]:[background:var(--control-active-bg)] data-[state=checked]:text-[var(--control-active-ink)] [&_[data-slot=select-item-indicator]]:text-[var(--control-active-ink)]"
                 value="en-US"
               >
                 {t("language.english")}
