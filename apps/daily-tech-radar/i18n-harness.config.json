@@ -1,0 +1,7 @@
+{
+  "appPath": "apps/daily-tech-radar",
+  "allowlist": ["GitHub", "Product Hunt", "AI", "EN"],
+  "locales": ["zh-CN", "en-US"],
+  "namespaces": ["radar"],
+  "sourceGlobs": ["src/components/**/*.tsx", "src/routes/**/*.tsx"]
+}
