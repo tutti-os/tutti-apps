@@ -33,6 +33,11 @@ Optional files:
   and `server/`.
 - Production runtime dependencies can be copied into packaged `node_modules/`
   when the server build externalizes Node dependencies.
+- `nextop.cli.json` can be included when `nextop.app.json` declares
+  `cli.manifest`; each command must route to an app-owned
+  `POST /nextop/cli/*` handler.
+- `COMMANDS.md` or another package-local documentation file can be referenced
+  by `nextop.cli.json` for CLI help output.
 
 The app source, Vite config, and TanStack Start build belong at the app root.
 Do not keep a hand-written app server in `nextop-package/server`; use a thin
@@ -73,6 +78,16 @@ exec node "$NEXTOP_APP_PACKAGE_DIR/server.mjs"
 
 The wrapper serves `dist/`, delegates SSR and Server Functions to
 `server/server.js`, and exposes `/api/health`.
+
+Daily Tech Radar also exposes the optional `radar` CLI scope:
+
+```txt
+nextop.cli.json
+COMMANDS.md
+```
+
+The command handlers live in the TanStack Start server routes under
+`/nextop/cli/*` and are packaged through the same server bundle as the UI.
 
 ## Publish Configuration
 

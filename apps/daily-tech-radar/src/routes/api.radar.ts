@@ -11,7 +11,8 @@ export const Route = createFileRoute("/api/radar")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const localeParam = url.searchParams.get("locale");
-        const locale: Locale = localeParam === "zh-CN" ? "zh-CN" : defaultLocale;
+        const locale: Locale =
+          localeParam === "zh-CN" ? "zh-CN" : defaultLocale;
         const date = url.searchParams.get("date") || undefined;
         const board = await getRadarBoardData({ date, locale });
 

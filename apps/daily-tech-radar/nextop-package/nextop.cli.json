@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "nextop.app.cli.v1",
+  "scope": "radar",
+  "description": "Search and inspect Product Hunt and GitHub daily discovery cards.",
+  "documentation": {
+    "file": "COMMANDS.md"
+  },
+  "commands": [
+    {
+      "path": ["board"],
+      "summary": "Show a radar board",
+      "description": "Return the complete board for the latest or selected date.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format. Omit for latest."
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale to load: en-US or zh-CN."
+          },
+          "source": {
+            "type": "string",
+            "description": "Source filter for returned cards: all, producthunt, or github."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Optional maximum cards to return, clamped to 1..50."
+          },
+          "include-cards": {
+            "type": "boolean",
+            "description": "Whether to include cards in the board response. Defaults to true."
+          }
+        }
+      },
+      "output": {
+        "defaultMode": "json",
+        "json": true
+      },
+      "handler": {
+        "kind": "http",
+        "method": "POST",
+        "path": "/nextop/cli/board",
+        "timeoutMs": 30000
+      }
+    },
+    {
+      "path": ["search"],
+      "summary": "Search radar cards",
+      "description": "Return cards filtered by date, locale, source, category, and query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format. Omit for latest."
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale to load: en-US or zh-CN."
+          },
+          "source": {
+            "type": "string",
+            "description": "Source filter: all, producthunt, or github."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category label, or all."
+          },
+          "query": {
+            "type": "string",
+            "description": "Search text matched against card fields."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum cards to return, clamped to 1..50."
+          }
+        }
+      },
+      "output": {
+        "defaultMode": "json",
+        "json": true
+      },
+      "handler": {
+        "kind": "http",
+        "method": "POST",
+        "path": "/nextop/cli/search",
+        "timeoutMs": 30000
+      }
+    },
+    {
+      "path": ["item"],
+      "summary": "Show one radar card",
+      "description": "Return one full normalized radar card by id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Card id such as producthunt:123 or github:123456."
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format. Omit for latest."
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale to load: en-US or zh-CN."
+          }
+        },
+        "required": ["id"]
+      },
+      "output": {
+        "defaultMode": "json",
+        "json": true
+      },
+      "handler": {
+        "kind": "http",
+        "method": "POST",
+        "path": "/nextop/cli/item",
+        "timeoutMs": 30000
+      }
+    }
+  ]
+}

@@ -85,6 +85,65 @@ test("validatePackageRoot requires the files Nextop imports", async () => {
   await validatePackageRoot(packageRoot);
 });
 
+test("validatePackageRoot requires declared CLI manifest and docs", async () => {
+  const packageRoot = await makeTempPackageRoot();
+
+  await writeFile(
+    path.join(packageRoot, "nextop.app.json"),
+    `${JSON.stringify({
+      schemaVersion: "nextop.app.manifest.v1",
+      appId: "test-app",
+      version: "1.2.3",
+      runtime: { bootstrap: "bootstrap.sh" },
+      cli: { manifest: "nextop.cli.json" },
+    })}\n`,
+  );
+  await writeFile(path.join(packageRoot, "AGENTS.md"), "Package guide\n");
+  await writeFile(path.join(packageRoot, "bootstrap.sh"), "#!/bin/sh\n");
+  await writeFile(path.join(packageRoot, "server.mjs"), "export {}\n");
+  await chmod(path.join(packageRoot, "bootstrap.sh"), 0o755);
+
+  await assert.rejects(
+    validatePackageRoot(packageRoot),
+    /Missing declared CLI manifest: nextop\.cli\.json/,
+  );
+
+  await writeFile(
+    path.join(packageRoot, "nextop.cli.json"),
+    `${JSON.stringify({
+      schemaVersion: "nextop.app.cli.v1",
+      scope: "test",
+      documentation: { file: "COMMANDS.md" },
+      commands: [
+        {
+          path: ["run"],
+          summary: "Run test command",
+          inputSchema: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+            },
+          },
+          output: {
+            defaultMode: "json",
+            json: true,
+          },
+          handler: {
+            kind: "http",
+            method: "POST",
+            path: "/nextop/cli/run",
+          },
+        },
+      ],
+    })}\n`,
+  );
+
+  await assert.rejects(
+    validatePackageRoot(packageRoot),
+    /Missing CLI documentation file: COMMANDS\.md/,
+  );
+});
+
 test("assertNoSymlinks rejects symlink entries", async () => {
   const packageRoot = await makeTempPackageRoot();
   await mkdir(path.join(packageRoot, "dist"));
@@ -108,6 +167,13 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
     "utf8",
   );
   const agents = await readFile(path.join(packageRoot, "AGENTS.md"), "utf8");
+  const cliManifest = JSON.parse(
+    await readFile(path.join(packageRoot, "nextop.cli.json"), "utf8"),
+  );
+  const commandDocs = await readFile(
+    path.join(packageRoot, "COMMANDS.md"),
+    "utf8",
+  );
   const wrapper = await readFile(path.join(packageRoot, "server.mjs"), "utf8");
   const server = await readFile(
     path.join(packageRoot, "server", "server.js"),
@@ -127,6 +193,9 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
 
   assert.equal(manifest.appId, "daily-tech-radar");
   assert.equal(manifest.name, "Daily Product Radar");
+  assert.deepEqual(manifest.cli, {
+    manifest: "nextop.cli.json",
+  });
   assert.equal(manifest.runtime.kind, undefined);
   assert.equal(manifest.runtime.bootstrap, "bootstrap.sh");
   assert.deepEqual(manifest.localizationInfo, {
@@ -147,12 +216,18 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   assert.match(bootstrap, /app_node="\$\{NEXTOP_APP_NODE:-node\}"/);
   assert.match(bootstrap, /app_host="\$\{NEXTOP_APP_HOST:-127\.0\.0\.1\}"/);
   assert.match(bootstrap, /app_port="\$\{NEXTOP_APP_PORT:-3002\}"/);
-  assert.match(
-    bootstrap,
-    /exec "\$app_node" "\$app_package_dir\/server\.mjs"/,
-  );
+  assert.match(bootstrap, /exec "\$app_node" "\$app_package_dir\/server\.mjs"/);
   assert.doesNotMatch(bootstrap, /exec node /);
   assert.match(agents, /@nextop-os\/daily-tech-radar/);
+  assert.equal(cliManifest.schemaVersion, "nextop.app.cli.v1");
+  assert.equal(cliManifest.scope, "radar");
+  assert.equal(cliManifest.documentation.file, "COMMANDS.md");
+  assert.deepEqual(
+    cliManifest.commands.map((command) => command.handler.path),
+    ["/nextop/cli/board", "/nextop/cli/search", "/nextop/cli/item"],
+  );
+  assert.match(commandDocs, /nextop --json radar board/);
+  assert.match(commandDocs, /nextop --json radar search/);
   assert.match(wrapper, /daily-tech-radar/);
   assert.match(wrapper, /server\/server\.js/);
   assert.match(server, /createServerEntry/);

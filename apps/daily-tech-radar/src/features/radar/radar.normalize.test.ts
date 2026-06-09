@@ -5,11 +5,7 @@ import {
   normalizeGitHubRepo,
   normalizeProductHuntItem,
 } from "./radar.normalize";
-import type {
-  DailyTrendFeed,
-  DailyTrendPackage,
-  TrendIndex,
-} from "./types";
+import type { DailyTrendFeed, DailyTrendPackage, TrendIndex } from "./types";
 
 const productIndex: TrendIndex = {
   dates: ["2026-06-05", "2026-06-04"],
@@ -96,7 +92,8 @@ const githubPackage: DailyTrendPackage = {
         score: 118,
       },
       readmeRef: {
-        rawUrl: "https://raw.githubusercontent.com/NousResearch/hermes-agent/main/README.md",
+        rawUrl:
+          "https://raw.githubusercontent.com/NousResearch/hermes-agent/main/README.md",
         status: "available",
       },
       readmeSignals: {
@@ -151,7 +148,12 @@ const githubPackage: DailyTrendPackage = {
 
 describe("radar normalization", () => {
   it("maps Product Hunt feed items into prototype cards", () => {
-    const card = normalizeProductHuntItem(productFeed.items[0]!, productFeed);
+    const [item] = productFeed.items;
+    expect(item).toBeDefined();
+    const card = normalizeProductHuntItem(
+      item as NonNullable<typeof item>,
+      productFeed,
+    );
 
     expect(card).toMatchObject({
       categories: ["AI代理", "电商自动化", "AI"],
@@ -172,7 +174,12 @@ describe("radar normalization", () => {
   });
 
   it("maps GitHub repos into prototype cards", () => {
-    const card = normalizeGitHubRepo(githubPackage.repos[0]!, githubPackage);
+    const [repo] = githubPackage.repos;
+    expect(repo).toBeDefined();
+    const card = normalizeGitHubRepo(
+      repo as NonNullable<typeof repo>,
+      githubPackage,
+    );
 
     expect(card).toMatchObject({
       categories: ["AI代理", "开发工具", "AI"],
@@ -196,13 +203,16 @@ describe("radar normalization", () => {
   });
 
   it("keeps generated GitHub product covers when the data package provides one", () => {
+    const [baseRepo] = githubPackage.repos;
+    expect(baseRepo).toBeDefined();
     const repo = {
-      ...githubPackage.repos[0]!,
+      ...(baseRepo as NonNullable<typeof baseRepo>),
       visual: {
         alt: "Generated product cover for Hermes Agent",
         kind: "agnes_generated" as const,
         sourceUrl: null,
-        thumbUrl: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
+        thumbUrl:
+          "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
         url: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
       },
     };
@@ -211,7 +221,8 @@ describe("radar normalization", () => {
 
     expect(card).toMatchObject({
       coverStyle: "image",
-      coverUrl: "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
+      coverUrl:
+        "https://storage.googleapis.com/agnes-aigc-test/images/text-to-image/cover.png",
       media: [
         {
           type: "image",
