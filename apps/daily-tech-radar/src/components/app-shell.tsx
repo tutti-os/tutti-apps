@@ -238,16 +238,20 @@ function TopNav({
             {t(sourceLabelKey(item))}
           </button>
         ))}
-        {(["zh-CN", "en-US"] as Locale[]).map((item) => (
-          <button
-            className={`radar-pill ${locale === item ? "active" : ""}`}
-            key={item}
-            onClick={() => onLocaleChange(item)}
-            type="button"
+        <label className="radar-locale-control">
+          <span className="sr-only">{t("language.label")}</span>
+          <select
+            aria-label={t("language.label")}
+            className="radar-pill"
+            value={locale}
+            onChange={(event) =>
+              onLocaleChange(event.currentTarget.value as Locale)
+            }
           >
-            {item === "zh-CN" ? t("language.chinese") : t("language.english")}
-          </button>
-        ))}
+            <option value="zh-CN">{t("language.chinese")}</option>
+            <option value="en-US">{t("language.english")}</option>
+          </select>
+        </label>
         <DatePicker
           availableDates={availableDates}
           className="radar-nav-date"

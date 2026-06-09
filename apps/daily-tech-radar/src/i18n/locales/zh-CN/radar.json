@@ -58,7 +58,8 @@
   },
   "language": {
     "chinese": "中文",
-    "english": "EN"
+    "english": "EN",
+    "label": "选择语言"
   },
   "media": {
     "imageLoadFailed": "图片加载失败",
