@@ -4,7 +4,8 @@ import i18n, { supportedLocales } from "./index";
 
 describe("daily tech radar i18n", () => {
   it("exposes the supported locales for route and UI language sync", () => {
-    expect(supportedLocales).toEqual(["zh-CN", "en-US"]);
+    expect(supportedLocales).toEqual(["en-US", "zh-CN"]);
+    expect(i18n.language).toBe("en-US");
   });
 
   it("translates interpolated UI copy in both supported languages", () => {

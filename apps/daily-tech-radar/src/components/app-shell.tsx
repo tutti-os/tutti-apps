@@ -30,13 +30,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
-import {
   filterRadarCards,
   getVisibleCategories,
 } from "@/features/radar/filtering";
@@ -144,10 +137,6 @@ export function AppShell({
       <TopNav
         availableDates={board.availableDates}
         date={searchState.date || board.date}
-        locale={locale}
-        onLocaleChange={(nextLocale) =>
-          updateState({ category: "all", locale: nextLocale })
-        }
         source={searchState.source}
         t={t}
         onDateChange={(date) => updateState({ category: "all", date })}
@@ -212,8 +201,6 @@ function sourceLabelKey(source: RadarSource) {
 function TopNav({
   availableDates,
   date,
-  locale,
-  onLocaleChange,
   onDateChange,
   onSourceChange,
   source,
@@ -221,8 +208,6 @@ function TopNav({
 }: {
   availableDates: string[];
   date: string;
-  locale: Locale;
-  onLocaleChange: (locale: Locale) => void;
   onDateChange: (date: string) => void;
   onSourceChange: (source: RadarSource) => void;
   source: RadarSource;
@@ -245,41 +230,6 @@ function TopNav({
             {t(sourceLabelKey(item))}
           </button>
         ))}
-        <Select
-          value={locale}
-          onValueChange={(nextLocale) => onLocaleChange(nextLocale as Locale)}
-        >
-          <SelectTrigger
-            aria-label={t("language.label")}
-            className="radar-pill min-w-[76px] gap-1.5 border-[var(--control-line)] bg-[var(--control-bg)] px-3 text-[var(--control-ink)] shadow-none outline-none ring-0 focus:border-[var(--control-line)] focus:outline-none focus:ring-0 focus-visible:border-[var(--control-line)] focus-visible:outline-none focus-visible:ring-0 data-[state=open]:border-[var(--control-line)] data-[state=open]:shadow-none"
-          >
-            <span data-slot="select-value">
-              {locale === "zh-CN"
-                ? t("language.chinese")
-                : t("language.english")}
-            </span>
-          </SelectTrigger>
-          <SelectContent
-            align="center"
-            className="min-w-[82px] rounded-2xl border border-[var(--control-line)] bg-[var(--control-bg)] p-1.5 text-[var(--control-ink)] shadow-[0_18px_38px_-28px_rgba(23,25,28,0.42)]"
-            sideOffset={8}
-          >
-            <SelectGroup className="flex flex-col gap-1.5">
-              <SelectItem
-                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:[background:var(--view-active-bg)] data-[state=checked]:[background:var(--control-active-bg)] data-[state=checked]:text-[var(--control-active-ink)] [&_[data-slot=select-item-indicator]]:text-[var(--control-active-ink)]"
-                value="zh-CN"
-              >
-                {t("language.chinese")}
-              </SelectItem>
-              <SelectItem
-                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:[background:var(--view-active-bg)] data-[state=checked]:[background:var(--control-active-bg)] data-[state=checked]:text-[var(--control-active-ink)] [&_[data-slot=select-item-indicator]]:text-[var(--control-active-ink)]"
-                value="en-US"
-              >
-                {t("language.english")}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
         <DatePicker
           availableDates={availableDates}
           className="radar-nav-date"

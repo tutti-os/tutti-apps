@@ -126,10 +126,29 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   );
 
   assert.equal(manifest.appId, "daily-tech-radar");
-  assert.equal(manifest.name, "每日产品雷达");
+  assert.equal(manifest.name, "Daily Product Radar");
+  assert.equal(manifest.runtime.kind, undefined);
   assert.equal(manifest.runtime.bootstrap, "bootstrap.sh");
+  assert.deepEqual(manifest.localizationInfo, {
+    defaultLocale: "en-US",
+    additionalLocales: [
+      {
+        locale: "zh-CN",
+        file: "locales/zh-CN/manifest.json",
+      },
+    ],
+  });
+  const manifestLocale = JSON.parse(
+    await readFile(path.join(packageRoot, "locales", "zh-CN", "manifest.json")),
+  );
+  assert.equal(manifestLocale.name, "每日产品雷达");
   assert.match(bootstrap, /NEXTOP_APP_PACKAGE_DIR/);
-  assert.match(bootstrap, /exec node "\$NEXTOP_APP_PACKAGE_DIR\/server\.mjs"/);
+  assert.match(bootstrap, /NEXTOP_APP_NODE/);
+  assert.match(
+    bootstrap,
+    /exec "\$NEXTOP_APP_NODE" "\$NEXTOP_APP_PACKAGE_DIR\/server\.mjs"/,
+  );
+  assert.doesNotMatch(bootstrap, /exec node /);
   assert.match(agents, /@nextop-os\/daily-tech-radar/);
   assert.match(wrapper, /daily-tech-radar/);
   assert.match(wrapper, /server\/server\.js/);

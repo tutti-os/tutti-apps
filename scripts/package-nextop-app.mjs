@@ -199,6 +199,23 @@ async function copyManifestIcon({ manifest, packageSourceDir, packageRoot }) {
   await cp(path.join(packageSourceDir, iconSrc), path.join(packageRoot, iconSrc));
 }
 
+async function copyManifestLocalizations({
+  manifest,
+  packageSourceDir,
+  packageRoot,
+}) {
+  for (const locale of manifest.localizationInfo?.additionalLocales ?? []) {
+    if (!locale.file) {
+      continue;
+    }
+
+    await cp(
+      path.join(packageSourceDir, locale.file),
+      path.join(packageRoot, locale.file),
+    );
+  }
+}
+
 async function writeRuntimePackageJson({ packageRoot }) {
   const runtimePackage = {
     private: true,
@@ -256,6 +273,7 @@ async function writePackageFiles({ appConfig, version }) {
     path.join(packageRoot, "server.mjs"),
   );
   await copyManifestIcon({ manifest, packageSourceDir, packageRoot });
+  await copyManifestLocalizations({ manifest, packageSourceDir, packageRoot });
   await cp(
     path.join(appSourceDir, "dist", "client"),
     path.join(packageRoot, "dist"),

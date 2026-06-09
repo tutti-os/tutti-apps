@@ -13,7 +13,7 @@ import i18n from "@/i18n";
 import "../styles.css";
 import type { RouterContext } from "../router";
 
-const defaultTitle = i18n.t("app.title", { lng: "zh-CN", ns: "radar" });
+const defaultTitle = i18n.t("app.title", { lng: "en-US", ns: "radar" });
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
@@ -47,7 +47,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="en-US">
       <head>
         <HeadContent />
       </head>

@@ -5,7 +5,7 @@ import { getRadarBoardData } from "./radar.server";
 
 export const radarBoardSchema = z.object({
   date: z.string().optional(),
-  locale: z.enum(["zh-CN", "en-US"]).default("zh-CN"),
+  locale: z.enum(["zh-CN", "en-US"]).default("en-US"),
 });
 
 export const getRadarBoard = createServerFn({ method: "GET" })

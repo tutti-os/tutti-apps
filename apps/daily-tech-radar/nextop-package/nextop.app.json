@@ -2,16 +2,24 @@
   "schemaVersion": "nextop.app.manifest.v1",
   "appId": "daily-tech-radar",
   "version": "0.0.0",
-  "name": "每日产品雷达",
+  "name": "Daily Product Radar",
   "description": "Product Hunt and GitHub daily discovery cards.",
   "icon": {
     "type": "asset",
     "src": "icon.png"
   },
   "runtime": {
-    "kind": "custom",
     "bootstrap": "bootstrap.sh",
     "healthcheckPath": "/api/health"
+  },
+  "localizationInfo": {
+    "defaultLocale": "en-US",
+    "additionalLocales": [
+      {
+        "locale": "zh-CN",
+        "file": "locales/zh-CN/manifest.json"
+      }
+    ]
   },
   "launch": {
     "mode": "workspace-open"
