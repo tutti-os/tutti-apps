@@ -34,7 +34,7 @@ test("production Nextop app workflow publishes configured apps on main", async (
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(
     publish.uses,
-    "nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main",
+    "tutti-os/nextop/.github/workflows/publish-nextop-app-release.yml@main",
   );
   assert.equal(publish.with.app_id, "${{ needs.resolve.outputs.app_id }}");
   assert.equal(
@@ -69,7 +69,7 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(
     publish.uses,
-    "nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main",
+    "tutti-os/nextop/.github/workflows/publish-nextop-app-release.yml@main",
   );
   assert.equal(publish.with.app_id, "${{ needs.resolve.outputs.app_id }}");
   assert.equal(
