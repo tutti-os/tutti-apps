@@ -251,7 +251,7 @@ function TopNav({
         >
           <SelectTrigger
             aria-label={t("language.label")}
-            className="radar-pill min-w-[76px] gap-1.5 border-[var(--control-line)] bg-[var(--control-bg)] px-3 text-[var(--control-ink)] shadow-none focus-visible:ring-0"
+            className="radar-pill min-w-[76px] gap-1.5 border-[var(--control-line)] bg-[var(--control-bg)] px-3 text-[var(--control-ink)] shadow-none outline-none ring-0 focus:border-[var(--control-line)] focus:outline-none focus:ring-0 focus-visible:border-[var(--control-line)] focus-visible:outline-none focus-visible:ring-0 data-[state=open]:border-[var(--control-line)] data-[state=open]:shadow-none"
           >
             <span data-slot="select-value">
               {locale === "zh-CN"
