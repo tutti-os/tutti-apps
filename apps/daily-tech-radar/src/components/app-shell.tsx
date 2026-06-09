@@ -261,10 +261,10 @@ function TopNav({
           </SelectTrigger>
           <SelectContent
             align="center"
-            className="min-w-[86px] rounded-2xl border border-[var(--control-line)] bg-[var(--control-bg)] p-1 text-[var(--control-ink)] shadow-[0_18px_38px_-28px_rgba(23,25,28,0.42)]"
+            className="min-w-[86px] rounded-2xl border border-[var(--control-line)] bg-[var(--control-bg)] p-1.5 text-[var(--control-ink)] shadow-[0_18px_38px_-28px_rgba(23,25,28,0.42)]"
             sideOffset={8}
           >
-            <SelectGroup>
+            <SelectGroup className="flex flex-col gap-1.5">
               <SelectItem
                 className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:[background:var(--view-active-bg)] data-[state=checked]:[background:var(--control-active-bg)] data-[state=checked]:text-[var(--control-active-ink)] [&_[data-slot=select-item-indicator]]:text-[var(--control-active-ink)]"
                 value="zh-CN"
