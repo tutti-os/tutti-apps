@@ -35,7 +35,6 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import {
   filterRadarCards,
@@ -252,14 +251,32 @@ function TopNav({
         >
           <SelectTrigger
             aria-label={t("language.label")}
-            className="radar-pill"
+            className="radar-pill min-w-[86px] border-[var(--control-line)] bg-[var(--control-bg)] text-[var(--control-ink)] shadow-none focus-visible:ring-0"
           >
-            <SelectValue />
+            <span data-slot="select-value">
+              {locale === "zh-CN"
+                ? t("language.chinese")
+                : t("language.english")}
+            </span>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent
+            align="center"
+            className="min-w-[86px] rounded-2xl border border-[rgba(23,25,28,0.1)] bg-white/95 p-1 shadow-[0_18px_38px_-26px_rgba(23,25,28,0.55)] backdrop-blur-xl"
+            sideOffset={8}
+          >
             <SelectGroup>
-              <SelectItem value="zh-CN">{t("language.chinese")}</SelectItem>
-              <SelectItem value="en-US">{t("language.english")}</SelectItem>
+              <SelectItem
+                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:bg-[rgba(163,85,58,0.08)]"
+                value="zh-CN"
+              >
+                {t("language.chinese")}
+              </SelectItem>
+              <SelectItem
+                className="rounded-xl py-2 pl-3 pr-8 text-[14px] focus:bg-[rgba(163,85,58,0.08)]"
+                value="en-US"
+              >
+                {t("language.english")}
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
