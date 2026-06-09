@@ -2,8 +2,10 @@
 
 This package is the installed Nextop runtime for `daily-tech-radar`.
 
-- `bootstrap.sh` is the runtime entrypoint called by Nextop and must launch
-  Node through `$NEXTOP_APP_NODE`.
+- `bootstrap.sh` is the runtime entrypoint called by Nextop. It prefers
+  `$NEXTOP_APP_NODE`, `$NEXTOP_APP_PACKAGE_DIR`, `$NEXTOP_APP_HOST`,
+  `$NEXTOP_APP_PORT`, `$NEXTOP_APP_RUNTIME_DIR`, and `$NEXTOP_APP_DATA_DIR`,
+  but keeps local direct-start fallbacks for development.
 - `server.mjs` serves packaged `dist/` assets, delegates requests to the
   TanStack Start server build, and exposes `/api/health`.
 - The app reads trend data through `@nextop-os/daily-tech-radar`.

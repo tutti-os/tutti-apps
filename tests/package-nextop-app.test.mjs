@@ -144,9 +144,12 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   assert.equal(manifestLocale.name, "每日产品雷达");
   assert.match(bootstrap, /NEXTOP_APP_PACKAGE_DIR/);
   assert.match(bootstrap, /NEXTOP_APP_NODE/);
+  assert.match(bootstrap, /app_node="\$\{NEXTOP_APP_NODE:-node\}"/);
+  assert.match(bootstrap, /app_host="\$\{NEXTOP_APP_HOST:-127\.0\.0\.1\}"/);
+  assert.match(bootstrap, /app_port="\$\{NEXTOP_APP_PORT:-3002\}"/);
   assert.match(
     bootstrap,
-    /exec "\$NEXTOP_APP_NODE" "\$NEXTOP_APP_PACKAGE_DIR\/server\.mjs"/,
+    /exec "\$app_node" "\$app_package_dir\/server\.mjs"/,
   );
   assert.doesNotMatch(bootstrap, /exec node /);
   assert.match(agents, /@nextop-os\/daily-tech-radar/);
