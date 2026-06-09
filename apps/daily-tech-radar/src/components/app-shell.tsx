@@ -30,6 +30,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   filterRadarCards,
   getVisibleCategories,
 } from "@/features/radar/filtering";
@@ -238,20 +246,23 @@ function TopNav({
             {t(sourceLabelKey(item))}
           </button>
         ))}
-        <label className="radar-locale-control">
-          <span className="sr-only">{t("language.label")}</span>
-          <select
+        <Select
+          value={locale}
+          onValueChange={(nextLocale) => onLocaleChange(nextLocale as Locale)}
+        >
+          <SelectTrigger
             aria-label={t("language.label")}
             className="radar-pill"
-            value={locale}
-            onChange={(event) =>
-              onLocaleChange(event.currentTarget.value as Locale)
-            }
           >
-            <option value="zh-CN">{t("language.chinese")}</option>
-            <option value="en-US">{t("language.english")}</option>
-          </select>
-        </label>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="zh-CN">{t("language.chinese")}</SelectItem>
+              <SelectItem value="en-US">{t("language.english")}</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <DatePicker
           availableDates={availableDates}
           className="radar-nav-date"
