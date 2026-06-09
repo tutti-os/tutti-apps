@@ -40,7 +40,7 @@ jobs:
 
   publish:
     needs: resolve
-    uses: nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main
+    uses: tutti-os/nextop/.github/workflows/publish-nextop-app-release.yml@main
     with:
       app_id: ${{ needs.resolve.outputs.app_id }}
       package_command: ${{ needs.resolve.outputs.package_command }}
