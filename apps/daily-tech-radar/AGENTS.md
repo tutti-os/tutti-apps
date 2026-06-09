@@ -22,9 +22,11 @@ pnpm package:nextop --app daily-tech-radar
 
 ## i18n Rules
 
-- Locale must come from `window.nextop?.appContext || window.nextopAppContext`
-  when available. Support host `get()` and `subscribe()`, fall back to English,
-  and do not read `locale` or `lang` from URL search params.
+- Locale may come from the app's own URL/router state or language switcher.
+  When no app-local locale is set, read
+  `window.nextop?.appContext || window.nextopAppContext` with `get()` and
+  `subscribe()`, then fall back to English. App-local language switching must
+  not mutate host app context or the main application's global language.
 - Radar data requests and UI i18n must use the same locale.
 - `src/i18n/locales/*/radar.json` is the only source for Daily Tech Radar UI
   copy.

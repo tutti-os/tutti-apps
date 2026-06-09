@@ -44,6 +44,17 @@ export function resolveLocale(locale: unknown): Locale {
   return locale === "zh-CN" ? "zh-CN" : defaultLocale;
 }
 
+export function resolveAppLocale(
+  appLocale: unknown,
+  hostLocale: unknown,
+): Locale {
+  if (appLocale === "zh-CN" || appLocale === "en-US") {
+    return appLocale;
+  }
+
+  return resolveLocale(hostLocale);
+}
+
 export async function readHostLocale(host: HostWindow = currentHost()) {
   const appContext = getAppContext(host);
 

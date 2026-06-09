@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   readHostLocale,
+  resolveAppLocale,
   resolveLocale,
   subscribeHostLocale,
 } from "./app-context";
@@ -22,6 +23,13 @@ describe("Nextop app context locale", () => {
     };
 
     expect(await readHostLocale(host)).toBe("zh-CN");
+  });
+
+  it("lets the app URL locale override the host locale without mutating host context", () => {
+    expect(resolveAppLocale("en-US", "zh-CN")).toBe("en-US");
+    expect(resolveAppLocale("zh-CN", "en-US")).toBe("zh-CN");
+    expect(resolveAppLocale(undefined, "zh-CN")).toBe("zh-CN");
+    expect(resolveAppLocale(undefined, undefined)).toBe("en-US");
   });
 
   it("subscribes to host locale changes and normalizes unsupported values", () => {
