@@ -77,6 +77,28 @@ export function resolvePublishTarget(
   };
 }
 
+export function resolvePublishTargets(
+  config,
+  { appId = "", environment = "production" } = {},
+) {
+  const envConfig = config.environments?.[environment];
+  if (!envConfig) {
+    throw new Error(`Unknown publish environment: ${environment}`);
+  }
+
+  const resolvedAppId = appId || envConfig.defaultAppId;
+  if (resolvedAppId === "all") {
+    if (!envConfig.appIds?.length) {
+      throw new Error(`No apps enabled for ${environment} publishing.`);
+    }
+    return envConfig.appIds.map((enabledAppId) =>
+      resolvePublishTarget(config, { appId: enabledAppId, environment }),
+    );
+  }
+
+  return [resolvePublishTarget(config, { appId: resolvedAppId, environment })];
+}
+
 async function writeGithubOutputs(
   target,
   outputPath = process.env.GITHUB_OUTPUT,
@@ -91,11 +113,18 @@ async function writeGithubOutputs(
 if (process.argv[1] === scriptPath) {
   const args = parseArgs();
   const config = await readPublishConfig();
-  const target = resolvePublishTarget(config, {
+  const targets = resolvePublishTargets(config, {
     appId: args.appId,
     environment: args.environment,
   });
+  const outputs = {
+    targets_json: JSON.stringify(targets),
+  };
 
-  console.log(JSON.stringify(target, null, 2));
-  await writeGithubOutputs(target);
+  if (targets.length === 1) {
+    Object.assign(outputs, targets[0]);
+  }
+
+  console.log(JSON.stringify(targets, null, 2));
+  await writeGithubOutputs(outputs);
 }

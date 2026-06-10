@@ -138,18 +138,21 @@ Production workflow:
 - `.github/workflows/publish-nextop-app.yml`
 - runs on `main` pushes and manual dispatch
 - defaults to the production default app in `nextop.publish.json`
+- manual dispatch can select one configured app or `all`
 
 Staging workflow:
 
 - `.github/workflows/publish-nextop-app-staging.yml`
 - runs only on manual dispatch
 - publishes to the staging release prefix
+- manual dispatch can select one configured app or `all`
 
-Both workflows resolve the selected app through
-`scripts/resolve-nextop-publish-target.mjs`, then call:
+Both workflows resolve the selected app, or expand `all` to every app enabled
+for the selected environment, through `scripts/resolve-nextop-publish-target.mjs`.
+They publish the resulting target matrix through:
 
 ```txt
-nextop-os/nextop/.github/workflows/publish-nextop-app-release.yml@main
+tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main
 ```
 
 ## Safety Rules

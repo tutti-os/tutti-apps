@@ -7,7 +7,10 @@ on:
         description: Nextop app id to publish.
         required: false
         default: daily-tech-radar
-        type: string
+        type: choice
+        options:
+          - all
+          - daily-tech-radar
       release_version:
         description: Optional release version override. Defaults to manifest.version + short git sha.
         required: false
@@ -21,10 +24,7 @@ jobs:
   resolve:
     runs-on: ubuntu-latest
     outputs:
-      app_id: ${{ steps.target.outputs.app_id }}
-      package_command: ${{ steps.target.outputs.package_command }}
-      package_dir: ${{ steps.target.outputs.package_dir }}
-      icon_path: ${{ steps.target.outputs.icon_path }}
+      targets_json: ${{ steps.target.outputs.targets_json }}
     steps:
       - name: Checkout app repository
         uses: actions/checkout@v6
@@ -37,12 +37,16 @@ jobs:
 
   publish:
     needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(needs.resolve.outputs.targets_json) }}
     uses: tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main
     with:
-      app_id: ${{ needs.resolve.outputs.app_id }}
-      package_command: ${{ needs.resolve.outputs.package_command }}
-      package_dir: ${{ needs.resolve.outputs.package_dir }}
-      icon_path: ${{ needs.resolve.outputs.icon_path }}
+      app_id: ${{ matrix.target.app_id }}
+      package_command: ${{ matrix.target.package_command }}
+      package_dir: ${{ matrix.target.package_dir }}
+      icon_path: ${{ matrix.target.icon_path }}
       release_version: ${{ github.event.inputs.release_version || '' }}
       runner: macos-latest
       pnpm_version: 10.26.2
