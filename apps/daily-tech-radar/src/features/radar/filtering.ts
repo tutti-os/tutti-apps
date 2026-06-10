@@ -1,5 +1,5 @@
-import type { RadarCard, RadarSource } from "./types";
 import { radarCategories } from "./taxonomy";
+import type { RadarCard, RadarSource } from "./types";
 
 type FilterInput = {
   category: string;
@@ -30,7 +30,9 @@ export function getVisibleCategories(
       continue;
     }
     for (const category of new Set(card.categories)) {
-      if (radarCategories.includes(category as (typeof radarCategories)[number])) {
+      if (
+        radarCategories.includes(category as (typeof radarCategories)[number])
+      ) {
         counts.set(category, (counts.get(category) ?? 0) + 1);
       }
     }

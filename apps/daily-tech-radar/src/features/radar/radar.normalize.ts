@@ -1,3 +1,4 @@
+import { categoryRank, deriveFiniteCategories } from "./taxonomy";
 import type {
   DailyTrendFeed,
   DailyTrendFeedItem,
@@ -8,7 +9,6 @@ import type {
   RadarCard,
   TrendIndex,
 } from "./types";
-import { categoryRank, deriveFiniteCategories } from "./taxonomy";
 
 type BoardInput = {
   date: string;
@@ -80,20 +80,21 @@ export function normalizeGitHubRepo(
     ...repo.classification.signals,
   ]);
   const categories = deriveFiniteCategories([
-      primaryCategory,
-      ...secondaryCategories,
-      repo.name,
-      repo.owner,
-      repo.metadata.description,
-      repo.readmeSignals.summary ?? undefined,
-      repo.metadata.language,
-      ...keywords,
-    ]);
+    primaryCategory,
+    ...secondaryCategories,
+    repo.name,
+    repo.owner,
+    repo.metadata.description,
+    repo.readmeSignals.summary ?? undefined,
+    repo.metadata.language,
+    ...keywords,
+  ]);
   const cover = getGitHubCover(repo);
   const score = repo.rank.score;
   const description = repo.readmeSignals.summary || repo.metadata.description;
   const summary =
-    repo.readmeSignals.summary && repo.readmeSignals.summary !== repo.metadata.description
+    repo.readmeSignals.summary &&
+    repo.readmeSignals.summary !== repo.metadata.description
       ? repo.metadata.description
       : undefined;
 
@@ -161,7 +162,10 @@ function getGitHubCover(repo: GitHubTrendRepo): {
   };
 }
 
-function shouldUseSemanticGitHubCover(repo: GitHubTrendRepo, visualUrl: string) {
+function shouldUseSemanticGitHubCover(
+  repo: GitHubTrendRepo,
+  visualUrl: string,
+) {
   const text = [
     visualUrl,
     repo.visual.sourceUrl,
@@ -172,9 +176,7 @@ function shouldUseSemanticGitHubCover(repo: GitHubTrendRepo, visualUrl: string) 
     .join(" ")
     .toLowerCase();
 
-  return (
-    /(^|[-_/])(banner|readme-banner|logo)([-_.:/]|$)/.test(text)
-  );
+  return /(^|[-_/])(banner|readme-banner|logo)([-_.:/]|$)/.test(text);
 }
 
 export function buildRadarBoard(input: BoardInput): RadarBoard {
@@ -188,7 +190,8 @@ export function buildRadarBoard(input: BoardInput): RadarBoard {
     ) ?? [];
   const cards = [...productCards, ...githubCards].sort(
     (left, right) =>
-      sourceOrder(left.type) - sourceOrder(right.type) || left.rank - right.rank,
+      sourceOrder(left.type) - sourceOrder(right.type) ||
+      left.rank - right.rank,
   );
 
   return {

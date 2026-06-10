@@ -53,8 +53,7 @@ body {
   margin: 0;
   color: var(--ink);
   font-family: var(--font-sans);
-  background:
-    radial-gradient(
+  background: radial-gradient(
       ellipse at 66% 24%,
       rgba(255, 152, 122, 0.12) 0,
       rgba(255, 152, 122, 0.05) 24%,
@@ -71,8 +70,7 @@ body {
       rgba(238, 233, 255, 0.13) 0,
       rgba(238, 233, 255, 0.05) 24%,
       transparent 48%
-    ),
-    linear-gradient(180deg, #ffffff 0%, #fbfaf8 50%, #f6f6f3 100%);
+    ), linear-gradient(180deg, #ffffff 0%, #fbfaf8 50%, #f6f6f3 100%);
   background-attachment: fixed;
 }
 
@@ -173,10 +171,8 @@ input:focus-visible {
   line-height: 1;
   text-decoration: none;
   box-shadow: none;
-  transition:
-    transform 160ms ease,
-    border-color 160ms ease,
-    background 160ms ease;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms
+    ease;
 }
 
 .radar-pill:hover,
@@ -284,10 +280,21 @@ input:focus-visible {
 .radar-signal {
   padding: 22px;
   color: var(--ink);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(249, 249, 247, 0.58)),
-    radial-gradient(circle at 16% 18%, rgba(211, 227, 252, 0.24), transparent 38%),
-    radial-gradient(circle at 88% 18%, rgba(251, 225, 209, 0.2), transparent 40%);
+  background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.86),
+      rgba(249, 249, 247, 0.58)
+    ),
+    radial-gradient(
+      circle at 16% 18%,
+      rgba(211, 227, 252, 0.24),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(251, 225, 209, 0.2),
+      transparent 40%
+    );
   backdrop-filter: blur(14px);
 }
 
@@ -520,9 +527,7 @@ input:focus-visible {
   border-radius: 18px;
   background: var(--panel);
   box-shadow: 0 12px 24px -24px rgba(23, 25, 28, 0.22);
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .radar-card:hover {
@@ -535,15 +540,20 @@ input:focus-visible {
   height: 172px;
   overflow: hidden;
   border-bottom: 1px solid rgba(23, 25, 28, 0.06);
-  background:
-    linear-gradient(135deg, rgba(211, 227, 252, 0.96), rgba(251, 225, 209, 0.96)),
+  background: linear-gradient(
+      135deg,
+      rgba(211, 227, 252, 0.96),
+      rgba(251, 225, 209, 0.96)
+    ),
     linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
 }
 
 .radar-cover.repo {
-  background:
-    linear-gradient(135deg, rgba(23, 25, 28, 0.94), rgba(76, 76, 76, 0.9)),
-    linear-gradient(90deg, rgba(113, 162, 255, 0.4), transparent);
+  background: linear-gradient(
+      135deg,
+      rgba(23, 25, 28, 0.94),
+      rgba(76, 76, 76, 0.9)
+    ), linear-gradient(90deg, rgba(113, 162, 255, 0.4), transparent);
 }
 
 .radar-cover img,
@@ -813,9 +823,16 @@ input:focus-visible {
   padding: 18px;
   overflow: hidden;
   color: #15202b;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(211, 227, 252, 0.54)),
-    radial-gradient(circle at 82% 18%, rgba(251, 225, 209, 0.78), transparent 34%);
+  background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(211, 227, 252, 0.54)
+    ),
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(251, 225, 209, 0.78),
+      transparent 34%
+    );
 }
 
 .radar-semantic-cover::before {
@@ -830,41 +847,59 @@ input:focus-visible {
 }
 
 .radar-semantic-cover.agent {
-  background:
-    linear-gradient(135deg, #f8fbff, #dcecff),
-    radial-gradient(circle at 76% 26%, rgba(239, 233, 255, 0.9), transparent 38%);
+  background: linear-gradient(135deg, #f8fbff, #dcecff),
+    radial-gradient(
+      circle at 76% 26%,
+      rgba(239, 233, 255, 0.9),
+      transparent 38%
+    );
 }
 
 .radar-semantic-cover.paper {
-  background:
-    linear-gradient(135deg, #ffffff, #eef3f9),
-    radial-gradient(circle at 78% 22%, rgba(211, 227, 252, 0.9), transparent 38%);
+  background: linear-gradient(135deg, #ffffff, #eef3f9),
+    radial-gradient(
+      circle at 78% 22%,
+      rgba(211, 227, 252, 0.9),
+      transparent 38%
+    );
 }
 
 .radar-semantic-cover.visual {
-  background:
-    linear-gradient(135deg, #fff7fb, #e8f2ff),
-    radial-gradient(circle at 78% 20%, rgba(255, 126, 93, 0.28), transparent 38%);
+  background: linear-gradient(135deg, #fff7fb, #e8f2ff),
+    radial-gradient(
+      circle at 78% 20%,
+      rgba(255, 126, 93, 0.28),
+      transparent 38%
+    );
 }
 
 .radar-semantic-cover.commerce {
-  background:
-    linear-gradient(135deg, #fffaf5, #e7f1eb),
-    radial-gradient(circle at 82% 22%, rgba(251, 225, 209, 0.9), transparent 38%);
+  background: linear-gradient(135deg, #fffaf5, #e7f1eb),
+    radial-gradient(
+      circle at 82% 22%,
+      rgba(251, 225, 209, 0.9),
+      transparent 38%
+    );
 }
 
 .radar-semantic-cover.secure {
-  background:
-    linear-gradient(135deg, #f8fffc, #e3f0ea),
-    radial-gradient(circle at 82% 24%, rgba(211, 227, 252, 0.68), transparent 38%);
+  background: linear-gradient(135deg, #f8fffc, #e3f0ea),
+    radial-gradient(
+      circle at 82% 24%,
+      rgba(211, 227, 252, 0.68),
+      transparent 38%
+    );
 }
 
 .radar-semantic-cover.model,
 .radar-semantic-cover.dev,
 .radar-semantic-cover.default {
-  background:
-    linear-gradient(135deg, #f8fbff, #f2f2f3),
-    radial-gradient(circle at 82% 22%, rgba(238, 233, 255, 0.86), transparent 38%);
+  background: linear-gradient(135deg, #f8fbff, #f2f2f3),
+    radial-gradient(
+      circle at 82% 22%,
+      rgba(238, 233, 255, 0.86),
+      transparent 38%
+    );
 }
 
 .radar-semantic-copy {

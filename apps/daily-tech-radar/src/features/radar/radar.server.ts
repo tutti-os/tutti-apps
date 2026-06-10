@@ -1,5 +1,5 @@
-import { createRadarClient } from "./radar.sdk.server";
 import { buildRadarBoard, mergeDates } from "./radar.normalize";
+import { createRadarClient } from "./radar.sdk.server";
 import type {
   DailyTrendFeed,
   DailyTrendPackage,

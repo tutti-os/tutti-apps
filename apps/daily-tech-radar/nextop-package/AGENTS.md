@@ -15,3 +15,17 @@ This package is the installed Nextop runtime for `daily-tech-radar`.
 
 Treat `NEXTOP_APP_PACKAGE_DIR` as read-only. Runtime data, if introduced later,
 must live under `NEXTOP_APP_DATA_DIR`.
+
+## CLI Surface
+
+The package exposes Nextop CLI scope `radar` through `nextop.cli.json`.
+
+Handlers are read-only HTTP `POST` routes served by the TanStack Start build:
+
+- `/nextop/cli/board`
+- `/nextop/cli/search`
+- `/nextop/cli/item`
+
+The CLI commands reuse the same SDK-backed board data as `/api/radar`. Do not
+add CLI writes unless durable storage is first introduced under
+`NEXTOP_APP_DATA_DIR`.

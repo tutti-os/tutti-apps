@@ -4,16 +4,16 @@ import { z } from "zod";
 
 import { AppShell } from "@/components/app-shell";
 import { radarBoardQueryOptions } from "@/features/radar/radar.queries";
-import {
-  defaultLocale,
-  resolveAppLocale,
-  useHostLocale,
-} from "@/i18n/app-context";
 import type {
   Locale,
   RadarSource,
   RadarViewMode,
 } from "@/features/radar/types";
+import {
+  defaultLocale,
+  resolveAppLocale,
+  useHostLocale,
+} from "@/i18n/app-context";
 
 const searchSchema = z.object({
   date: z.string().optional(),
