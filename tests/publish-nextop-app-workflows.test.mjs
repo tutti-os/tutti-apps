@@ -32,23 +32,26 @@ test("production Nextop app workflow publishes configured apps on main", async (
   assert.equal(workflow.name, "Publish Nextop App Production");
   assert.deepEqual(on.push.branches, ["main"]);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
+  assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
+  assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
+    "all",
+    "daily-tech-radar",
+  ]);
   assert.equal(
     publish.uses,
     "tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main",
   );
-  assert.equal(publish.with.app_id, "${{ needs.resolve.outputs.app_id }}");
+  assert.deepEqual(
+    publish.strategy.matrix.target,
+    "${{ fromJson(needs.resolve.outputs.targets_json) }}",
+  );
+  assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
   assert.equal(
     publish.with.package_command,
-    "${{ needs.resolve.outputs.package_command }}",
+    "${{ matrix.target.package_command }}",
   );
-  assert.equal(
-    publish.with.package_dir,
-    "${{ needs.resolve.outputs.package_dir }}",
-  );
-  assert.equal(
-    publish.with.icon_path,
-    "${{ needs.resolve.outputs.icon_path }}",
-  );
+  assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
+  assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
   assert.match(
     source,
     /resolve-nextop-publish-target\.mjs --environment production/,
@@ -67,23 +70,26 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   assert.equal(workflow.name, "Publish Nextop App Staging");
   assert.equal(on.push, undefined);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
+  assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
+  assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
+    "all",
+    "daily-tech-radar",
+  ]);
   assert.equal(
     publish.uses,
     "tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main",
   );
-  assert.equal(publish.with.app_id, "${{ needs.resolve.outputs.app_id }}");
+  assert.deepEqual(
+    publish.strategy.matrix.target,
+    "${{ fromJson(needs.resolve.outputs.targets_json) }}",
+  );
+  assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
   assert.equal(
     publish.with.package_command,
-    "${{ needs.resolve.outputs.package_command }}",
+    "${{ matrix.target.package_command }}",
   );
-  assert.equal(
-    publish.with.package_dir,
-    "${{ needs.resolve.outputs.package_dir }}",
-  );
-  assert.equal(
-    publish.with.icon_path,
-    "${{ needs.resolve.outputs.icon_path }}",
-  );
+  assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
+  assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
   assert.match(
     source,
     /resolve-nextop-publish-target\.mjs --environment staging/,
