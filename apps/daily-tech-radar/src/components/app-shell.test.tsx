@@ -4,8 +4,10 @@ import { describe, expect, it, vi } from "vitest";
 import type { RadarBoard, RadarCard } from "@/features/radar/types";
 import {
   AppShell,
+  AppShellLoading,
   DetailDrawer,
   formatDateChipLabel,
+  getDatePickerAnchorMonth,
   getGalleryImageLoadState,
 } from "./app-shell";
 
@@ -93,6 +95,36 @@ describe("AppShell", () => {
     expect(formatDateChipLabel("2026-06-06", "2026-06-08", "en-US")).toBe(
       "2 days ago",
     );
+  });
+
+  it("anchors the date picker month to the selected date", () => {
+    const month = getDatePickerAnchorMonth("2026-05-31", [
+      "2026-11-30",
+      "2026-05-31",
+    ]);
+
+    expect(month?.getFullYear()).toBe(2026);
+    expect(month?.getMonth()).toBe(4);
+    expect(month?.getDate()).toBe(31);
+  });
+
+  it("renders a loading shell before radar data is available", () => {
+    const html = renderToStaticMarkup(
+      <AppShellLoading
+        locale="zh-CN"
+        searchState={{
+          category: "all",
+          date: "",
+          query: "",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
+    );
+
+    expect(html).toContain("每日产品雷达");
+    expect(html).toContain("radar-card-skeleton");
   });
 
   it("does not advertise favorites while the favorite action is hidden", () => {
