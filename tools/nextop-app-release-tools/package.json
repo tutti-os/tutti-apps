@@ -1,0 +1,13 @@
+{
+  "name": "@nextop-apps/nextop-app-release-tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "build-nextop-app-release": "./bin/build-nextop-app-release.mjs",
+    "verify-nextop-app-release-artifacts": "./bin/verify-nextop-app-release-artifacts.mjs"
+  },
+  "dependencies": {
+    "@nextop-os/app-release-tools": "0.0.31"
+  }
+}

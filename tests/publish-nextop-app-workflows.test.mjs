@@ -52,6 +52,10 @@ test("production Nextop app workflow publishes configured apps on main", async (
   );
   assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
   assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
+  assert.equal(
+    publish.with.release_tools_package,
+    "file:${{ github.workspace }}/tools/nextop-app-release-tools",
+  );
   assert.match(
     source,
     /resolve-nextop-publish-target\.mjs --environment production/,
@@ -90,6 +94,10 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   );
   assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
   assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
+  assert.equal(
+    publish.with.release_tools_package,
+    "file:${{ github.workspace }}/tools/nextop-app-release-tools",
+  );
   assert.match(
     source,
     /resolve-nextop-publish-target\.mjs --environment staging/,
