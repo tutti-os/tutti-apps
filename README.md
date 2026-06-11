@@ -11,6 +11,8 @@
 <p align="center">
   <a href="#quick-start">Quick Start</a>
   ·
+  <a href="./README.zh-CN.md">简体中文</a>
+  ·
   <a href="#nextop-package-mode">Nextop Package</a>
   ·
   <a href="#cli-commands">CLI</a>
