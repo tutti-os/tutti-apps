@@ -1,8 +1,8 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { AppShell } from "@/components/app-shell";
+import { AppShell, AppShellLoading } from "@/components/app-shell";
 import { radarBoardQueryOptions } from "@/features/radar/radar.queries";
 import type {
   Locale,
@@ -28,13 +28,6 @@ type IndexSearch = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/")({
   component: IndexRoute,
-  loader: async ({ context, deps }) => {
-    const { date, locale } = deps as IndexSearch;
-    await context.queryClient.ensureQueryData(
-      radarBoardQueryOptions({ date, locale: locale ?? defaultLocale }),
-    );
-  },
-  loaderDeps: ({ search }) => search as IndexSearch,
   validateSearch: (search) => searchSchema.parse(search),
 });
 
@@ -43,34 +36,54 @@ function IndexRoute() {
   const search = Route.useSearch();
   const hostLocale = useHostLocale();
   const locale = resolveAppLocale(search.locale, hostLocale);
-  const { data: board } = useSuspenseQuery(
+  const { data: board } = useQuery(
     radarBoardQueryOptions({ date: search.date, locale }),
   );
+  const searchState = {
+    category: search.filter,
+    date: search.date ?? board?.date ?? "",
+    locale,
+    query: search.query,
+    source: search.source,
+    view: search.view,
+  };
+
+  function handleSearchStateChange(next: {
+    category: string;
+    date: string;
+    locale?: Locale;
+    query: string;
+    source: RadarSource;
+    view: RadarViewMode;
+  }) {
+    navigate({
+      resetScroll: false,
+      search: {
+        date: next.date,
+        filter: next.category,
+        locale: next.locale as Locale,
+        query: next.query,
+        source: next.source as RadarSource,
+        view: next.view as RadarViewMode,
+      },
+    });
+  }
+
+  if (!board) {
+    return (
+      <AppShellLoading
+        locale={locale}
+        searchState={searchState}
+        onSearchStateChange={handleSearchStateChange}
+      />
+    );
+  }
 
   return (
     <AppShell
       board={board}
-      searchState={{
-        category: search.filter,
-        date: search.date ?? board.date,
-        locale,
-        query: search.query,
-        source: search.source,
-        view: search.view,
-      }}
-      onSearchStateChange={(next) => {
-        navigate({
-          resetScroll: false,
-          search: {
-            date: next.date,
-            filter: next.category,
-            locale: next.locale as Locale,
-            query: next.query,
-            source: next.source as RadarSource,
-            view: next.view as RadarViewMode,
-          },
-        });
-      }}
+      searchState={searchState}
+      onSearchStateChange={handleSearchStateChange}
     />
   );
 }

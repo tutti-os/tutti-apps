@@ -535,6 +535,70 @@ input:focus-visible {
   box-shadow: 0 18px 34px -26px rgba(23, 25, 28, 0.26);
 }
 
+.radar-card-skeleton {
+  pointer-events: none;
+}
+
+.radar-skeleton-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.radar-skeleton-line,
+.radar-skeleton-pill,
+.radar-skeleton-chip,
+.radar-skeleton-media {
+  display: block;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgba(23, 25, 28, 0.055),
+    rgba(255, 255, 255, 0.58),
+    rgba(23, 25, 28, 0.055)
+  );
+  background-size: 220% 100%;
+  animation: radar-skeleton 1400ms ease-in-out infinite;
+}
+
+.radar-skeleton-line {
+  width: 100%;
+  height: 13px;
+  border-radius: 999px;
+}
+
+.radar-skeleton-line.short {
+  width: 42%;
+}
+
+.radar-skeleton-line.title {
+  width: 72%;
+  height: 20px;
+}
+
+.radar-skeleton-pill {
+  height: 38px;
+  border-radius: 999px;
+}
+
+.radar-skeleton-chip {
+  width: 74px;
+  height: 25px;
+  border-radius: 999px;
+}
+
+.radar-skeleton-media {
+  height: 172px;
+}
+
+@keyframes radar-skeleton {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
 .radar-cover {
   position: relative;
   height: 172px;

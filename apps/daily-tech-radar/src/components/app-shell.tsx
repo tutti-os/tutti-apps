@@ -71,6 +71,14 @@ type AppShellProps = {
 type RadarT = TFunction<"radar">;
 
 const galleryImageLoadingDelayMs = 150;
+const skeletonCardIds = [
+  "radar-skeleton-card-1",
+  "radar-skeleton-card-2",
+  "radar-skeleton-card-3",
+  "radar-skeleton-card-4",
+  "radar-skeleton-card-5",
+  "radar-skeleton-card-6",
+];
 
 type GalleryImageProbe = Pick<HTMLImageElement, "complete" | "naturalWidth">;
 
@@ -196,6 +204,137 @@ export function AppShell({
         onClose={() => setSelectedCard(null)}
       />
     </main>
+  );
+}
+
+export function AppShellLoading({
+  locale,
+  onSearchStateChange,
+  searchState,
+}: {
+  locale: Locale;
+  onSearchStateChange: (next: SearchState) => void;
+  searchState: SearchState;
+}) {
+  const { i18n: i18next } = useTranslation("radar");
+  const t = useMemo(() => i18n.getFixedT(locale, "radar"), [locale]);
+  const loadingBoard = useMemo<RadarBoard>(
+    () => ({
+      availableDates: [],
+      cards: [],
+      categories: [],
+      date: "",
+      generatedAt: "",
+      locale,
+      metrics: {
+        aiPercent: 0,
+        githubCount: 0,
+        productHuntCount: 0,
+      },
+    }),
+    [locale],
+  );
+
+  function updateState(partial: Partial<SearchState>) {
+    onSearchStateChange({
+      ...searchState,
+      locale,
+      ...partial,
+    });
+  }
+
+  useEffect(() => {
+    if (i18next.language !== locale) {
+      void i18next.changeLanguage(locale);
+    }
+  }, [i18next, locale]);
+
+  useEffect(() => {
+    const title = t("app.title");
+
+    document.documentElement.lang = locale;
+    document.title = title;
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", title);
+  }, [locale, t]);
+
+  return (
+    <main className="radar-app" aria-busy="true">
+      <TopNav
+        availableDates={[]}
+        date=""
+        locale={locale}
+        source={searchState.source}
+        t={t}
+        onDateChange={(date) => updateState({ category: "all", date })}
+        onLocaleChange={(nextLocale) =>
+          updateState({ category: "all", locale: nextLocale })
+        }
+        onSourceChange={(source) => updateState({ category: "all", source })}
+      />
+      <HeroSection
+        board={loadingBoard}
+        query={searchState.query}
+        t={t}
+        onClear={() => updateState({ query: "" })}
+        onQueryChange={(query) => updateState({ query })}
+      />
+      <Toolbar
+        categories={[]}
+        category="all"
+        locale={locale}
+        t={t}
+        view={searchState.view}
+        onCategoryChange={(category) => updateState({ category })}
+        onViewChange={(view) => updateState({ view })}
+      />
+      <section className="radar-layout">
+        <RadarLoadingSidebar />
+        <CardGridSkeleton />
+      </section>
+    </main>
+  );
+}
+
+function RadarLoadingSidebar() {
+  return (
+    <aside className="radar-sidebar" aria-hidden="true">
+      <div className="radar-sidebar-card radar-skeleton-panel">
+        <span className="radar-skeleton-line short" />
+        <span className="radar-skeleton-line" />
+        <span className="radar-skeleton-line" />
+        <span className="radar-skeleton-line" />
+      </div>
+      <div className="radar-sidebar-card radar-skeleton-panel">
+        <span className="radar-skeleton-line short" />
+        <span className="radar-skeleton-pill" />
+        <span className="radar-skeleton-pill" />
+        <span className="radar-skeleton-pill" />
+      </div>
+    </aside>
+  );
+}
+
+function CardGridSkeleton() {
+  return (
+    <section className="radar-grid" aria-hidden="true">
+      {skeletonCardIds.map((id) => (
+        <article className="radar-card radar-card-skeleton" key={id}>
+          <span className="radar-skeleton-media" />
+          <div className="radar-card-body">
+            <span className="radar-skeleton-line short" />
+            <span className="radar-skeleton-line title" />
+            <span className="radar-skeleton-line" />
+            <span className="radar-skeleton-line" />
+            <div className="radar-card-meta">
+              <span className="radar-skeleton-chip" />
+              <span className="radar-skeleton-chip" />
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
   );
 }
 
@@ -538,13 +677,19 @@ function DatePicker({
 }) {
   const [open, setOpen] = useState(false);
   const selectedDate = parseDateKey(date);
-  const latestDate = availableDates[0] ?? "";
-  const latestMonth = parseDateKey(selectedDate ? date : latestDate);
-  const [month, setMonth] = useState<Date | undefined>(latestMonth);
+  const anchorMonth = getDatePickerAnchorMonth(date, availableDates);
+  const [month, setMonth] = useState<Date | undefined>(anchorMonth);
   const availableDateSet = useMemo(
     () => new Set(availableDates),
     [availableDates],
   );
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (nextOpen) {
+      setMonth(getDatePickerAnchorMonth(date, availableDates));
+    }
+    setOpen(nextOpen);
+  }
 
   function handleSelect(nextDate: Date | undefined) {
     if (!nextDate) {
@@ -562,7 +707,7 @@ function DatePicker({
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <button
           className={`radar-pill radar-date-trigger ${className}`}
@@ -594,6 +739,13 @@ function DatePicker({
       </PopoverContent>
     </Popover>
   );
+}
+
+export function getDatePickerAnchorMonth(
+  date: string,
+  availableDates: string[],
+) {
+  return parseDateKey(date) ?? parseDateKey(availableDates[0] ?? "");
 }
 
 function CardGrid({
