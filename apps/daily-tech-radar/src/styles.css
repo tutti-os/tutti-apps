@@ -466,6 +466,32 @@ input:focus-visible {
   --cell-size: 36px;
 }
 
+.radar-date-popover [data-selected-single="true"],
+.radar-date-popover [data-range-start="true"],
+.radar-date-popover [data-range-end="true"] {
+  background: var(--accent);
+  border-color: rgba(95, 45, 31, 0.38);
+  color: #fff;
+  box-shadow: 0 10px 22px -16px rgba(95, 45, 31, 0.72);
+}
+
+.radar-date-popover [data-selected-single="true"] {
+  border-radius: 12px;
+  font-weight: 650;
+}
+
+.radar-date-popover [data-selected-single="true"]:hover,
+.radar-date-popover [data-range-start="true"]:hover,
+.radar-date-popover [data-range-end="true"]:hover {
+  background: #8f412c;
+  color: #fff;
+}
+
+.radar-date-popover [data-range-middle="true"] {
+  background: rgba(159, 81, 56, 0.12);
+  color: var(--control-active-ink);
+}
+
 .radar-date-popover-footer {
   display: flex;
   align-items: center;

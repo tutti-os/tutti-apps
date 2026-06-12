@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
@@ -106,6 +107,16 @@ describe("AppShell", () => {
     expect(month?.getFullYear()).toBe(2026);
     expect(month?.getMonth()).toBe(4);
     expect(month?.getDate()).toBe(31);
+  });
+
+  it("styles the selected date picker day", () => {
+    const css = readFileSync(
+      new URL("../styles.css", import.meta.url),
+      "utf8",
+    );
+
+    expect(css).toContain('[data-selected-single="true"]');
+    expect(css).toContain("background: var(--accent)");
   });
 
   it("renders a loading shell before radar data is available", () => {
