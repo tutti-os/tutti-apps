@@ -377,10 +377,6 @@ async function runPnpm(args, options = {}) {
   return run("pnpm", args, options, PNPM_FALLBACK_COMMANDS);
 }
 
-async function readAppPackage(appConfig) {
-  return readJson(path.join(rootDir, appConfig.sourceDir, "package.json"));
-}
-
 async function copyIfExists(from, to) {
   try {
     await access(from);
@@ -391,11 +387,13 @@ async function copyIfExists(from, to) {
   return true;
 }
 
-async function writeManifest({ packageSourceDir, packageRoot, version }) {
-  const manifest = await readJson(
-    path.join(packageSourceDir, "nextop.app.json"),
+async function readPackageSourceManifest(appConfig) {
+  return readJson(
+    path.join(rootDir, appConfig.packageSourceDir, "nextop.app.json"),
   );
-  manifest.version = version;
+}
+
+async function writeManifest({ manifest, packageRoot }) {
   await writeFile(
     path.join(packageRoot, "nextop.app.json"),
     `${JSON.stringify(manifest, null, 2)}\n`,
@@ -486,7 +484,7 @@ async function bundleServer({ appConfig, appSourceDir, packageRoot }) {
   ]);
 }
 
-async function writePackageFiles({ appConfig, version }) {
+async function writePackageFiles({ appConfig, manifest }) {
   const packageSourceDir = path.join(rootDir, appConfig.packageSourceDir);
   const packageRoot = path.join(rootDir, appConfig.packageDir);
   const appSourceDir = path.join(rootDir, appConfig.sourceDir);
@@ -494,10 +492,9 @@ async function writePackageFiles({ appConfig, version }) {
   await rm(packageRoot, { force: true, recursive: true });
   await mkdir(packageRoot, { recursive: true });
 
-  const manifest = await writeManifest({
-    packageSourceDir,
+  await writeManifest({
+    manifest,
     packageRoot,
-    version,
   });
 
   await cp(
@@ -546,14 +543,14 @@ async function createZip({ appId, packageRoot, version, buildRoot }) {
 export async function packageNextopApp({ appId = "" } = {}) {
   const config = await readPublishConfig();
   const { appId: resolvedAppId, app } = resolveAppConfig(config, appId);
-  const appPackage = await readAppPackage(app);
-  const version = appPackage.version ?? "0.0.0";
+  const manifest = await readPackageSourceManifest(app);
+  const version = manifest.version ?? "0.0.0";
 
   await runPnpm(["--filter", app.packageName, "build"]);
 
   const { packageRoot } = await writePackageFiles({
     appConfig: app,
-    version,
+    manifest,
   });
   await validatePackageRoot(packageRoot);
 
