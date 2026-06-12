@@ -30,6 +30,7 @@ test("production Nextop app workflow publishes configured apps on main", async (
   const publish = workflow.jobs.publish;
 
   assert.equal(workflow.name, "Publish Nextop App Production");
+  assert.equal(workflow.permissions.contents, "write");
   assert.deepEqual(on.push.branches, ["main"]);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
@@ -37,6 +38,10 @@ test("production Nextop app workflow publishes configured apps on main", async (
     "all",
     "daily-tech-radar",
   ]);
+  assert.equal(on.workflow_dispatch.inputs.publish_catalog.type, "boolean");
+  assert.equal(on.workflow_dispatch.inputs.publish_catalog.default, false);
+  assert.equal(on.workflow_dispatch.inputs.catalog_only.type, "boolean");
+  assert.equal(on.workflow_dispatch.inputs.catalog_only.default, false);
   assert.equal(
     publish.uses,
     "tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main",
@@ -52,6 +57,14 @@ test("production Nextop app workflow publishes configured apps on main", async (
   );
   assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
   assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
+  assert.equal(
+    publish.with.version_manifest_path,
+    "${{ matrix.target.version_manifest_path }}",
+  );
+  assert.match(source, /inputs\.publish_catalog/);
+  assert.match(source, /inputs\.catalog_only/);
+  assert.match(source, /NEXTOP_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
+  assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
     /resolve-nextop-publish-target\.mjs --environment production/,
@@ -68,6 +81,7 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   const publish = workflow.jobs.publish;
 
   assert.equal(workflow.name, "Publish Nextop App Staging");
+  assert.equal(workflow.permissions.contents, "write");
   assert.equal(on.push, undefined);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
@@ -75,6 +89,10 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
     "all",
     "daily-tech-radar",
   ]);
+  assert.equal(on.workflow_dispatch.inputs.publish_catalog.type, "boolean");
+  assert.equal(on.workflow_dispatch.inputs.publish_catalog.default, false);
+  assert.equal(on.workflow_dispatch.inputs.catalog_only.type, "boolean");
+  assert.equal(on.workflow_dispatch.inputs.catalog_only.default, false);
   assert.equal(
     publish.uses,
     "tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main",
@@ -90,6 +108,13 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   );
   assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
   assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
+  assert.equal(
+    publish.with.version_manifest_path,
+    "${{ matrix.target.version_manifest_path }}",
+  );
+  assert.equal(publish.with.publish_catalog, "${{ inputs.publish_catalog }}");
+  assert.equal(publish.with.catalog_only, "${{ inputs.catalog_only }}");
+  assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
     /resolve-nextop-publish-target\.mjs --environment staging/,

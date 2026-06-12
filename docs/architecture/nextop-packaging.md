@@ -155,6 +155,28 @@ They publish the resulting target matrix through:
 tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main
 ```
 
+The resolver must pass each target's source app manifest as
+`version_manifest_path`. For the standard app layout this is:
+
+```txt
+apps/<app-id>/nextop-package/nextop.app.json
+```
+
+Automatic release version bumps update and commit that source manifest before
+the package command runs. The package command then copies the bumped manifest
+into `build/nextop-app/<app-id>/package/nextop.app.json`.
+
+Manual publishing has three catalog modes:
+
+1. Release only: leave `publish_catalog` and `catalog_only` disabled. The
+   workflow uploads the app release and updates `apps/<appId>/latest.json`; App
+   Center sees it after a later catalog publish.
+2. Release and catalog: enable `publish_catalog`. The workflow uploads the app
+   release and then updates `catalog.json`.
+3. Catalog only: enable `catalog_only`. The workflow skips packaging and app
+   release upload, then publishes the existing `apps/<appId>/latest.json` into
+   `catalog.json` without bumping a new version.
+
 ## Safety Rules
 
 - Package roots must contain `nextop.app.json`, `AGENTS.md`, executable
