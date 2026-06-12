@@ -164,7 +164,12 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   );
   const sourceManifest = JSON.parse(
     await readFile(
-      path.join("apps", "daily-tech-radar", "nextop-package", "nextop.app.json"),
+      path.join(
+        "apps",
+        "daily-tech-radar",
+        "nextop-package",
+        "nextop.app.json",
+      ),
       "utf8",
     ),
   );
