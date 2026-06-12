@@ -162,6 +162,12 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   const manifest = JSON.parse(
     await readFile(path.join(packageRoot, "nextop.app.json"), "utf8"),
   );
+  const sourceManifest = JSON.parse(
+    await readFile(
+      path.join("apps", "daily-tech-radar", "nextop-package", "nextop.app.json"),
+      "utf8",
+    ),
+  );
   const bootstrap = await readFile(
     path.join(packageRoot, "bootstrap.sh"),
     "utf8",
@@ -192,6 +198,7 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   );
 
   assert.equal(manifest.appId, "daily-tech-radar");
+  assert.equal(manifest.version, sourceManifest.version);
   assert.equal(manifest.name, "Daily Product Radar");
   assert.deepEqual(manifest.cli, {
     manifest: "nextop.cli.json",
@@ -234,5 +241,8 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   assert.doesNotMatch(server, /from "@tanstack\/react-router"/);
   assert.doesNotMatch(server, /from "react\/jsx-runtime"/);
   assert.match(clientAssets, /--ink/);
-  assert.match(zipPath, /daily-tech-radar-0\.0\.0\.zip$/);
+  assert.equal(
+    path.basename(zipPath),
+    `daily-tech-radar-${sourceManifest.version}.zip`,
+  );
 });
