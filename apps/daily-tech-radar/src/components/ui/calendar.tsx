@@ -200,46 +200,51 @@ function CalendarDropdown({
   value,
   "aria-label": ariaLabel,
 }: DropdownProps) {
+  const [portalContainer, setPortalContainer] =
+    React.useState<HTMLSpanElement | null>(null);
   const selectedValue = value === undefined ? undefined : String(value);
 
   return (
-    <Select
-      onValueChange={(nextValue) => {
-        onChange?.({
-          currentTarget: { value: nextValue },
-          target: { value: nextValue },
-        } as React.ChangeEvent<HTMLSelectElement>);
-      }}
-      {...(disabled ? { disabled } : {})}
-      {...(name ? { name } : {})}
-      {...(selectedValue !== undefined ? { value: selectedValue } : {})}
-    >
-      <SelectTrigger
-        id={id}
-        aria-label={ariaLabel}
-        className={cn("min-w-[5.25rem] font-medium shadow-xs", className)}
-        size="sm"
-        style={style}
+    <span ref={setPortalContainer} className="contents">
+      <Select
+        onValueChange={(nextValue) => {
+          onChange?.({
+            currentTarget: { value: nextValue },
+            target: { value: nextValue },
+          } as React.ChangeEvent<HTMLSelectElement>);
+        }}
+        {...(disabled ? { disabled } : {})}
+        {...(name ? { name } : {})}
+        {...(selectedValue !== undefined ? { value: selectedValue } : {})}
       >
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent
-        align="center"
-        className="max-h-[18rem] bg-popover shadow-xl"
-      >
-        <SelectGroup>
-          {options?.map((option) => (
-            <SelectItem
-              key={option.value}
-              disabled={option.disabled}
-              value={String(option.value)}
-            >
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+        <SelectTrigger
+          id={id}
+          aria-label={ariaLabel}
+          className={cn("min-w-[5.25rem] font-medium shadow-xs", className)}
+          size="sm"
+          style={style}
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent
+          align="center"
+          className="max-h-[18rem] bg-popover shadow-xl"
+          {...(portalContainer ? { container: portalContainer } : {})}
+        >
+          <SelectGroup>
+            {options?.map((option) => (
+              <SelectItem
+                key={option.value}
+                disabled={option.disabled}
+                value={String(option.value)}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </span>
   );
 }
 
