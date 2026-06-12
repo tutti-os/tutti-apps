@@ -2,7 +2,33 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--shadcn-accent);
+  --color-accent-foreground: var(--shadcn-accent-foreground);
+  --color-muted-foreground: var(--muted);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
 :root {
+  --background: #ffffff;
+  --foreground: #1c1d20;
+  --popover: #ffffff;
+  --popover-foreground: #1c1d20;
+  --primary: #9f5138;
+  --primary-foreground: #ffffff;
+  --shadcn-accent: #f6f6f4;
+  --shadcn-accent-foreground: #5f2d1f;
+  --border: rgba(23, 25, 28, 0.075);
+  --input: #ebe8e4;
+  --ring: rgba(159, 81, 56, 0.24);
   --ink: #1c1d20;
   --muted: #76777b;
   --soft: #f5f5f3;
@@ -469,9 +495,9 @@ input:focus-visible {
 .radar-date-popover [data-selected-single="true"],
 .radar-date-popover [data-range-start="true"],
 .radar-date-popover [data-range-end="true"] {
-  background: var(--accent);
+  background: var(--primary);
   border-color: rgba(95, 45, 31, 0.38);
-  color: #fff;
+  color: var(--primary-foreground);
   box-shadow: 0 10px 22px -16px rgba(95, 45, 31, 0.72);
 }
 
@@ -483,8 +509,8 @@ input:focus-visible {
 .radar-date-popover [data-selected-single="true"]:hover,
 .radar-date-popover [data-range-start="true"]:hover,
 .radar-date-popover [data-range-end="true"]:hover {
-  background: #8f412c;
-  color: #fff;
+  background: color-mix(in srgb, var(--primary) 90%, #000);
+  color: var(--primary-foreground);
 }
 
 .radar-date-popover [data-range-middle="true"] {

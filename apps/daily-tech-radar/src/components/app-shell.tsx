@@ -23,6 +23,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Zoom from "react-medium-image-zoom";
 
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -52,6 +53,7 @@ import type {
   RadarViewMode,
 } from "@/features/radar/types";
 import i18n from "@/i18n";
+import { cn } from "@/lib/utils";
 
 type SearchState = {
   category: string;
@@ -709,14 +711,15 @@ function DatePicker({
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
-        <button
-          className={`radar-pill radar-date-trigger ${className}`}
+        <Button
+          className={cn("radar-pill radar-date-trigger", className)}
           disabled={!availableDates.length}
           type="button"
+          variant="outline"
         >
-          <CalendarIcon aria-hidden="true" size={15} />
+          <CalendarIcon aria-hidden="true" data-icon="inline-start" />
           {availableDates.length ? label : t("date.noDates")}
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="radar-date-popover">
         <Calendar

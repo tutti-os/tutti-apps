@@ -9,10 +9,19 @@ import * as React from "react";
 import {
   type DayButton,
   DayPicker,
+  type DropdownProps,
   getDefaultClassNames,
 } from "react-day-picker";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 function Calendar({
@@ -52,17 +61,17 @@ function Calendar({
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
         nav: cn(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+          "pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
           defaultClassNames.nav,
         ),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "pointer-events-auto size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_previous,
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "pointer-events-auto size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_next,
         ),
         month_caption: cn(
@@ -163,6 +172,7 @@ function Calendar({
           );
         },
         DayButton: CalendarDayButton,
+        Dropdown: CalendarDropdown,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -176,6 +186,65 @@ function Calendar({
       }}
       {...props}
     />
+  );
+}
+
+function CalendarDropdown({
+  className,
+  disabled,
+  id,
+  name,
+  onChange,
+  options,
+  style,
+  value,
+  "aria-label": ariaLabel,
+}: DropdownProps) {
+  const [portalContainer, setPortalContainer] =
+    React.useState<HTMLSpanElement | null>(null);
+  const selectedValue = value === undefined ? undefined : String(value);
+
+  return (
+    <span ref={setPortalContainer} className="contents">
+      <Select
+        onValueChange={(nextValue) => {
+          onChange?.({
+            currentTarget: { value: nextValue },
+            target: { value: nextValue },
+          } as React.ChangeEvent<HTMLSelectElement>);
+        }}
+        {...(disabled ? { disabled } : {})}
+        {...(name ? { name } : {})}
+        {...(selectedValue !== undefined ? { value: selectedValue } : {})}
+      >
+        <SelectTrigger
+          id={id}
+          aria-label={ariaLabel}
+          className={cn("min-w-[5.25rem] font-medium shadow-xs", className)}
+          size="sm"
+          style={style}
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent
+          align="center"
+          className="max-h-[18rem] bg-popover shadow-xl"
+          {...(portalContainer ? { container: portalContainer } : {})}
+        >
+          <SelectGroup>
+            {options?.map((option) => (
+              <SelectItem
+                key={option.value}
+                disabled={option.disabled}
+                value={String(option.value)}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </span>
   );
 }
 

@@ -11,6 +11,7 @@ import {
   getDatePickerAnchorMonth,
   getGalleryImageLoadState,
 } from "./app-shell";
+import { Calendar } from "./ui/calendar";
 
 const card: RadarCard = {
   categories: ["开发工具", "安全隐私"],
@@ -110,13 +111,61 @@ describe("AppShell", () => {
   });
 
   it("styles the selected date picker day", () => {
-    const css = readFileSync(
-      new URL("../styles.css", import.meta.url),
-      "utf8",
+    const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+
+    expect(css).toContain("--color-primary: var(--primary)");
+    expect(css).toContain('[data-selected-single="true"]');
+    expect(css).toContain("background: var(--primary)");
+  });
+
+  it("uses the shadcn button composition for the date picker trigger", () => {
+    const board: RadarBoard = {
+      availableDates: ["2026-06-06", "2026-06-05"],
+      cards: [card],
+      categories: [{ count: 1, label: "开发工具" }],
+      date: "2026-06-06",
+      generatedAt: "2026-06-06T00:00:00.000Z",
+      locale: "zh-CN",
+      metrics: {
+        aiPercent: 100,
+        githubCount: 0,
+        productHuntCount: 1,
+      },
+    };
+
+    const html = renderToStaticMarkup(
+      <AppShell
+        board={board}
+        searchState={{
+          category: "all",
+          date: "2026-06-05",
+          query: "",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
     );
 
-    expect(css).toContain('[data-selected-single="true"]');
-    expect(css).toContain("background: var(--accent)");
+    expect(html).toContain("radar-date-trigger");
+    expect(html).toContain('data-slot="popover-trigger"');
+    expect(html).toContain('data-variant="outline"');
+    expect(html).toContain("inline-flex shrink-0 items-center");
+  });
+
+  it("uses shadcn select composition for calendar month and year controls", () => {
+    const html = renderToStaticMarkup(
+      <Calendar
+        captionLayout="dropdown"
+        endMonth={new Date(2026, 11, 31)}
+        month={new Date(2026, 4, 1)}
+        startMonth={new Date(2026, 0, 1)}
+      />,
+    );
+
+    expect(html).toContain('data-slot="select-trigger"');
+    expect(html).toContain('data-slot="select-value"');
+    expect(html).toContain('<select aria-hidden="true"');
   });
 
   it("renders a loading shell before radar data is available", () => {
