@@ -50,6 +50,10 @@ test("production Nextop app workflow publishes configured apps on main", async (
     publish.strategy.matrix.target,
     "${{ fromJson(needs.resolve.outputs.targets_json) }}",
   );
+  assert.deepEqual(publish.concurrency, {
+    group: "nextop-app-production-${{ matrix.target.app_id }}",
+    "cancel-in-progress": false,
+  });
   assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
   assert.equal(
     publish.with.package_command,
@@ -101,6 +105,10 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
     publish.strategy.matrix.target,
     "${{ fromJson(needs.resolve.outputs.targets_json) }}",
   );
+  assert.deepEqual(publish.concurrency, {
+    group: "nextop-app-staging-${{ matrix.target.app_id }}",
+    "cancel-in-progress": false,
+  });
   assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
   assert.equal(
     publish.with.package_command,
