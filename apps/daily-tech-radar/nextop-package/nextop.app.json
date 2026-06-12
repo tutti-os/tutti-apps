@@ -1,7 +1,7 @@
 {
   "schemaVersion": "nextop.app.manifest.v1",
   "appId": "daily-tech-radar",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "name": "Daily Product Radar",
   "description": "Product Hunt and GitHub daily discovery cards.",
   "icon": {
