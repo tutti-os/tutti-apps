@@ -54,6 +54,9 @@ jobs:
       fail-fast: false
       matrix:
         target: ${{ fromJson(needs.resolve.outputs.targets_json) }}
+    concurrency:
+      group: nextop-app-production-${{ matrix.target.app_id }}
+      cancel-in-progress: false
     uses: tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main
     with:
       app_id: ${{ matrix.target.app_id }}
