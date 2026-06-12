@@ -1,7 +1,7 @@
 {
   "schemaVersion": "nextop.app.manifest.v1",
   "appId": "daily-tech-radar",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "name": "Daily Product Radar",
   "description": "Product Hunt and GitHub daily discovery cards.",
   "icon": {
@@ -30,5 +30,10 @@
   "author": {
     "name": "Nextop"
   },
-  "tags": ["daily-tech-radar", "producthunt", "github", "trends"]
+  "tags": [
+    "daily-tech-radar",
+    "producthunt",
+    "github",
+    "trends"
+  ]
 }
