@@ -115,8 +115,44 @@ describe("AppShell", () => {
       "utf8",
     );
 
+    expect(css).toContain("--color-primary: var(--primary)");
     expect(css).toContain('[data-selected-single="true"]');
-    expect(css).toContain("background: var(--accent)");
+    expect(css).toContain("background: var(--primary)");
+  });
+
+  it("uses the shadcn button composition for the date picker trigger", () => {
+    const board: RadarBoard = {
+      availableDates: ["2026-06-06", "2026-06-05"],
+      cards: [card],
+      categories: [{ count: 1, label: "开发工具" }],
+      date: "2026-06-06",
+      generatedAt: "2026-06-06T00:00:00.000Z",
+      locale: "zh-CN",
+      metrics: {
+        aiPercent: 100,
+        githubCount: 0,
+        productHuntCount: 1,
+      },
+    };
+
+    const html = renderToStaticMarkup(
+      <AppShell
+        board={board}
+        searchState={{
+          category: "all",
+          date: "2026-06-05",
+          query: "",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
+    );
+
+    expect(html).toContain("radar-date-trigger");
+    expect(html).toContain('data-slot="popover-trigger"');
+    expect(html).toContain('data-variant="outline"');
+    expect(html).toContain("inline-flex shrink-0 items-center");
   });
 
   it("renders a loading shell before radar data is available", () => {
