@@ -1,7 +1,7 @@
 {
   "schemaVersion": "tutti.app.manifest.v1",
   "appId": "daily-tech-radar",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "name": "Daily Product Radar",
   "description": "Product Hunt and GitHub daily discovery cards.",
   "icon": {
