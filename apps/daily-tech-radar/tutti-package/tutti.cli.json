@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "nextop.app.cli.v1",
+  "schemaVersion": "tutti.app.cli.v1",
   "scope": "radar",
   "description": "Search and inspect Product Hunt and GitHub daily discovery cards.",
   "documentation": {
@@ -42,7 +42,7 @@
       "handler": {
         "kind": "http",
         "method": "POST",
-        "path": "/nextop/cli/board",
+        "path": "/tutti/cli/board",
         "timeoutMs": 30000
       }
     },
@@ -86,7 +86,7 @@
       "handler": {
         "kind": "http",
         "method": "POST",
-        "path": "/nextop/cli/search",
+        "path": "/tutti/cli/search",
         "timeoutMs": 30000
       }
     },
@@ -119,7 +119,7 @@
       "handler": {
         "kind": "http",
         "method": "POST",
-        "path": "/nextop/cli/item",
+        "path": "/tutti/cli/item",
         "timeoutMs": 30000
       }
     }

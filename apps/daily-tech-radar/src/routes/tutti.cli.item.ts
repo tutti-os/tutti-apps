@@ -10,7 +10,7 @@ import {
 } from "@/features/radar/radar.cli";
 import { getRadarBoardData } from "@/features/radar/radar.server";
 
-export const Route = createFileRoute("/nextop/cli/item")({
+export const Route = createFileRoute("/tutti/cli/item")({
   server: {
     handlers: {
       POST: async ({ request }) => {

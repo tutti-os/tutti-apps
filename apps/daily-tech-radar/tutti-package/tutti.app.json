@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "nextop.app.manifest.v1",
+  "schemaVersion": "tutti.app.manifest.v1",
   "appId": "daily-tech-radar",
   "version": "0.0.5",
   "name": "Daily Product Radar",
@@ -13,7 +13,7 @@
     "healthcheckPath": "/api/health"
   },
   "cli": {
-    "manifest": "nextop.cli.json"
+    "manifest": "tutti.cli.json"
   },
   "localizationInfo": {
     "defaultLocale": "en-US",
@@ -28,7 +28,7 @@
     "mode": "workspace-open"
   },
   "author": {
-    "name": "Nextop"
+    "name": "Tutti"
   },
   "tags": [
     "daily-tech-radar",

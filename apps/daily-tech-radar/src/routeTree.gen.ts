@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiRadarRouteImport } from './routes/api.radar'
-import { Route as NextopCliSearchRouteImport } from './routes/nextop.cli.search'
-import { Route as NextopCliItemRouteImport } from './routes/nextop.cli.item'
-import { Route as NextopCliBoardRouteImport } from './routes/nextop.cli.board'
+import { Route as TuttiCliSearchRouteImport } from './routes/tutti.cli.search'
+import { Route as TuttiCliItemRouteImport } from './routes/tutti.cli.item'
+import { Route as TuttiCliBoardRouteImport } from './routes/tutti.cli.board'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,74 +25,74 @@ const ApiRadarRoute = ApiRadarRouteImport.update({
   path: '/api/radar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NextopCliSearchRoute = NextopCliSearchRouteImport.update({
-  id: '/nextop/cli/search',
-  path: '/nextop/cli/search',
+const TuttiCliSearchRoute = TuttiCliSearchRouteImport.update({
+  id: '/tutti/cli/search',
+  path: '/tutti/cli/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NextopCliItemRoute = NextopCliItemRouteImport.update({
-  id: '/nextop/cli/item',
-  path: '/nextop/cli/item',
+const TuttiCliItemRoute = TuttiCliItemRouteImport.update({
+  id: '/tutti/cli/item',
+  path: '/tutti/cli/item',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NextopCliBoardRoute = NextopCliBoardRouteImport.update({
-  id: '/nextop/cli/board',
-  path: '/nextop/cli/board',
+const TuttiCliBoardRoute = TuttiCliBoardRouteImport.update({
+  id: '/tutti/cli/board',
+  path: '/tutti/cli/board',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/radar': typeof ApiRadarRoute
-  '/nextop/cli/board': typeof NextopCliBoardRoute
-  '/nextop/cli/item': typeof NextopCliItemRoute
-  '/nextop/cli/search': typeof NextopCliSearchRoute
+  '/tutti/cli/board': typeof TuttiCliBoardRoute
+  '/tutti/cli/item': typeof TuttiCliItemRoute
+  '/tutti/cli/search': typeof TuttiCliSearchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/radar': typeof ApiRadarRoute
-  '/nextop/cli/board': typeof NextopCliBoardRoute
-  '/nextop/cli/item': typeof NextopCliItemRoute
-  '/nextop/cli/search': typeof NextopCliSearchRoute
+  '/tutti/cli/board': typeof TuttiCliBoardRoute
+  '/tutti/cli/item': typeof TuttiCliItemRoute
+  '/tutti/cli/search': typeof TuttiCliSearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/radar': typeof ApiRadarRoute
-  '/nextop/cli/board': typeof NextopCliBoardRoute
-  '/nextop/cli/item': typeof NextopCliItemRoute
-  '/nextop/cli/search': typeof NextopCliSearchRoute
+  '/tutti/cli/board': typeof TuttiCliBoardRoute
+  '/tutti/cli/item': typeof TuttiCliItemRoute
+  '/tutti/cli/search': typeof TuttiCliSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/api/radar'
-    | '/nextop/cli/board'
-    | '/nextop/cli/item'
-    | '/nextop/cli/search'
+    | '/tutti/cli/board'
+    | '/tutti/cli/item'
+    | '/tutti/cli/search'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api/radar'
-    | '/nextop/cli/board'
-    | '/nextop/cli/item'
-    | '/nextop/cli/search'
+    | '/tutti/cli/board'
+    | '/tutti/cli/item'
+    | '/tutti/cli/search'
   id:
     | '__root__'
     | '/'
     | '/api/radar'
-    | '/nextop/cli/board'
-    | '/nextop/cli/item'
-    | '/nextop/cli/search'
+    | '/tutti/cli/board'
+    | '/tutti/cli/item'
+    | '/tutti/cli/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiRadarRoute: typeof ApiRadarRoute
-  NextopCliBoardRoute: typeof NextopCliBoardRoute
-  NextopCliItemRoute: typeof NextopCliItemRoute
-  NextopCliSearchRoute: typeof NextopCliSearchRoute
+  TuttiCliBoardRoute: typeof TuttiCliBoardRoute
+  TuttiCliItemRoute: typeof TuttiCliItemRoute
+  TuttiCliSearchRoute: typeof TuttiCliSearchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -111,25 +111,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRadarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nextop/cli/search': {
-      id: '/nextop/cli/search'
-      path: '/nextop/cli/search'
-      fullPath: '/nextop/cli/search'
-      preLoaderRoute: typeof NextopCliSearchRouteImport
+    '/tutti/cli/search': {
+      id: '/tutti/cli/search'
+      path: '/tutti/cli/search'
+      fullPath: '/tutti/cli/search'
+      preLoaderRoute: typeof TuttiCliSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nextop/cli/item': {
-      id: '/nextop/cli/item'
-      path: '/nextop/cli/item'
-      fullPath: '/nextop/cli/item'
-      preLoaderRoute: typeof NextopCliItemRouteImport
+    '/tutti/cli/item': {
+      id: '/tutti/cli/item'
+      path: '/tutti/cli/item'
+      fullPath: '/tutti/cli/item'
+      preLoaderRoute: typeof TuttiCliItemRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nextop/cli/board': {
-      id: '/nextop/cli/board'
-      path: '/nextop/cli/board'
-      fullPath: '/nextop/cli/board'
-      preLoaderRoute: typeof NextopCliBoardRouteImport
+    '/tutti/cli/board': {
+      id: '/tutti/cli/board'
+      path: '/tutti/cli/board'
+      fullPath: '/tutti/cli/board'
+      preLoaderRoute: typeof TuttiCliBoardRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -138,9 +138,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiRadarRoute: ApiRadarRoute,
-  NextopCliBoardRoute: NextopCliBoardRoute,
-  NextopCliItemRoute: NextopCliItemRoute,
-  NextopCliSearchRoute: NextopCliSearchRoute,
+  TuttiCliBoardRoute: TuttiCliBoardRoute,
+  TuttiCliItemRoute: TuttiCliItemRoute,
+  TuttiCliSearchRoute: TuttiCliSearchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

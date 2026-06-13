@@ -15,14 +15,14 @@ import test from "node:test";
 
 import {
   assertNoSymlinks,
-  packageNextopApp,
+  packageTuttiApp,
   readPublishConfig,
   resolveAppConfig,
   validatePackageRoot,
-} from "../scripts/package-nextop-app.mjs";
+} from "../scripts/package-tutti-app.mjs";
 
 async function makeTempPackageRoot() {
-  return mkdtemp(path.join(os.tmpdir(), "nextop-apps-package-test-"));
+  return mkdtemp(path.join(os.tmpdir(), "tutti-apps-package-test-"));
 }
 
 test("publish config registers daily-tech-radar as the default app", async () => {
@@ -30,15 +30,15 @@ test("publish config registers daily-tech-radar as the default app", async () =>
   const { appId, app } = resolveAppConfig(config, "");
 
   assert.equal(appId, "daily-tech-radar");
-  assert.equal(app.packageSourceDir, "apps/daily-tech-radar/nextop-package");
+  assert.equal(app.packageSourceDir, "apps/daily-tech-radar/tutti-package");
   assert.equal(
     app.packageCommand,
-    "pnpm package:nextop --app daily-tech-radar",
+    "pnpm package:tutti --app daily-tech-radar",
   );
-  assert.equal(app.packageDir, "build/nextop-app/daily-tech-radar/package");
+  assert.equal(app.packageDir, "build/tutti-app/daily-tech-radar/package");
   assert.equal(
     app.iconPath,
-    "build/nextop-app/daily-tech-radar/package/icon.png",
+    "build/tutti-app/daily-tech-radar/package/icon.png",
   );
   assert.deepEqual(config.environments.production.appIds, ["daily-tech-radar"]);
 });
@@ -48,30 +48,30 @@ test("publish config registers daily-tech-radar as an explicit app", async () =>
   const { appId, app } = resolveAppConfig(config, "daily-tech-radar");
 
   assert.equal(appId, "daily-tech-radar");
-  assert.equal(app.packageSourceDir, "apps/daily-tech-radar/nextop-package");
+  assert.equal(app.packageSourceDir, "apps/daily-tech-radar/tutti-package");
   assert.equal(
     app.packageCommand,
-    "pnpm package:nextop --app daily-tech-radar",
+    "pnpm package:tutti --app daily-tech-radar",
   );
-  assert.equal(app.packageDir, "build/nextop-app/daily-tech-radar/package");
+  assert.equal(app.packageDir, "build/tutti-app/daily-tech-radar/package");
   assert.equal(
     app.iconPath,
-    "build/nextop-app/daily-tech-radar/package/icon.png",
+    "build/tutti-app/daily-tech-radar/package/icon.png",
   );
 });
 
-test("validatePackageRoot requires the files Nextop imports", async () => {
+test("validatePackageRoot requires the files Tutti imports", async () => {
   const packageRoot = await makeTempPackageRoot();
 
   await assert.rejects(
     validatePackageRoot(packageRoot),
-    /Missing required package file: nextop\.app\.json/,
+    /Missing required package file: tutti\.app\.json/,
   );
 
   await writeFile(
-    path.join(packageRoot, "nextop.app.json"),
+    path.join(packageRoot, "tutti.app.json"),
     `${JSON.stringify({
-      schemaVersion: "nextop.app.manifest.v1",
+      schemaVersion: "tutti.app.manifest.v1",
       appId: "test-app",
       version: "1.2.3",
       runtime: { bootstrap: "bootstrap.sh" },
@@ -89,13 +89,13 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
   const packageRoot = await makeTempPackageRoot();
 
   await writeFile(
-    path.join(packageRoot, "nextop.app.json"),
+    path.join(packageRoot, "tutti.app.json"),
     `${JSON.stringify({
-      schemaVersion: "nextop.app.manifest.v1",
+      schemaVersion: "tutti.app.manifest.v1",
       appId: "test-app",
       version: "1.2.3",
       runtime: { bootstrap: "bootstrap.sh" },
-      cli: { manifest: "nextop.cli.json" },
+      cli: { manifest: "tutti.cli.json" },
     })}\n`,
   );
   await writeFile(path.join(packageRoot, "AGENTS.md"), "Package guide\n");
@@ -105,13 +105,13 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
 
   await assert.rejects(
     validatePackageRoot(packageRoot),
-    /Missing declared CLI manifest: nextop\.cli\.json/,
+    /Missing declared CLI manifest: tutti\.cli\.json/,
   );
 
   await writeFile(
-    path.join(packageRoot, "nextop.cli.json"),
+    path.join(packageRoot, "tutti.cli.json"),
     `${JSON.stringify({
-      schemaVersion: "nextop.app.cli.v1",
+      schemaVersion: "tutti.app.cli.v1",
       scope: "test",
       documentation: { file: "COMMANDS.md" },
       commands: [
@@ -131,7 +131,7 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
           handler: {
             kind: "http",
             method: "POST",
-            path: "/nextop/cli/run",
+            path: "/tutti/cli/run",
           },
         },
       ],
@@ -156,19 +156,19 @@ test("assertNoSymlinks rejects symlink entries", async () => {
   );
 });
 
-test("packageNextopApp creates a valid daily-tech-radar package", async () => {
-  const zipPath = await packageNextopApp({ appId: "daily-tech-radar" });
-  const packageRoot = path.resolve("build/nextop-app/daily-tech-radar/package");
+test("packageTuttiApp creates a valid daily-tech-radar package", async () => {
+  const zipPath = await packageTuttiApp({ appId: "daily-tech-radar" });
+  const packageRoot = path.resolve("build/tutti-app/daily-tech-radar/package");
   const manifest = JSON.parse(
-    await readFile(path.join(packageRoot, "nextop.app.json"), "utf8"),
+    await readFile(path.join(packageRoot, "tutti.app.json"), "utf8"),
   );
   const sourceManifest = JSON.parse(
     await readFile(
       path.join(
         "apps",
         "daily-tech-radar",
-        "nextop-package",
-        "nextop.app.json",
+        "tutti-package",
+        "tutti.app.json",
       ),
       "utf8",
     ),
@@ -179,7 +179,7 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   );
   const agents = await readFile(path.join(packageRoot, "AGENTS.md"), "utf8");
   const cliManifest = JSON.parse(
-    await readFile(path.join(packageRoot, "nextop.cli.json"), "utf8"),
+    await readFile(path.join(packageRoot, "tutti.cli.json"), "utf8"),
   );
   const commandDocs = await readFile(
     path.join(packageRoot, "COMMANDS.md"),
@@ -206,7 +206,7 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
   assert.equal(manifest.version, sourceManifest.version);
   assert.equal(manifest.name, "Daily Product Radar");
   assert.deepEqual(manifest.cli, {
-    manifest: "nextop.cli.json",
+    manifest: "tutti.cli.json",
   });
   assert.equal(manifest.runtime.kind, undefined);
   assert.equal(manifest.runtime.bootstrap, "bootstrap.sh");
@@ -223,23 +223,32 @@ test("packageNextopApp creates a valid daily-tech-radar package", async () => {
     await readFile(path.join(packageRoot, "locales", "zh-CN", "manifest.json")),
   );
   assert.equal(manifestLocale.name, "每日产品雷达");
-  assert.match(bootstrap, /NEXTOP_APP_PACKAGE_DIR/);
-  assert.match(bootstrap, /NEXTOP_APP_NODE/);
-  assert.match(bootstrap, /app_node="\$\{NEXTOP_APP_NODE:-node\}"/);
-  assert.match(bootstrap, /app_host="\$\{NEXTOP_APP_HOST:-127\.0\.0\.1\}"/);
-  assert.match(bootstrap, /app_port="\$\{NEXTOP_APP_PORT:-3002\}"/);
+  assert.match(bootstrap, /TUTTI_APP_PACKAGE_DIR/);
+  assert.match(bootstrap, /TUTTI_APP_NODE/);
+  assert.match(
+    bootstrap,
+    /app_node="\$\{TUTTI_APP_NODE:-\$\{NEXTOP_APP_NODE:-node\}\}"/,
+  );
+  assert.match(
+    bootstrap,
+    /app_host="\$\{TUTTI_APP_HOST:-\$\{NEXTOP_APP_HOST:-127\.0\.0\.1\}\}"/,
+  );
+  assert.match(
+    bootstrap,
+    /app_port="\$\{TUTTI_APP_PORT:-\$\{NEXTOP_APP_PORT:-3002\}\}"/,
+  );
   assert.match(bootstrap, /exec "\$app_node" "\$app_package_dir\/server\.mjs"/);
   assert.doesNotMatch(bootstrap, /exec node /);
   assert.match(agents, /@nextop-os\/daily-tech-radar/);
-  assert.equal(cliManifest.schemaVersion, "nextop.app.cli.v1");
+  assert.equal(cliManifest.schemaVersion, "tutti.app.cli.v1");
   assert.equal(cliManifest.scope, "radar");
   assert.equal(cliManifest.documentation.file, "COMMANDS.md");
   assert.deepEqual(
     cliManifest.commands.map((command) => command.handler.path),
-    ["/nextop/cli/board", "/nextop/cli/search", "/nextop/cli/item"],
+    ["/tutti/cli/board", "/tutti/cli/search", "/tutti/cli/item"],
   );
-  assert.match(commandDocs, /nextop --json radar board/);
-  assert.match(commandDocs, /nextop --json radar search/);
+  assert.match(commandDocs, /tutti --json radar board/);
+  assert.match(commandDocs, /tutti --json radar search/);
   assert.match(wrapper, /daily-tech-radar/);
   assert.match(wrapper, /server\/server\.js/);
   assert.match(server, /createServerEntry/);
