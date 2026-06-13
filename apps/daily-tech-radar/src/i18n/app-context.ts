@@ -24,10 +24,6 @@ type HostWindow = {
     language?: string;
     languages?: readonly string[];
   };
-  nextop?: {
-    appContext?: HostAppContext;
-  };
-  nextopAppContext?: HostAppContext;
   tutti?: {
     appContext?: HostAppContext;
   };
@@ -41,12 +37,7 @@ function currentHost(): HostWindow {
 }
 
 function getAppContext(host: HostWindow) {
-  return (
-    host.tutti?.appContext ||
-    host.tuttiAppContext ||
-    host.nextop?.appContext ||
-    host.nextopAppContext
-  );
+  return host.tutti?.appContext || host.tuttiAppContext;
 }
 
 export function resolveLocale(locale: unknown): Locale {

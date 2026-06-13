@@ -25,18 +25,6 @@ describe("Tutti app context locale", () => {
     expect(await readHostLocale(host)).toBe("zh-CN");
   });
 
-  it("falls back to the legacy window.nextop bridge", async () => {
-    const host = {
-      nextop: {
-        appContext: {
-          get: async () => ({ locale: "zh-CN" }),
-        },
-      },
-    };
-
-    expect(await readHostLocale(host)).toBe("zh-CN");
-  });
-
   it("lets the app URL locale override the host locale without mutating host context", () => {
     expect(resolveAppLocale("en-US", "zh-CN")).toBe("en-US");
     expect(resolveAppLocale("zh-CN", "en-US")).toBe("zh-CN");
