@@ -5,7 +5,7 @@
 <h1 align="center">Nextop Apps</h1>
 
 <p align="center">
-  <strong>Workspace apps and packageable Nextop app experiences.</strong>
+  <strong>Workspace apps and packageable Tutti app experiences.</strong>
 </p>
 
 <p align="center">
@@ -23,7 +23,7 @@
 <p align="center">
   <img alt="Workspace: pnpm and Turbo" src="https://img.shields.io/badge/workspace-pnpm%20%7C%20Turbo-111827" />
   <img alt="App: TanStack Start" src="https://img.shields.io/badge/app-TanStack%20Start-2563eb" />
-  <img alt="Package: Nextop app" src="https://img.shields.io/badge/package-Nextop%20app-0f766e" />
+  <img alt="Package: Tutti app" src="https://img.shields.io/badge/package-Tutti%20app-0f766e" />
   <img alt="CLI: radar" src="https://img.shields.io/badge/CLI-radar-7c3aed" />
   <img alt="i18n: en-US and zh-CN" src="https://img.shields.io/badge/i18n-en--US%20%7C%20zh--CN-16a34a" />
 </p>
@@ -85,7 +85,7 @@ pnpm typecheck
 Build the Daily Product Radar package:
 
 ```bash
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 ```
 
 Outputs:
@@ -112,10 +112,10 @@ Daily Product Radar packages include
 which exposes the read-only `radar` command scope inside Nextop:
 
 ```bash
-nextop --json radar board
-nextop --json radar board --date 2026-06-05 --locale zh-CN
-nextop --json radar search --query agent --source github --limit 10
-nextop --json radar item --id github:123456 --locale en-US
+tutti --json radar board
+tutti --json radar board --date 2026-06-05 --locale zh-CN
+tutti --json radar search --query agent --source github --limit 10
+tutti --json radar item --id github:123456 --locale en-US
 ```
 
 See
@@ -126,7 +126,7 @@ for the full command reference and response envelope shape.
 
 ```txt
 apps/
-  daily-tech-radar/      TanStack Start app and Nextop package files
+  daily-tech-radar/      TanStack Start app and Tutti package files
 packages/                Shared packages when more than one app needs them
 docs/                    Architecture notes and workflow conventions
 scripts/                 Repository-level packaging and validation helpers
@@ -178,7 +178,7 @@ Before publishing meaningful app changes, run:
 pnpm lint
 pnpm test
 pnpm typecheck
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 ```
 
 For UI changes, verify the main screen in a browser at both desktop and mobile

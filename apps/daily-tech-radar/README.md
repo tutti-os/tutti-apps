@@ -10,5 +10,5 @@ from `.codex-artifacts/tech-radar-card-prototype/index.html`.
 pnpm --filter @nextop-apps/daily-tech-radar dev
 pnpm --filter @nextop-apps/daily-tech-radar test
 pnpm --filter @nextop-apps/daily-tech-radar typecheck
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 ```
