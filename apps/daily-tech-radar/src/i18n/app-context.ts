@@ -24,10 +24,10 @@ type HostWindow = {
     language?: string;
     languages?: readonly string[];
   };
-  nextop?: {
+  tutti?: {
     appContext?: HostAppContext;
   };
-  nextopAppContext?: HostAppContext;
+  tuttiAppContext?: HostAppContext;
 };
 
 export const defaultLocale: Locale = "en-US";
@@ -37,7 +37,7 @@ function currentHost(): HostWindow {
 }
 
 function getAppContext(host: HostWindow) {
-  return host.nextop?.appContext || host.nextopAppContext;
+  return host.tutti?.appContext || host.tuttiAppContext;
 }
 
 export function resolveLocale(locale: unknown): Locale {

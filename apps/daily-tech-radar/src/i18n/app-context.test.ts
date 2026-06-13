@@ -7,15 +7,15 @@ import {
   subscribeHostLocale,
 } from "./app-context";
 
-describe("Nextop app context locale", () => {
+describe("Tutti app context locale", () => {
   it("defaults to English when no host locale is available", async () => {
     expect(resolveLocale(null)).toBe("en-US");
     expect(await readHostLocale({})).toBe("en-US");
   });
 
-  it("reads the locale from window.nextop.appContext.get", async () => {
+  it("reads the locale from window.tutti.appContext.get", async () => {
     const host = {
-      nextop: {
+      tutti: {
         appContext: {
           get: async () => ({ locale: "zh-CN" }),
         },
@@ -36,7 +36,7 @@ describe("Nextop app context locale", () => {
     const unsubscribe = vi.fn();
     const listener = vi.fn();
     const host = {
-      nextopAppContext: {
+      tuttiAppContext: {
         subscribe: (callback: (context: { language: string }) => void) => {
           callback({ language: "fr-FR" });
           callback({ language: "zh-CN" });
