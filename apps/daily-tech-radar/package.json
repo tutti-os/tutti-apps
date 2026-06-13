@@ -7,7 +7,7 @@
     "build": "vite build",
     "dev": "vite dev --host 127.0.0.1 --port 3002",
     "i18n:check": "node ../../scripts/check-i18n-harness.mjs --app daily-tech-radar && i18next-cli -c i18next.config.js status --namespace radar",
-    "start": "NEXTOP_APP_PACKAGE_DIR=../../build/nextop-app/daily-tech-radar/package NEXTOP_APP_HOST=127.0.0.1 NEXTOP_APP_PORT=3002 NEXTOP_APP_DATA_DIR=./data node ../../build/nextop-app/daily-tech-radar/package/server.mjs",
+    "start": "TUTTI_APP_PACKAGE_DIR=../../build/tutti-app/daily-tech-radar/package TUTTI_APP_HOST=127.0.0.1 TUTTI_APP_PORT=3002 TUTTI_APP_DATA_DIR=./data node ../../build/tutti-app/daily-tech-radar/package/server.mjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

@@ -5,12 +5,12 @@ The app exposes the `radar` CLI scope for read-only automation over Product Hunt
 ## Commands
 
 ```bash
-nextop --json radar board
-nextop --json radar board --date 2026-06-05 --locale zh-CN
-nextop --json radar board --include-cards false
-nextop --json radar search --query agent
-nextop --json radar search --source github --category 开发工具 --limit 10
-nextop --json radar item --id github:123456 --locale en-US
+tutti --json radar board
+tutti --json radar board --date 2026-06-05 --locale zh-CN
+tutti --json radar board --include-cards false
+tutti --json radar search --query agent
+tutti --json radar search --source github --category 开发工具 --limit 10
+tutti --json radar item --id github:123456 --locale en-US
 ```
 
 ## Inputs
@@ -24,4 +24,4 @@ nextop --json radar item --id github:123456 --locale en-US
 - `limit`: maximum cards to return; defaults to `10` for `radar search`, is optional for `radar board`, and is clamped to `1..50`.
 - `id`: card id required by `radar item`, such as `github:123456` or `producthunt:abc`.
 
-All commands return JSON in the Nextop `CliCommandOutput` envelope. Success responses use `{"kind":"json","value":{"ok":true,"data":...}}`; invalid input and runtime failures use `{"kind":"json","value":{"ok":false,"error":{"code":"...","message":"..."}}}`.
+All commands return JSON in the Tutti `CliCommandOutput` envelope. Success responses use `{"kind":"json","value":{"ok":true,"data":...}}`; invalid input and runtime failures use `{"kind":"json","value":{"ok":false,"error":{"code":"...","message":"..."}}}`.

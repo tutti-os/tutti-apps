@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const rootDir = path.resolve(path.dirname(scriptPath), "..");
-const publishConfigPath = path.join(rootDir, "nextop.publish.json");
+const publishConfigPath = path.join(rootDir, "tutti.publish.json");
 
 function parseArgs(argv = process.argv.slice(2)) {
   const args = {
@@ -66,7 +66,7 @@ export function resolvePublishTarget(
 
   const app = config.apps?.[resolvedAppId];
   if (!app) {
-    throw new Error(`Unknown Nextop app id: ${resolvedAppId}`);
+    throw new Error(`Unknown Tutti app id: ${resolvedAppId}`);
   }
 
   return {
@@ -76,7 +76,7 @@ export function resolvePublishTarget(
     icon_path: app.iconPath,
     version_manifest_path:
       app.versionManifestPath ??
-      path.join(app.packageSourceDir, "nextop.app.json"),
+      path.join(app.packageSourceDir, "tutti.app.json"),
   };
 }
 

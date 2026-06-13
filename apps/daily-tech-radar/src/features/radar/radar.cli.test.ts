@@ -209,14 +209,14 @@ describe("radar CLI helpers", () => {
     });
   });
 
-  it("reads Nextop invoke envelopes and bare debug inputs", async () => {
+  it("reads Tutti invoke envelopes and bare debug inputs", async () => {
     const envelopeRequest = new Request("http://app/nextop/cli/board", {
       body: JSON.stringify({
         input: {
           locale: "zh-CN",
           source: "github",
         },
-        schemaVersion: "nextop.app.cli.invoke.v1",
+        schemaVersion: "tutti.app.cli.invoke.v1",
       }),
       method: "POST",
     });

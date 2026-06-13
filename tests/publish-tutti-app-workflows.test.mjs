@@ -22,14 +22,14 @@ function workflowTriggers(workflow) {
   return workflow.on ?? workflow.true;
 }
 
-test("production Nextop app workflow publishes configured apps on main", async () => {
-  const workflowPath = ".github/workflows/publish-nextop-app.yml";
+test("production Tutti app workflow publishes configured apps on main", async () => {
+  const workflowPath = ".github/workflows/publish-tutti-app.yml";
   const source = await readFile(workflowPath, "utf8");
   const workflow = parseWorkflow(workflowPath);
   const on = workflowTriggers(workflow);
   const publish = workflow.jobs.publish;
 
-  assert.equal(workflow.name, "Publish Nextop App Production");
+  assert.equal(workflow.name, "Publish Tutti App Production");
   assert.equal(workflow.permissions.contents, "write");
   assert.deepEqual(on.push.branches, ["main"]);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
@@ -44,14 +44,14 @@ test("production Nextop app workflow publishes configured apps on main", async (
   assert.equal(on.workflow_dispatch.inputs.catalog_only.default, false);
   assert.equal(
     publish.uses,
-    "tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main",
+    "tutti-os/tutti/.github/workflows/publish-tutti-app-release.yml@main",
   );
   assert.deepEqual(
     publish.strategy.matrix.target,
     "${{ fromJson(needs.resolve.outputs.targets_json) }}",
   );
   assert.deepEqual(publish.concurrency, {
-    group: "nextop-app-production-${{ matrix.target.app_id }}",
+    group: "tutti-app-production-${{ matrix.target.app_id }}",
     "cancel-in-progress": false,
   });
   assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
@@ -67,24 +67,27 @@ test("production Nextop app workflow publishes configured apps on main", async (
   );
   assert.match(source, /inputs\.publish_catalog/);
   assert.match(source, /inputs\.catalog_only/);
+  assert.match(source, /TUTTI_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
   assert.match(source, /NEXTOP_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
   assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
-    /resolve-nextop-publish-target\.mjs --environment production/,
+    /resolve-tutti-publish-target\.mjs --environment production/,
   );
+  assert.match(source, /TUTTI_APP_RELEASES_PRODUCTION_AWS_REGION/);
   assert.match(source, /NEXTOP_APP_RELEASES_PRODUCTION_AWS_REGION/);
+  assert.match(source, /TUTTI_APP_RELEASES_AWS_ROLE_ARN/);
   assert.match(source, /NEXTOP_APP_RELEASES_AWS_ROLE_ARN/);
 });
 
-test("staging Nextop app workflow publishes configured apps manually", async () => {
-  const workflowPath = ".github/workflows/publish-nextop-app-staging.yml";
+test("staging Tutti app workflow publishes configured apps manually", async () => {
+  const workflowPath = ".github/workflows/publish-tutti-app-staging.yml";
   const source = await readFile(workflowPath, "utf8");
   const workflow = parseWorkflow(workflowPath);
   const on = workflowTriggers(workflow);
   const publish = workflow.jobs.publish;
 
-  assert.equal(workflow.name, "Publish Nextop App Staging");
+  assert.equal(workflow.name, "Publish Tutti App Staging");
   assert.equal(workflow.permissions.contents, "write");
   assert.equal(on.push, undefined);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
@@ -99,14 +102,14 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   assert.equal(on.workflow_dispatch.inputs.catalog_only.default, false);
   assert.equal(
     publish.uses,
-    "tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main",
+    "tutti-os/tutti/.github/workflows/publish-tutti-app-release.yml@main",
   );
   assert.deepEqual(
     publish.strategy.matrix.target,
     "${{ fromJson(needs.resolve.outputs.targets_json) }}",
   );
   assert.deepEqual(publish.concurrency, {
-    group: "nextop-app-staging-${{ matrix.target.app_id }}",
+    group: "tutti-app-staging-${{ matrix.target.app_id }}",
     "cancel-in-progress": false,
   });
   assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
@@ -125,8 +128,9 @@ test("staging Nextop app workflow publishes configured apps manually", async () 
   assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
-    /resolve-nextop-publish-target\.mjs --environment staging/,
+    /resolve-tutti-publish-target\.mjs --environment staging/,
   );
+  assert.match(source, /TUTTI_APP_RELEASES_STAGING_AWS_REGION/);
   assert.match(source, /NEXTOP_APP_RELEASES_STAGING_AWS_REGION/);
-  assert.match(source, /nextop-app-releases-staging/);
+  assert.match(source, /tutti-app-releases-staging/);
 });

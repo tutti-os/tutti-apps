@@ -1,10 +1,10 @@
-name: Publish Nextop App Staging
+name: Publish Tutti App Staging
 
 on:
   workflow_dispatch:
     inputs:
       app_id:
-        description: Nextop app id to publish.
+        description: Tutti app id to publish.
         required: false
         default: daily-tech-radar
         type: choice
@@ -43,7 +43,7 @@ jobs:
         id: target
         env:
           INPUT_APP_ID: ${{ github.event.inputs.app_id || '' }}
-        run: node scripts/resolve-nextop-publish-target.mjs --environment staging --app "${INPUT_APP_ID}"
+        run: node scripts/resolve-tutti-publish-target.mjs --environment staging --app "${INPUT_APP_ID}"
 
   publish:
     needs: resolve
@@ -52,9 +52,9 @@ jobs:
       matrix:
         target: ${{ fromJson(needs.resolve.outputs.targets_json) }}
     concurrency:
-      group: nextop-app-staging-${{ matrix.target.app_id }}
+      group: tutti-app-staging-${{ matrix.target.app_id }}
       cancel-in-progress: false
-    uses: tutti-os/tutti/.github/workflows/publish-nextop-app-release.yml@main
+    uses: tutti-os/tutti/.github/workflows/publish-tutti-app-release.yml@main
     with:
       app_id: ${{ matrix.target.app_id }}
       package_command: ${{ matrix.target.package_command }}
@@ -64,11 +64,11 @@ jobs:
       release_version: ${{ github.event.inputs.release_version || '' }}
       runner: macos-latest
       pnpm_version: 10.26.2
-      aws_region: ${{ vars.NEXTOP_APP_RELEASES_STAGING_AWS_REGION || vars.NEXTOP_APP_RELEASES_AWS_REGION }}
-      aws_role_arn: ${{ vars.NEXTOP_APP_RELEASES_STAGING_AWS_ROLE_ARN || vars.NEXTOP_APP_RELEASES_AWS_ROLE_ARN }}
-      s3_bucket: ${{ vars.NEXTOP_APP_RELEASES_STAGING_S3_BUCKET || vars.NEXTOP_APP_RELEASES_S3_BUCKET }}
-      s3_prefix: ${{ vars.NEXTOP_APP_RELEASES_STAGING_S3_PREFIX || 'nextop-app-releases-staging' }}
-      release_assets_base_url: ${{ vars.NEXTOP_APP_RELEASES_STAGING_BASE_URL || 'https://d1x7gb6wqsqmnm.cloudfront.net/nextop-app-releases-staging' }}
+      aws_region: ${{ vars.TUTTI_APP_RELEASES_STAGING_AWS_REGION || vars.NEXTOP_APP_RELEASES_STAGING_AWS_REGION || vars.TUTTI_APP_RELEASES_AWS_REGION || vars.NEXTOP_APP_RELEASES_AWS_REGION }}
+      aws_role_arn: ${{ vars.TUTTI_APP_RELEASES_STAGING_AWS_ROLE_ARN || vars.NEXTOP_APP_RELEASES_STAGING_AWS_ROLE_ARN || vars.TUTTI_APP_RELEASES_AWS_ROLE_ARN || vars.NEXTOP_APP_RELEASES_AWS_ROLE_ARN }}
+      s3_bucket: ${{ vars.TUTTI_APP_RELEASES_STAGING_S3_BUCKET || vars.NEXTOP_APP_RELEASES_STAGING_S3_BUCKET || vars.TUTTI_APP_RELEASES_S3_BUCKET || vars.NEXTOP_APP_RELEASES_S3_BUCKET }}
+      s3_prefix: ${{ vars.TUTTI_APP_RELEASES_STAGING_S3_PREFIX || vars.NEXTOP_APP_RELEASES_STAGING_S3_PREFIX || 'tutti-app-releases-staging' }}
+      release_assets_base_url: ${{ vars.TUTTI_APP_RELEASES_STAGING_BASE_URL || vars.NEXTOP_APP_RELEASES_STAGING_BASE_URL || 'https://d1x7gb6wqsqmnm.cloudfront.net/tutti-app-releases-staging' }}
       publish_catalog: ${{ inputs.publish_catalog }}
       catalog_only: ${{ inputs.catalog_only }}
-      catalog_cloudfront_distribution_id: ${{ vars.NEXTOP_APP_RELEASES_STAGING_CLOUDFRONT_DISTRIBUTION_ID || vars.NEXTOP_APP_RELEASES_CLOUDFRONT_DISTRIBUTION_ID || '' }}
+      catalog_cloudfront_distribution_id: ${{ vars.TUTTI_APP_RELEASES_STAGING_CLOUDFRONT_DISTRIBUTION_ID || vars.NEXTOP_APP_RELEASES_STAGING_CLOUDFRONT_DISTRIBUTION_ID || vars.TUTTI_APP_RELEASES_CLOUDFRONT_DISTRIBUTION_ID || vars.NEXTOP_APP_RELEASES_CLOUDFRONT_DISTRIBUTION_ID || '' }}

@@ -16,10 +16,10 @@ import { fileURLToPath } from "node:url";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const rootDir = path.resolve(path.dirname(scriptPath), "..");
-const publishConfigPath = path.join(rootDir, "nextop.publish.json");
+const publishConfigPath = path.join(rootDir, "tutti.publish.json");
 
 const REQUIRED_PACKAGE_FILES = [
-  "nextop.app.json",
+  "tutti.app.json",
   "AGENTS.md",
   "bootstrap.sh",
   "server.mjs",
@@ -70,7 +70,7 @@ export function resolveAppConfig(config, appId) {
 
   const app = config.apps?.[resolvedAppId];
   if (!app) {
-    throw new Error(`Unknown Nextop app id: ${resolvedAppId}`);
+    throw new Error(`Unknown Tutti app id: ${resolvedAppId}`);
   }
 
   return {
@@ -101,17 +101,17 @@ export async function assertNoSymlinks(root) {
 
 function validatePackageRelativePath(value, label) {
   if (typeof value !== "string" || value.trim() === "") {
-    throw new Error(`nextop.cli.json ${label} is required.`);
+    throw new Error(`tutti.cli.json ${label} is required.`);
   }
   if (path.isAbsolute(value) || value.startsWith("\\")) {
     throw new Error(
-      `nextop.cli.json ${label} must be a relative package path.`,
+      `tutti.cli.json ${label} must be a relative package path.`,
     );
   }
   for (const part of value.split(/[\\/]/)) {
     if (part === "..") {
       throw new Error(
-        `nextop.cli.json ${label} must not contain parent path segments.`,
+        `tutti.cli.json ${label} must not contain parent path segments.`,
       );
     }
   }
@@ -120,7 +120,7 @@ function validatePackageRelativePath(value, label) {
 function validateCliSegment(value, label) {
   if (typeof value !== "string" || !CLI_SEGMENT_PATTERN.test(value.trim())) {
     throw new Error(
-      `nextop.cli.json ${label} must contain lowercase letters, numbers, and hyphen only.`,
+      `tutti.cli.json ${label} must contain lowercase letters, numbers, and hyphen only.`,
     );
   }
 }
@@ -130,49 +130,49 @@ function validateCliInputSchema(schema, label) {
     return;
   }
   if (schema.type !== "object") {
-    throw new Error(`nextop.cli.json ${label}.type must be object.`);
+    throw new Error(`tutti.cli.json ${label}.type must be object.`);
   }
   if (!schema.properties || typeof schema.properties !== "object") {
-    throw new Error(`nextop.cli.json ${label}.properties is required.`);
+    throw new Error(`tutti.cli.json ${label}.properties is required.`);
   }
   for (const [name, property] of Object.entries(schema.properties)) {
     validateCliSegment(name, `${label}.properties`);
     if (!property || typeof property !== "object") {
       throw new Error(
-        `nextop.cli.json ${label}.properties.${name} must be an object.`,
+        `tutti.cli.json ${label}.properties.${name} must be an object.`,
       );
     }
     if (!["string", "boolean", "integer"].includes(property.type)) {
       throw new Error(
-        `nextop.cli.json ${label}.properties.${name}.type must be string, boolean, or integer.`,
+        `tutti.cli.json ${label}.properties.${name}.type must be string, boolean, or integer.`,
       );
     }
     for (const key of Object.keys(property)) {
       if (!["type", "description"].includes(key)) {
         throw new Error(
-          `nextop.cli.json ${label}.properties.${name} has unsupported key ${key}.`,
+          `tutti.cli.json ${label}.properties.${name} has unsupported key ${key}.`,
         );
       }
     }
   }
   if (Object.hasOwn(schema, "required") && !Array.isArray(schema.required)) {
-    throw new Error(`nextop.cli.json ${label}.required must be an array.`);
+    throw new Error(`tutti.cli.json ${label}.required must be an array.`);
   }
   for (const required of schema.required ?? []) {
     if (typeof required !== "string") {
       throw new Error(
-        `nextop.cli.json ${label}.required entries must be strings.`,
+        `tutti.cli.json ${label}.required entries must be strings.`,
       );
     }
     if (!Object.hasOwn(schema.properties, required)) {
       throw new Error(
-        `nextop.cli.json ${label}.required contains unknown property ${required}.`,
+        `tutti.cli.json ${label}.required contains unknown property ${required}.`,
       );
     }
   }
   for (const key of Object.keys(schema)) {
     if (!["type", "properties", "required"].includes(key)) {
-      throw new Error(`nextop.cli.json ${label} has unsupported key ${key}.`);
+      throw new Error(`tutti.cli.json ${label} has unsupported key ${key}.`);
     }
   }
 }
@@ -180,12 +180,12 @@ function validateCliInputSchema(schema, label) {
 function validateCliOutput(output, label) {
   if (!output || !["json", "table"].includes(output.defaultMode)) {
     throw new Error(
-      `nextop.cli.json ${label}.defaultMode must be json or table.`,
+      `tutti.cli.json ${label}.defaultMode must be json or table.`,
     );
   }
   if (output.defaultMode === "json" && output.json !== true) {
     throw new Error(
-      `nextop.cli.json ${label}.json must be true when defaultMode is json.`,
+      `tutti.cli.json ${label}.json must be true when defaultMode is json.`,
     );
   }
   if (
@@ -195,7 +195,7 @@ function validateCliOutput(output, label) {
       output.table.columns.length === 0)
   ) {
     throw new Error(
-      `nextop.cli.json ${label}.table.columns is required when defaultMode is table.`,
+      `tutti.cli.json ${label}.table.columns is required when defaultMode is table.`,
     );
   }
   if (output.table?.columns) {
@@ -204,12 +204,12 @@ function validateCliOutput(output, label) {
       validateCliSegment(column.key, `${label}.table.columns[${index}].key`);
       if (typeof column.label !== "string" || column.label.trim() === "") {
         throw new Error(
-          `nextop.cli.json ${label}.table.columns[${index}].label is required.`,
+          `tutti.cli.json ${label}.table.columns[${index}].label is required.`,
         );
       }
       if (seenColumnKeys.has(column.key)) {
         throw new Error(
-          `nextop.cli.json ${label}.table.columns key ${column.key} is duplicated.`,
+          `tutti.cli.json ${label}.table.columns key ${column.key} is duplicated.`,
         );
       }
       seenColumnKeys.add(column.key);
@@ -219,17 +219,17 @@ function validateCliOutput(output, label) {
 
 function validateCliHandler(handler, label) {
   if (handler?.kind !== "http") {
-    throw new Error(`nextop.cli.json ${label}.kind must be http.`);
+    throw new Error(`tutti.cli.json ${label}.kind must be http.`);
   }
   if (handler.method !== "POST") {
-    throw new Error(`nextop.cli.json ${label}.method must be POST.`);
+    throw new Error(`tutti.cli.json ${label}.method must be POST.`);
   }
   if (
     typeof handler.path !== "string" ||
-    !handler.path.startsWith("/nextop/cli/")
+    !handler.path.startsWith("/tutti/cli/")
   ) {
     throw new Error(
-      `nextop.cli.json ${label}.path must start with /nextop/cli/.`,
+      `tutti.cli.json ${label}.path must start with /tutti/cli/.`,
     );
   }
   if (
@@ -239,15 +239,15 @@ function validateCliHandler(handler, label) {
       handler.timeoutMs > 300000)
   ) {
     throw new Error(
-      `nextop.cli.json ${label}.timeoutMs must be between 1000 and 300000.`,
+      `tutti.cli.json ${label}.timeoutMs must be between 1000 and 300000.`,
     );
   }
 }
 
 function validateCliManifest(cliManifest) {
-  if (cliManifest.schemaVersion !== "nextop.app.cli.v1") {
+  if (cliManifest.schemaVersion !== "tutti.app.cli.v1") {
     throw new Error(
-      "nextop.cli.json must use schemaVersion nextop.app.cli.v1.",
+      "tutti.cli.json must use schemaVersion tutti.app.cli.v1.",
     );
   }
   validateCliSegment(cliManifest.scope, "scope");
@@ -255,28 +255,28 @@ function validateCliManifest(cliManifest) {
     !Array.isArray(cliManifest.commands) ||
     cliManifest.commands.length === 0
   ) {
-    throw new Error("nextop.cli.json commands must be a non-empty array.");
+    throw new Error("tutti.cli.json commands must be a non-empty array.");
   }
 
   const seenPaths = new Set();
   for (const [index, command] of cliManifest.commands.entries()) {
     const label = `commands[${index}]`;
     if (!Array.isArray(command.path) || command.path.length === 0) {
-      throw new Error(`nextop.cli.json ${label}.path is required.`);
+      throw new Error(`tutti.cli.json ${label}.path is required.`);
     }
     if (command.path[0] === cliManifest.scope) {
-      throw new Error(`nextop.cli.json ${label}.path must not repeat scope.`);
+      throw new Error(`tutti.cli.json ${label}.path must not repeat scope.`);
     }
     for (const [segmentIndex, segment] of command.path.entries()) {
       validateCliSegment(segment, `${label}.path[${segmentIndex}]`);
     }
     const pathKey = command.path.join(".");
     if (seenPaths.has(pathKey)) {
-      throw new Error(`nextop.cli.json command path ${pathKey} is duplicated.`);
+      throw new Error(`tutti.cli.json command path ${pathKey} is duplicated.`);
     }
     seenPaths.add(pathKey);
     if (typeof command.summary !== "string" || command.summary.trim() === "") {
-      throw new Error(`nextop.cli.json ${label}.summary is required.`);
+      throw new Error(`tutti.cli.json ${label}.summary is required.`);
     }
     validateCliInputSchema(command.inputSchema, `${label}.inputSchema`);
     validateCliOutput(command.output, `${label}.output`);
@@ -294,15 +294,15 @@ export async function validatePackageRoot(packageRoot) {
     }
   }
 
-  const manifest = await readJson(path.join(packageRoot, "nextop.app.json"));
-  if (manifest.schemaVersion !== "nextop.app.manifest.v1") {
+  const manifest = await readJson(path.join(packageRoot, "tutti.app.json"));
+  if (manifest.schemaVersion !== "tutti.app.manifest.v1") {
     throw new Error(
-      "nextop.app.json must use schemaVersion nextop.app.manifest.v1.",
+      "tutti.app.json must use schemaVersion tutti.app.manifest.v1.",
     );
   }
   if (!manifest.appId || !manifest.version || !manifest.runtime?.bootstrap) {
     throw new Error(
-      "nextop.app.json must define appId, version, and runtime.bootstrap.",
+      "tutti.app.json must define appId, version, and runtime.bootstrap.",
     );
   }
   if (manifest.cli?.manifest) {
@@ -389,13 +389,13 @@ async function copyIfExists(from, to) {
 
 async function readPackageSourceManifest(appConfig) {
   return readJson(
-    path.join(rootDir, appConfig.packageSourceDir, "nextop.app.json"),
+    path.join(rootDir, appConfig.packageSourceDir, "tutti.app.json"),
   );
 }
 
 async function writeManifest({ manifest, packageRoot }) {
   await writeFile(
-    path.join(packageRoot, "nextop.app.json"),
+    path.join(packageRoot, "tutti.app.json"),
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
   return manifest;
@@ -540,7 +540,7 @@ async function createZip({ appId, packageRoot, version, buildRoot }) {
   return zipPath;
 }
 
-export async function packageNextopApp({ appId = "" } = {}) {
+export async function packageTuttiApp({ appId = "" } = {}) {
   const config = await readPublishConfig();
   const { appId: resolvedAppId, app } = resolveAppConfig(config, appId);
   const manifest = await readPackageSourceManifest(app);
@@ -567,7 +567,7 @@ export async function packageNextopApp({ appId = "" } = {}) {
 
 if (process.argv[1] === scriptPath) {
   const args = parseArgs();
-  packageNextopApp({ appId: args.appId }).catch((error) => {
+  packageTuttiApp({ appId: args.appId }).catch((error) => {
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
   });

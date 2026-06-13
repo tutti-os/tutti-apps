@@ -1,22 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import {
-  type CliSearchInput,
-  buildSearchData,
-  parseCliSearchInput,
+  type CliBoardInput,
+  buildBoardData,
+  parseCliBoardInput,
   readCliInput,
   toCliError,
   toCliSuccess,
 } from "@/features/radar/radar.cli";
 import { getRadarBoardData } from "@/features/radar/radar.server";
 
-export const Route = createFileRoute("/nextop/cli/search")({
+export const Route = createFileRoute("/tutti/cli/board")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        let input: CliSearchInput;
+        let input: CliBoardInput;
         try {
-          input = parseCliSearchInput(await readCliInput(request));
+          input = parseCliBoardInput(await readCliInput(request));
         } catch (error) {
           return Response.json(toCliError("invalid-input", error));
         }
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/nextop/cli/search")({
             date: input.date,
             locale: input.locale,
           });
-          return Response.json(toCliSuccess(buildSearchData(board, input)));
+          return Response.json(toCliSuccess(buildBoardData(board, input)));
         } catch (error) {
           return Response.json(toCliError("radar-unavailable", error));
         }

@@ -6,7 +6,10 @@ import { Readable } from "node:stream";
 
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 0);
-const packageDir = process.env.NEXTOP_APP_PACKAGE_DIR || process.cwd();
+const packageDir =
+  process.env.TUTTI_APP_PACKAGE_DIR ||
+  process.env.NEXTOP_APP_PACKAGE_DIR ||
+  process.cwd();
 const publicDir = path.join(packageDir, "dist");
 const startServer = await import(path.join(packageDir, "server/server.js"));
 
