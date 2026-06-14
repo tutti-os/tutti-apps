@@ -18,9 +18,12 @@
   <a href="#cli-commands">CLI</a>
   ·
   <a href="./docs/README.md">Docs</a>
+  ·
+  <a href="./LICENSE">License</a>
 </p>
 
 <p align="center">
+  <a href="./LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue" /></a>
   <img alt="Workspace: pnpm and Turbo" src="https://img.shields.io/badge/workspace-pnpm%20%7C%20Turbo-111827" />
   <img alt="App: TanStack Start" src="https://img.shields.io/badge/app-TanStack%20Start-2563eb" />
   <img alt="Package: Tutti app" src="https://img.shields.io/badge/package-Tutti%20app-0f766e" />
@@ -203,5 +206,6 @@ This repository currently contains one publishable MVP app:
 | --- | --- | --- |
 | Daily Product Radar | `@tutti-apps/daily-tech-radar` | `apps/daily-tech-radar` |
 
-The repository is still marked `private` in `package.json`, and no open-source
-license has been selected yet.
+## License
+
+Tutti Apps is licensed under the [Apache License 2.0](./LICENSE).

@@ -18,9 +18,12 @@
   <a href="#cli-命令">CLI</a>
   ·
   <a href="./docs/README.md">文档</a>
+  ·
+  <a href="./LICENSE">License</a>
 </p>
 
 <p align="center">
+  <a href="./LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue" /></a>
   <img alt="Workspace: pnpm and Turbo" src="https://img.shields.io/badge/workspace-pnpm%20%7C%20Turbo-111827" />
   <img alt="App: TanStack Start" src="https://img.shields.io/badge/app-TanStack%20Start-2563eb" />
   <img alt="Package: Tutti app" src="https://img.shields.io/badge/package-Tutti%20app-0f766e" />
@@ -188,4 +191,6 @@ pnpm package:tutti --app daily-tech-radar
 | --- | --- | --- |
 | Daily Product Radar | `@tutti-apps/daily-tech-radar` | `apps/daily-tech-radar` |
 
-仓库目前仍在 `package.json` 中标记为 `private`，也还没有选择开源许可证。
+## License
+
+Tutti Apps 使用 [Apache License 2.0](./LICENSE) 许可。
