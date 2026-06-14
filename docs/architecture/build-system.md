@@ -59,18 +59,18 @@ pnpm typecheck
 App commands can be run directly with filters:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar dev
-pnpm --filter @nextop-apps/daily-tech-radar build
+pnpm --filter @tutti-apps/daily-tech-radar dev
+pnpm --filter @tutti-apps/daily-tech-radar build
 ```
 
-Nextop app packaging is intentionally a separate root command because the
+Tutti app packaging is intentionally a separate root command because the
 release workflow needs a repository-level app resolver:
 
 ```bash
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 ```
 
-See `nextop-packaging.md` for the package source layout and Actions workflow.
+See `tutti-packaging.md` for the package source layout and Actions workflow.
 
 ## Framework Selection
 

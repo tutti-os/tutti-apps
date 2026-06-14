@@ -7,16 +7,16 @@
 Product scope:
 
 - reproduce `/Users/wwcome/work/demo/.codex-artifacts/tech-radar-card-prototype/index.html`
-- Product Hunt and GitHub cards from `@nextop-os/daily-tech-radar`
+- Product Hunt and GitHub cards from `@tutti-os/daily-tech-radar`
 - source/date/category/search/view filters
 - prototype-style card grid, compact list, detail drawer, and favorites
 
 ## Validation
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar i18n:check
-pnpm --filter @nextop-apps/daily-tech-radar typecheck
-pnpm --filter @nextop-apps/daily-tech-radar test
+pnpm --filter @tutti-apps/daily-tech-radar i18n:check
+pnpm --filter @tutti-apps/daily-tech-radar typecheck
+pnpm --filter @tutti-apps/daily-tech-radar test
 pnpm package:tutti --app daily-tech-radar
 ```
 

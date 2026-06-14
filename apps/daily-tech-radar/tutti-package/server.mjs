@@ -4,12 +4,11 @@ import { createServer } from "node:http";
 import path from "node:path";
 import { Readable } from "node:stream";
 
-const host = process.env.HOST || "127.0.0.1";
-const port = Number(process.env.PORT || 0);
-const packageDir =
-  process.env.TUTTI_APP_PACKAGE_DIR ||
-  process.env.NEXTOP_APP_PACKAGE_DIR ||
-  process.cwd();
+const host = process.env.HOST || process.env.TUTTI_APP_HOST || "127.0.0.1";
+const port = Number(process.env.PORT || process.env.TUTTI_APP_PORT || 0);
+const packageDir = path.resolve(
+  process.env.TUTTI_APP_PACKAGE_DIR || process.cwd(),
+);
 const publicDir = path.join(packageDir, "dist");
 const startServer = await import(path.join(packageDir, "server/server.js"));
 

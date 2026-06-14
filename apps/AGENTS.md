@@ -17,7 +17,7 @@ Before editing an app:
 - App-specific product logic stays in that app.
 - Shared contracts or reusable clients belong in `packages/*`.
 - App-specific docs stay under `apps/<app-id>/docs`.
-- Publishable app package files stay under `apps/<app-id>/nextop-package`.
+- Publishable app package files stay under `apps/<app-id>/tutti-package`.
 - Use package-scoped commands while developing an app.
 
 ## Commands

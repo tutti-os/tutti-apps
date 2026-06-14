@@ -68,16 +68,13 @@ test("production Tutti app workflow publishes configured apps on main", async ()
   assert.match(source, /inputs\.publish_catalog/);
   assert.match(source, /inputs\.catalog_only/);
   assert.match(source, /TUTTI_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
-  assert.match(source, /NEXTOP_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
   assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
     /resolve-tutti-publish-target\.mjs --environment production/,
   );
   assert.match(source, /TUTTI_APP_RELEASES_PRODUCTION_AWS_REGION/);
-  assert.match(source, /NEXTOP_APP_RELEASES_PRODUCTION_AWS_REGION/);
   assert.match(source, /TUTTI_APP_RELEASES_AWS_ROLE_ARN/);
-  assert.match(source, /NEXTOP_APP_RELEASES_AWS_ROLE_ARN/);
 });
 
 test("staging Tutti app workflow publishes configured apps manually", async () => {
@@ -131,6 +128,5 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
     /resolve-tutti-publish-target\.mjs --environment staging/,
   );
   assert.match(source, /TUTTI_APP_RELEASES_STAGING_AWS_REGION/);
-  assert.match(source, /NEXTOP_APP_RELEASES_STAGING_AWS_REGION/);
   assert.match(source, /tutti-app-releases-staging/);
 });

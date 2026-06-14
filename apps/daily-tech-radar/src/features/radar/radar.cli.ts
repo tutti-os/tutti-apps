@@ -123,8 +123,7 @@ export async function readCliInput(request: Request) {
   const body = await request.json().catch(() => ({}));
   if (
     isRecord(body) &&
-    (body.schemaVersion === "tutti.app.cli.invoke.v1" ||
-      body.schemaVersion === "nextop.app.cli.invoke.v1") &&
+    body.schemaVersion === "tutti.app.cli.invoke.v1" &&
     isRecord(body.input)
   ) {
     return body.input;

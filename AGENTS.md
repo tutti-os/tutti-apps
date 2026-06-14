@@ -2,7 +2,7 @@
 
 ## Directory Guide
 
-This file is the repository-wide entry point for agents working in `nextop-apps`.
+This file is the repository-wide entry point for agents working in `tutti-apps`.
 Read it first, then read the closest nested `AGENTS.md` before editing inside
 `apps/` or `packages/`.
 
@@ -16,13 +16,13 @@ the nearest directory-level `AGENTS.md`.
 - Repository architecture: `docs/architecture/README.md`
 - Project structure: `docs/architecture/project-structure.md`
 - Build system: `docs/architecture/build-system.md`
-- Nextop app packaging: `docs/architecture/nextop-packaging.md`
+- Tutti app packaging: `docs/architecture/tutti-packaging.md`
 - Agent workflow conventions: `docs/conventions/agent-workflow.md`
 - Directory-level guidance: `apps/AGENTS.md`, `packages/AGENTS.md`
 
 ## Repository Shape
 
-This is a pnpm + Turbo monorepo for multiple Nextop apps.
+This is a pnpm + Turbo monorepo for multiple Tutti apps.
 
 - `apps/*`: independently runnable applications.
 - `packages/*`: shared libraries, contracts, config, and utilities.
@@ -34,8 +34,8 @@ Rule of thumb:
 - Code moves into `packages/*` only when there is a real shared boundary.
 - Documentation that teaches future agents how the repository works belongs in
   `docs/architecture` or `docs/conventions`.
-- Publishable app package sources belong in `apps/<app-id>/nextop-package`.
-- The root `nextop.publish.json` file controls which apps can be published and
+- Publishable app package sources belong in `apps/<app-id>/tutti-package`.
+- The root `tutti.publish.json` file controls which apps can be published and
   the default app for each release environment.
 
 ## Routing Guide
@@ -54,7 +54,7 @@ Use this root file for repository-wide defaults only.
 - Move shared contracts or reusable logic into `packages/*`.
 - Do not create vague shared packages such as `common`, `shared`, or `utils`.
   Prefer domain names such as `github`, `trend-classification`, or `app-config`.
-- Package names use the npm scope `@nextop-apps/*`.
+- Package names use the npm scope `@tutti-apps/*`.
 - Internal dependencies use `workspace:*`.
 - Keep TypeScript strict and inherit from `tsconfig.base.json`.
 - Use Tailwind CSS and shadcn/ui for app UI unless an app documents another
@@ -62,8 +62,8 @@ Use this root file for repository-wide defaults only.
 - Keep root scripts generic and delegated through Turbo.
 - When structural rules change, update the matching document under
   `docs/architecture` or `docs/conventions`.
-- When Nextop app packaging behavior changes, update
-  `docs/architecture/nextop-packaging.md`.
+- When Tutti app packaging behavior changes, update
+  `docs/architecture/tutti-packaging.md`.
 - When a fix resolves a recurring bug pattern or agent trap, add the durable
   note to `docs/conventions/agent-workflow.md`.
 
@@ -115,16 +115,16 @@ browser.
 pnpm install
 pnpm dev
 pnpm build
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 pnpm test
 pnpm typecheck
 pnpm lint
 ```
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar dev
-pnpm --filter @nextop-apps/daily-tech-radar typecheck
-pnpm --filter @nextop-apps/daily-tech-radar test
+pnpm --filter @tutti-apps/daily-tech-radar dev
+pnpm --filter @tutti-apps/daily-tech-radar typecheck
+pnpm --filter @tutti-apps/daily-tech-radar test
 ```
 
 ## Git Commit Policy
