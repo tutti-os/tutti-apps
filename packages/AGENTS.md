@@ -11,7 +11,7 @@ packages named `shared`, `common`, or `utils`.
 
 - Packages must not depend on app-private source code.
 - Keep package APIs narrow and documented.
-- Use `@nextop-apps/<package-id>` package names.
+- Use `@tutti-apps/<package-id>` package names.
 - Prefer pure TypeScript for reusable contracts and logic.
 - Keep browser-only, server-only, and cross-runtime code separated.
 
@@ -28,6 +28,6 @@ app-independent boundary needs it.
 ## Validation
 
 ```bash
-pnpm --filter @nextop-apps/<package-id> typecheck
-pnpm --filter @nextop-apps/<package-id> test
+pnpm --filter @tutti-apps/<package-id> typecheck
+pnpm --filter @tutti-apps/<package-id> test
 ```

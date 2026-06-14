@@ -1,5 +1,5 @@
 {
-  "name": "nextop-apps",
+  "name": "tutti-apps",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@10.26.2",
@@ -7,7 +7,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "format": "biome format --write .",
-    "i18n:check": "pnpm --filter @nextop-apps/daily-tech-radar i18n:check",
+    "i18n:check": "pnpm --filter @tutti-apps/daily-tech-radar i18n:check",
     "lint": "biome check .",
     "package:tutti": "node scripts/package-tutti-app.mjs",
     "test:workspace": "node --test tests/*.test.mjs",

@@ -2,7 +2,7 @@
   <img src="./apps/daily-tech-radar/public/icon.png" alt="Daily Product Radar icon" width="88" />
 </p>
 
-<h1 align="center">Nextop Apps</h1>
+<h1 align="center">Tutti Apps</h1>
 
 <p align="center">
   <strong>Workspace apps and packageable Tutti app experiences.</strong>
@@ -13,7 +13,7 @@
   ·
   <a href="./README.zh-CN.md">简体中文</a>
   ·
-  <a href="#nextop-package-mode">Nextop Package</a>
+  <a href="#tutti-package-mode">Tutti Package</a>
   ·
   <a href="#cli-commands">CLI</a>
   ·
@@ -30,8 +30,8 @@
 
 ![Daily Product Radar home screen](./docs/assets/daily-tech-radar-home.png)
 
-Nextop Apps is a pnpm/Turbo monorepo for building small, self-contained apps
-that can run locally during development and be packaged for the Nextop
+Tutti Apps is a pnpm/Turbo monorepo for building small, self-contained apps
+that can run locally during development and be packaged for the Tutti
 workspace runtime.
 
 The first app is **Daily Product Radar**, a TanStack Start dashboard that turns
@@ -46,8 +46,8 @@ cards by date, source, category, language, and keyword.
   card density without leaving the page.
 - Rich item views: open cards into media, metrics, tags, and source links for
   deeper review.
-- Nextop packaging: bundle app manifests, bootstrap scripts, icons, CLI
-  metadata, static assets, and server wrappers under `build/nextop-app`.
+- Tutti packaging: bundle app manifests, bootstrap scripts, icons, CLI
+  metadata, static assets, and server wrappers under `build/tutti-app`.
 - Read-only CLI surface: packaged installs expose the `radar` command scope for
   board, search, and item lookup commands.
 - Bilingual UI: the app ships `en-US` by default and includes Simplified
@@ -63,7 +63,7 @@ Requirements:
 ```bash
 corepack enable
 pnpm install
-pnpm --filter @nextop-apps/daily-tech-radar dev
+pnpm --filter @tutti-apps/daily-tech-radar dev
 ```
 
 Then open:
@@ -80,7 +80,7 @@ pnpm test
 pnpm typecheck
 ```
 
-## Nextop Package Mode
+## Tutti Package Mode
 
 Build the Daily Product Radar package:
 
@@ -91,25 +91,25 @@ pnpm package:tutti --app daily-tech-radar
 Outputs:
 
 ```txt
-build/nextop-app/daily-tech-radar/package/
-build/nextop-app/daily-tech-radar/daily-tech-radar-0.0.0.zip
+build/tutti-app/daily-tech-radar/package/
+build/tutti-app/daily-tech-radar/daily-tech-radar-0.0.0.zip
 ```
 
 Run the packaged server locally:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar start
+pnpm --filter @tutti-apps/daily-tech-radar start
 ```
 
 The package wrapper serves static assets from `dist/`, delegates SSR and server
-functions to `server/server.js`, and exposes `/api/health` for the Nextop
+functions to `server/server.js`, and exposes `/api/health` for the Tutti
 runtime.
 
 ## CLI Commands
 
 Daily Product Radar packages include
-[`nextop.cli.json`](./apps/daily-tech-radar/nextop-package/nextop.cli.json),
-which exposes the read-only `radar` command scope inside Nextop:
+[`tutti.cli.json`](./apps/daily-tech-radar/tutti-package/tutti.cli.json),
+which exposes the read-only `radar` command scope inside Tutti:
 
 ```bash
 tutti --json radar board
@@ -119,7 +119,7 @@ tutti --json radar item --id github:123456 --locale en-US
 ```
 
 See
-[`apps/daily-tech-radar/nextop-package/COMMANDS.md`](./apps/daily-tech-radar/nextop-package/COMMANDS.md)
+[`apps/daily-tech-radar/tutti-package/COMMANDS.md`](./apps/daily-tech-radar/tutti-package/COMMANDS.md)
 for the full command reference and response envelope shape.
 
 ## Workspace Layout
@@ -130,13 +130,13 @@ apps/
 packages/                Shared packages when more than one app needs them
 docs/                    Architecture notes and workflow conventions
 scripts/                 Repository-level packaging and validation helpers
-nextop.publish.json      Publishable app registry
+tutti.publish.json      Publishable app registry
 ```
 
 Repository boundaries:
 
 - `apps/*` contains independently runnable apps.
-- `apps/<app-id>/nextop-package` contains package manifest files and runtime
+- `apps/<app-id>/tutti-package` contains package manifest files and runtime
   adapters for publishable apps.
 - `packages/*` is reserved for real shared boundaries.
 - `docs/*` stores durable architecture notes, packaging details, and agent
@@ -147,7 +147,7 @@ Repository boundaries:
 - [Architecture overview](./docs/architecture/README.md)
 - [Project structure](./docs/architecture/project-structure.md)
 - [Build system](./docs/architecture/build-system.md)
-- [Nextop packaging](./docs/architecture/nextop-packaging.md)
+- [Tutti packaging](./docs/architecture/tutti-packaging.md)
 - [Agent workflow conventions](./docs/conventions/agent-workflow.md)
 - [Daily Product Radar app README](./apps/daily-tech-radar/README.md)
 
@@ -166,10 +166,10 @@ pnpm lint
 Use package filters when working on one app:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar dev
-pnpm --filter @nextop-apps/daily-tech-radar test
-pnpm --filter @nextop-apps/daily-tech-radar typecheck
-pnpm --filter @nextop-apps/daily-tech-radar i18n:check
+pnpm --filter @tutti-apps/daily-tech-radar dev
+pnpm --filter @tutti-apps/daily-tech-radar test
+pnpm --filter @tutti-apps/daily-tech-radar typecheck
+pnpm --filter @tutti-apps/daily-tech-radar i18n:check
 ```
 
 Before publishing meaningful app changes, run:
@@ -190,8 +190,8 @@ widths.
    scripts.
 2. Keep app-specific product logic inside that app.
 3. Move code into `packages/*` only when more than one app needs it.
-4. Add `apps/<app-id>/nextop-package` if the app should be publishable.
-5. Register publishable apps in `nextop.publish.json`.
+4. Add `apps/<app-id>/tutti-package` if the app should be publishable.
+5. Register publishable apps in `tutti.publish.json`.
 6. Add app-specific docs under `apps/<app-id>/docs` when the app grows beyond
    the root README summary.
 
@@ -201,7 +201,7 @@ This repository currently contains one publishable MVP app:
 
 | App | Package | Path |
 | --- | --- | --- |
-| Daily Product Radar | `@nextop-apps/daily-tech-radar` | `apps/daily-tech-radar` |
+| Daily Product Radar | `@tutti-apps/daily-tech-radar` | `apps/daily-tech-radar` |
 
 The repository is still marked `private` in `package.json`, and no open-source
 license has been selected yet.

@@ -7,7 +7,7 @@ import test from "node:test";
 import { checkI18nHarness } from "../scripts/check-i18n-harness.mjs";
 
 async function makeFixture() {
-  const root = await mkdtemp(path.join(os.tmpdir(), "nextop-i18n-harness-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "tutti-i18n-harness-"));
   const appDir = path.join(root, "apps", "daily-tech-radar");
   await mkdir(path.join(appDir, "src", "components"), { recursive: true });
   await mkdir(path.join(appDir, "src", "i18n", "locales", "zh-CN"), {

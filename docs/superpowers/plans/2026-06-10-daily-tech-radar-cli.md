@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Expose Daily Tech Radar through a small, user-friendly and agent-friendly Nextop CLI surface.
+**Goal:** Expose Daily Tech Radar through a small, user-friendly and agent-friendly Tutti CLI surface.
 
-**Architecture:** Keep the CLI centered on the existing app interface, `getRadarBoardData({ date, locale })`, which already powers `GET /api/radar`. Add three CLI commands: `radar board` for the complete board, `radar search` for common filtered discovery, and `radar item` for stable single-card lookup. All commands route to app-owned `POST /nextop/cli/*` handlers and return a consistent JSON envelope.
+**Architecture:** Keep the CLI centered on the existing app interface, `getRadarBoardData({ date, locale })`, which already powers `GET /api/radar`. Add three CLI commands: `radar board` for the complete board, `radar search` for common filtered discovery, and `radar item` for stable single-card lookup. All commands route to app-owned `POST /tutti/cli/*` handlers and return a consistent JSON envelope.
 
-**Tech Stack:** Nextop app manifest v1, Nextop app CLI manifest v1, TanStack Start server routes, TypeScript, Zod, Vitest, Node package validation tests.
+**Tech Stack:** Tutti app manifest v1, Tutti app CLI manifest v1, TanStack Start server routes, TypeScript, Zod, Vitest, Node package validation tests.
 
 ---
 
@@ -25,35 +25,35 @@ Design decisions:
 - Add `radar item` because agents need stable object references after search or board results.
 - Do not add `latest`, `dates`, or `categories` commands in v1. Those are already derivable from `radar board`.
 - Let `radar board --include-cards false` return metadata only so agents can fetch dates, metrics, and categories without pulling the full card payload.
-- Keep the CLI read-only. Favorites, saved searches, notifications, and refresh jobs are out of scope until the app owns durable storage under `NEXTOP_APP_DATA_DIR`.
+- Keep the CLI read-only. Favorites, saved searches, notifications, and refresh jobs are out of scope until the app owns durable storage under `TUTTI_APP_DATA_DIR`.
 
 ## 2. Reference Contracts
 
 Follow these reference files:
 
-- `/Users/wwcome/work/nextop-os/nextop/services/nextopd/service/workspace/app_factory_reference/references/manifest-contract.md`
-- `/Users/wwcome/work/nextop-os/nextop/services/nextopd/service/workspace/app_factory_reference/references/cli-manifest-contract.md`
-- `/Users/wwcome/work/nextop-os/nextop/services/nextopd/service/workspace/app_factory_reference/references/runtime-env.md`
-- `/Users/wwcome/work/nextop-os/nextop/services/nextopd/service/workspace/app_factory_reference/references/validation-checklist.md`
+- `/Users/wwcome/work/tutti-os/tutti/services/tuttid/service/workspace/app_factory_reference/references/manifest-contract.md`
+- `/Users/wwcome/work/tutti-os/tutti/services/tuttid/service/workspace/app_factory_reference/references/cli-manifest-contract.md`
+- `/Users/wwcome/work/tutti-os/tutti/services/tuttid/service/workspace/app_factory_reference/references/runtime-env.md`
+- `/Users/wwcome/work/tutti-os/tutti/services/tuttid/service/workspace/app_factory_reference/references/validation-checklist.md`
 
 Contract decisions:
 
-- `apps/daily-tech-radar/nextop-package/nextop.app.json` declares:
+- `apps/daily-tech-radar/tutti-package/tutti.app.json` declares:
 
 ```json
 "cli": {
-  "manifest": "nextop.cli.json"
+  "manifest": "tutti.cli.json"
 }
 ```
 
-- `apps/daily-tech-radar/nextop-package/nextop.cli.json` uses:
-  - `schemaVersion`: `nextop.app.cli.v1`
+- `apps/daily-tech-radar/tutti-package/tutti.cli.json` uses:
+  - `schemaVersion`: `tutti.app.cli.v1`
   - `scope`: `radar`
   - `documentation.file`: `COMMANDS.md`
   - command paths that do not repeat `radar`
-  - HTTP `POST` handlers under `/nextop/cli/`
+  - HTTP `POST` handlers under `/tutti/cli/`
 
-All handler responses use the Nextop `CliCommandOutput` shape:
+All handler responses use the Tutti `CliCommandOutput` shape:
 
 ```json
 {
@@ -65,11 +65,11 @@ All handler responses use the Nextop `CliCommandOutput` shape:
 }
 ```
 
-Nextop invokes app CLI handlers with an envelope shaped like:
+Tutti invokes app CLI handlers with an envelope shaped like:
 
 ```json
 {
-  "schemaVersion": "nextop.app.cli.invoke.v1",
+  "schemaVersion": "tutti.app.cli.invoke.v1",
   "commandId": "app.daily-tech-radar.radar.board",
   "appId": "daily-tech-radar",
   "scope": "radar",
@@ -107,18 +107,18 @@ Error output uses the same envelope:
 
 | CLI command | Handler path | Primary user story | Agent value |
 | --- | --- | --- | --- |
-| `radar board` | `POST /nextop/cli/board` | "Show me the radar for today or a specific date." | One call returns `date`, `availableDates`, `metrics`, `categories`, and `cards`. |
-| `radar search` | `POST /nextop/cli/search` | "Find radar cards matching this query/filter." | Server-side filtering prevents each agent from duplicating UI search logic. |
-| `radar item` | `POST /nextop/cli/item` | "Show details for this card id." | Stable lookup for follow-up summarization, linking, reporting, or app-to-app composition. |
+| `radar board` | `POST /tutti/cli/board` | "Show me the radar for today or a specific date." | One call returns `date`, `availableDates`, `metrics`, `categories`, and `cards`. |
+| `radar search` | `POST /tutti/cli/search` | "Find radar cards matching this query/filter." | Server-side filtering prevents each agent from duplicating UI search logic. |
+| `radar item` | `POST /tutti/cli/item` | "Show details for this card id." | Stable lookup for follow-up summarization, linking, reporting, or app-to-app composition. |
 
 ### `radar board`
 
 Examples:
 
 ```bash
-nextop --json radar board
-nextop --json radar board --date 2026-06-05 --locale zh-CN
-nextop --json radar board --include-cards false
+tutti --json radar board
+tutti --json radar board --date 2026-06-05 --locale zh-CN
+tutti --json radar board --include-cards false
 ```
 
 Inputs:
@@ -161,9 +161,9 @@ type RadarBoardCliData = {
 Examples:
 
 ```bash
-nextop --json radar search --query agent
-nextop --json radar search --source github --category 开发工具 --limit 10
-nextop --json radar search --date 2026-06-05 --locale zh-CN --query AI
+tutti --json radar search --query agent
+tutti --json radar search --source github --category 开发工具 --limit 10
+tutti --json radar search --date 2026-06-05 --locale zh-CN --query AI
 ```
 
 Inputs:
@@ -204,8 +204,8 @@ Search matches the same fields as the UI helper `filterRadarCards`: name, owner,
 Examples:
 
 ```bash
-nextop --json radar item --id github:123456
-nextop --json radar item --id producthunt:abc --date 2026-06-05 --locale zh-CN
+tutti --json radar item --id github:123456
+tutti --json radar item --id producthunt:abc --date 2026-06-05 --locale zh-CN
 ```
 
 Inputs:
@@ -233,13 +233,13 @@ If the card is not found, return `ok: true`, `found: false`, and `card: null`. R
 
 Modify package metadata:
 
-- `apps/daily-tech-radar/nextop-package/nextop.app.json`: add `cli.manifest`.
-- `apps/daily-tech-radar/nextop-package/AGENTS.md`: document CLI scope, handlers, and read-only behavior.
+- `apps/daily-tech-radar/tutti-package/tutti.app.json`: add `cli.manifest`.
+- `apps/daily-tech-radar/tutti-package/AGENTS.md`: document CLI scope, handlers, and read-only behavior.
 
 Create package CLI docs:
 
-- `apps/daily-tech-radar/nextop-package/nextop.cli.json`: CLI manifest consumed by Nextop.
-- `apps/daily-tech-radar/nextop-package/COMMANDS.md`: human-readable help for command usage and JSON output.
+- `apps/daily-tech-radar/tutti-package/tutti.cli.json`: CLI manifest consumed by Tutti.
+- `apps/daily-tech-radar/tutti-package/COMMANDS.md`: human-readable help for command usage and JSON output.
 
 Create CLI feature code:
 
@@ -248,15 +248,15 @@ Create CLI feature code:
 
 Create route handlers:
 
-- `apps/daily-tech-radar/src/routes/nextop.cli.board.ts`
-- `apps/daily-tech-radar/src/routes/nextop.cli.search.ts`
-- `apps/daily-tech-radar/src/routes/nextop.cli.item.ts`
+- `apps/daily-tech-radar/src/routes/tutti.cli.board.ts`
+- `apps/daily-tech-radar/src/routes/tutti.cli.search.ts`
+- `apps/daily-tech-radar/src/routes/tutti.cli.item.ts`
 
 Modify packaging:
 
-- `scripts/package-nextop-app.mjs`: copy `cli.manifest` and `documentation.file`, and validate the declared CLI manifest.
-- `tests/package-nextop-app.test.mjs`: cover the new CLI manifest copy and contract checks.
-- `docs/architecture/nextop-packaging.md`: mention CLI package files as optional package artifacts.
+- `scripts/package-tutti-app.mjs`: copy `cli.manifest` and `documentation.file`, and validate the declared CLI manifest.
+- `tests/package-tutti-app.test.mjs`: cover the new CLI manifest copy and contract checks.
+- `docs/architecture/tutti-packaging.md`: mention CLI package files as optional package artifacts.
 
 ## 5. Implementation Tasks
 
@@ -264,18 +264,18 @@ Modify packaging:
 
 **Files:**
 
-- Modify: `apps/daily-tech-radar/nextop-package/nextop.app.json`
-- Create: `apps/daily-tech-radar/nextop-package/nextop.cli.json`
-- Create: `apps/daily-tech-radar/nextop-package/COMMANDS.md`
-- Modify: `apps/daily-tech-radar/nextop-package/AGENTS.md`
+- Modify: `apps/daily-tech-radar/tutti-package/tutti.app.json`
+- Create: `apps/daily-tech-radar/tutti-package/tutti.cli.json`
+- Create: `apps/daily-tech-radar/tutti-package/COMMANDS.md`
+- Modify: `apps/daily-tech-radar/tutti-package/AGENTS.md`
 
 - [ ] **Step 1: Update the app manifest**
 
-Add the `cli` block beside `runtime` in `apps/daily-tech-radar/nextop-package/nextop.app.json`:
+Add the `cli` block beside `runtime` in `apps/daily-tech-radar/tutti-package/tutti.app.json`:
 
 ```json
 {
-  "schemaVersion": "nextop.app.manifest.v1",
+  "schemaVersion": "tutti.app.manifest.v1",
   "appId": "daily-tech-radar",
   "version": "0.0.0",
   "name": "Daily Product Radar",
@@ -289,7 +289,7 @@ Add the `cli` block beside `runtime` in `apps/daily-tech-radar/nextop-package/ne
     "healthcheckPath": "/api/health"
   },
   "cli": {
-    "manifest": "nextop.cli.json"
+    "manifest": "tutti.cli.json"
   },
   "localizationInfo": {
     "defaultLocale": "en-US",
@@ -304,19 +304,19 @@ Add the `cli` block beside `runtime` in `apps/daily-tech-radar/nextop-package/ne
     "mode": "workspace-open"
   },
   "author": {
-    "name": "Nextop"
+    "name": "Tutti"
   },
   "tags": ["daily-tech-radar", "producthunt", "github", "trends"]
 }
 ```
 
-- [ ] **Step 2: Create `nextop.cli.json`**
+- [ ] **Step 2: Create `tutti.cli.json`**
 
-Write `apps/daily-tech-radar/nextop-package/nextop.cli.json`:
+Write `apps/daily-tech-radar/tutti-package/tutti.cli.json`:
 
 ```json
 {
-  "schemaVersion": "nextop.app.cli.v1",
+  "schemaVersion": "tutti.app.cli.v1",
   "scope": "radar",
   "description": "Search and inspect Product Hunt and GitHub daily discovery cards.",
   "documentation": {
@@ -359,7 +359,7 @@ Write `apps/daily-tech-radar/nextop-package/nextop.cli.json`:
       "handler": {
         "kind": "http",
         "method": "POST",
-        "path": "/nextop/cli/board",
+        "path": "/tutti/cli/board",
         "timeoutMs": 30000
       }
     },
@@ -403,7 +403,7 @@ Write `apps/daily-tech-radar/nextop-package/nextop.cli.json`:
       "handler": {
         "kind": "http",
         "method": "POST",
-        "path": "/nextop/cli/search",
+        "path": "/tutti/cli/search",
         "timeoutMs": 30000
       }
     },
@@ -436,7 +436,7 @@ Write `apps/daily-tech-radar/nextop-package/nextop.cli.json`:
       "handler": {
         "kind": "http",
         "method": "POST",
-        "path": "/nextop/cli/item",
+        "path": "/tutti/cli/item",
         "timeoutMs": 30000
       }
     }
@@ -446,7 +446,7 @@ Write `apps/daily-tech-radar/nextop-package/nextop.cli.json`:
 
 - [ ] **Step 3: Add command documentation**
 
-Write `apps/daily-tech-radar/nextop-package/COMMANDS.md`:
+Write `apps/daily-tech-radar/tutti-package/COMMANDS.md`:
 
 ````markdown
 # Daily Product Radar CLI
@@ -456,12 +456,12 @@ The app exposes the `radar` CLI scope for read-only automation over Product Hunt
 ## Commands
 
 ```bash
-nextop --json radar board
-nextop --json radar board --date 2026-06-05 --locale zh-CN
-nextop --json radar board --include-cards false
-nextop --json radar search --query agent
-nextop --json radar search --source github --category 开发工具 --limit 10
-nextop --json radar item --id github:123456 --locale en-US
+tutti --json radar board
+tutti --json radar board --date 2026-06-05 --locale zh-CN
+tutti --json radar board --include-cards false
+tutti --json radar search --query agent
+tutti --json radar search --source github --category 开发工具 --limit 10
+tutti --json radar item --id github:123456 --locale en-US
 ```
 
 ## Inputs
@@ -475,25 +475,25 @@ nextop --json radar item --id github:123456 --locale en-US
 - `limit`: maximum cards to return; defaults to `10` for `radar search`, is optional for `radar board`, and is clamped to `1..50`.
 - `id`: card id required by `radar item`, such as `github:123456` or `producthunt:abc`.
 
-All commands return JSON in the Nextop `CliCommandOutput` envelope. Success responses use `{"kind":"json","value":{"ok":true,"data":...}}`; invalid input and runtime failures use `{"kind":"json","value":{"ok":false,"error":{"code":"...","message":"..."}}}`.
+All commands return JSON in the Tutti `CliCommandOutput` envelope. Success responses use `{"kind":"json","value":{"ok":true,"data":...}}`; invalid input and runtime failures use `{"kind":"json","value":{"ok":false,"error":{"code":"...","message":"..."}}}`.
 ````
 
 - [ ] **Step 4: Document package-local behavior**
 
-Append this section to `apps/daily-tech-radar/nextop-package/AGENTS.md`:
+Append this section to `apps/daily-tech-radar/tutti-package/AGENTS.md`:
 
 ```markdown
 ## CLI Surface
 
-The package exposes Nextop CLI scope `radar` through `nextop.cli.json`.
+The package exposes Tutti CLI scope `radar` through `tutti.cli.json`.
 
 Handlers are read-only HTTP `POST` routes served by the TanStack Start build:
 
-- `/nextop/cli/board`
-- `/nextop/cli/search`
-- `/nextop/cli/item`
+- `/tutti/cli/board`
+- `/tutti/cli/search`
+- `/tutti/cli/item`
 
-The CLI commands reuse the same SDK-backed board data as `/api/radar`. Do not add CLI writes unless durable storage is first introduced under `NEXTOP_APP_DATA_DIR`.
+The CLI commands reuse the same SDK-backed board data as `/api/radar`. Do not add CLI writes unless durable storage is first introduced under `TUTTI_APP_DATA_DIR`.
 ```
 
 - [ ] **Step 5: Verify manifest files parse**
@@ -501,7 +501,7 @@ The CLI commands reuse the same SDK-backed board data as `/api/radar`. Do not ad
 Run:
 
 ```bash
-node -e 'JSON.parse(require("node:fs").readFileSync("apps/daily-tech-radar/nextop-package/nextop.app.json","utf8")); JSON.parse(require("node:fs").readFileSync("apps/daily-tech-radar/nextop-package/nextop.cli.json","utf8")); console.log("ok")'
+node -e 'JSON.parse(require("node:fs").readFileSync("apps/daily-tech-radar/tutti-package/tutti.app.json","utf8")); JSON.parse(require("node:fs").readFileSync("apps/daily-tech-radar/tutti-package/tutti.cli.json","utf8")); console.log("ok")'
 ```
 
 Expected:
@@ -555,12 +555,12 @@ const board: RadarBoard = {
         starsGained: 10,
       },
       name: "agent-kit",
-      owner: "nextop",
+      owner: "tutti",
       rank: 1,
       sourceLabel: "GitHub · #1 · TypeScript",
-      sourceUrl: "https://github.com/nextop/agent-kit",
+      sourceUrl: "https://github.com/tutti/agent-kit",
       summary: "Build coding agents",
-      title: "nextop / agent-kit",
+      title: "tutti / agent-kit",
       type: "github",
     },
     {
@@ -680,7 +680,7 @@ describe("radar CLI helpers", () => {
       cards: [
         {
           id: "github:1",
-          title: "nextop / agent-kit",
+          title: "tutti / agent-kit",
           type: "github",
         },
       ],
@@ -731,10 +731,10 @@ describe("radar CLI helpers", () => {
     });
   });
 
-  it("reads Nextop invoke envelopes and bare debug inputs", async () => {
-    const envelopeRequest = new Request("http://app/nextop/cli/board", {
+  it("reads Tutti invoke envelopes and bare debug inputs", async () => {
+    const envelopeRequest = new Request("http://app/tutti/cli/board", {
       body: JSON.stringify({
-        schemaVersion: "nextop.app.cli.invoke.v1",
+        schemaVersion: "tutti.app.cli.invoke.v1",
         input: {
           locale: "zh-CN",
           source: "github",
@@ -747,7 +747,7 @@ describe("radar CLI helpers", () => {
       source: "github",
     });
 
-    const bareRequest = new Request("http://app/nextop/cli/board", {
+    const bareRequest = new Request("http://app/tutti/cli/board", {
       body: JSON.stringify({
         locale: "en-US",
       }),
@@ -765,7 +765,7 @@ describe("radar CLI helpers", () => {
 Run:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar test -- radar.cli.test.ts
+pnpm --filter @tutti-apps/daily-tech-radar test -- radar.cli.test.ts
 ```
 
 Expected:
@@ -871,7 +871,7 @@ export async function readCliInput(request: Request) {
   const body = await request.json().catch(() => ({}));
   if (
     isRecord(body) &&
-    body.schemaVersion === "nextop.app.cli.invoke.v1" &&
+    body.schemaVersion === "tutti.app.cli.invoke.v1" &&
     isRecord(body.input)
   ) {
     return body.input;
@@ -1000,7 +1000,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 Run:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar test -- radar.cli.test.ts
+pnpm --filter @tutti-apps/daily-tech-radar test -- radar.cli.test.ts
 ```
 
 Expected:
@@ -1013,13 +1013,13 @@ PASS  src/features/radar/radar.cli.test.ts
 
 **Files:**
 
-- Create: `apps/daily-tech-radar/src/routes/nextop.cli.board.ts`
-- Create: `apps/daily-tech-radar/src/routes/nextop.cli.search.ts`
-- Create: `apps/daily-tech-radar/src/routes/nextop.cli.item.ts`
+- Create: `apps/daily-tech-radar/src/routes/tutti.cli.board.ts`
+- Create: `apps/daily-tech-radar/src/routes/tutti.cli.search.ts`
+- Create: `apps/daily-tech-radar/src/routes/tutti.cli.item.ts`
 
 - [ ] **Step 1: Add the board route**
 
-Create `apps/daily-tech-radar/src/routes/nextop.cli.board.ts`:
+Create `apps/daily-tech-radar/src/routes/tutti.cli.board.ts`:
 
 ```ts
 import { createFileRoute } from "@tanstack/react-router";
@@ -1033,7 +1033,7 @@ import {
 } from "@/features/radar/radar.cli";
 import { getRadarBoardData } from "@/features/radar/radar.server";
 
-export const Route = createFileRoute("/nextop/cli/board")({
+export const Route = createFileRoute("/tutti/cli/board")({
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -1061,7 +1061,7 @@ export const Route = createFileRoute("/nextop/cli/board")({
 
 - [ ] **Step 2: Add the search route**
 
-Create `apps/daily-tech-radar/src/routes/nextop.cli.search.ts`:
+Create `apps/daily-tech-radar/src/routes/tutti.cli.search.ts`:
 
 ```ts
 import { createFileRoute } from "@tanstack/react-router";
@@ -1075,7 +1075,7 @@ import {
 } from "@/features/radar/radar.cli";
 import { getRadarBoardData } from "@/features/radar/radar.server";
 
-export const Route = createFileRoute("/nextop/cli/search")({
+export const Route = createFileRoute("/tutti/cli/search")({
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -1103,7 +1103,7 @@ export const Route = createFileRoute("/nextop/cli/search")({
 
 - [ ] **Step 3: Add the item route**
 
-Create `apps/daily-tech-radar/src/routes/nextop.cli.item.ts`:
+Create `apps/daily-tech-radar/src/routes/tutti.cli.item.ts`:
 
 ```ts
 import { createFileRoute } from "@tanstack/react-router";
@@ -1117,7 +1117,7 @@ import {
 } from "@/features/radar/radar.cli";
 import { getRadarBoardData } from "@/features/radar/radar.server";
 
-export const Route = createFileRoute("/nextop/cli/item")({
+export const Route = createFileRoute("/tutti/cli/item")({
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -1148,7 +1148,7 @@ export const Route = createFileRoute("/nextop/cli/item")({
 Run:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar typecheck
+pnpm --filter @tutti-apps/daily-tech-radar typecheck
 ```
 
 Expected:
@@ -1161,16 +1161,16 @@ No TypeScript errors.
 
 **Files:**
 
-- Modify: `scripts/package-nextop-app.mjs`
-- Modify: `tests/package-nextop-app.test.mjs`
+- Modify: `scripts/package-tutti-app.mjs`
+- Modify: `tests/package-tutti-app.test.mjs`
 
 - [ ] **Step 1: Add failing package tests for CLI artifacts**
 
-In `tests/package-nextop-app.test.mjs`, extend `packageNextopApp creates a valid daily-tech-radar package` with:
+In `tests/package-tutti-app.test.mjs`, extend `packageTuttiApp creates a valid daily-tech-radar package` with:
 
 ```js
   const cliManifest = JSON.parse(
-    await readFile(path.join(packageRoot, "nextop.cli.json"), "utf8"),
+    await readFile(path.join(packageRoot, "tutti.cli.json"), "utf8"),
   );
   const commandDocs = await readFile(
     path.join(packageRoot, "COMMANDS.md"),
@@ -1178,17 +1178,17 @@ In `tests/package-nextop-app.test.mjs`, extend `packageNextopApp creates a valid
   );
 
   assert.deepEqual(manifest.cli, {
-    manifest: "nextop.cli.json",
+    manifest: "tutti.cli.json",
   });
-  assert.equal(cliManifest.schemaVersion, "nextop.app.cli.v1");
+  assert.equal(cliManifest.schemaVersion, "tutti.app.cli.v1");
   assert.equal(cliManifest.scope, "radar");
   assert.equal(cliManifest.documentation.file, "COMMANDS.md");
   assert.deepEqual(
     cliManifest.commands.map((command) => command.handler.path),
-    ["/nextop/cli/board", "/nextop/cli/search", "/nextop/cli/item"],
+    ["/tutti/cli/board", "/tutti/cli/search", "/tutti/cli/item"],
   );
-  assert.match(commandDocs, /nextop --json radar board/);
-  assert.match(commandDocs, /nextop --json radar search/);
+  assert.match(commandDocs, /tutti --json radar board/);
+  assert.match(commandDocs, /tutti --json radar search/);
 ```
 
 Add a validation test:
@@ -1198,13 +1198,13 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
   const packageRoot = await makeTempPackageRoot();
 
   await writeFile(
-    path.join(packageRoot, "nextop.app.json"),
+    path.join(packageRoot, "tutti.app.json"),
     `${JSON.stringify({
-      schemaVersion: "nextop.app.manifest.v1",
+      schemaVersion: "tutti.app.manifest.v1",
       appId: "test-app",
       version: "1.2.3",
       runtime: { bootstrap: "bootstrap.sh" },
-      cli: { manifest: "nextop.cli.json" },
+      cli: { manifest: "tutti.cli.json" },
     })}\n`,
   );
   await writeFile(path.join(packageRoot, "AGENTS.md"), "Package guide\n");
@@ -1214,13 +1214,13 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
 
   await assert.rejects(
     validatePackageRoot(packageRoot),
-    /Missing declared CLI manifest: nextop\.cli\.json/,
+    /Missing declared CLI manifest: tutti\.cli\.json/,
   );
 
   await writeFile(
-    path.join(packageRoot, "nextop.cli.json"),
+    path.join(packageRoot, "tutti.cli.json"),
     `${JSON.stringify({
-      schemaVersion: "nextop.app.cli.v1",
+      schemaVersion: "tutti.app.cli.v1",
       scope: "test",
       documentation: { file: "COMMANDS.md" },
       commands: [
@@ -1240,7 +1240,7 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
           handler: {
             kind: "http",
             method: "POST",
-            path: "/nextop/cli/run",
+            path: "/tutti/cli/run",
           },
         },
       ],
@@ -1259,21 +1259,21 @@ test("validatePackageRoot requires declared CLI manifest and docs", async () => 
 Run:
 
 ```bash
-node --test tests/package-nextop-app.test.mjs
+node --test tests/package-tutti-app.test.mjs
 ```
 
 Expected:
 
 ```txt
 not ok
-Missing declared CLI manifest: nextop.cli.json
+Missing declared CLI manifest: tutti.cli.json
 ```
 
-or a failure showing `nextop.cli.json` was not copied into the package.
+or a failure showing `tutti.cli.json` was not copied into the package.
 
 - [ ] **Step 3: Copy CLI manifest and docs during packaging**
 
-In `scripts/package-nextop-app.mjs`, add:
+In `scripts/package-tutti-app.mjs`, add:
 
 ```js
 async function copyCliManifest({ manifest, packageSourceDir, packageRoot }) {
@@ -1342,15 +1342,15 @@ const CLI_SEGMENT_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
 function validatePackageRelativePath(value, label) {
   if (typeof value !== "string" || value.trim() === "") {
-    throw new Error(`nextop.cli.json ${label} is required.`);
+    throw new Error(`tutti.cli.json ${label} is required.`);
   }
   if (path.isAbsolute(value) || value.startsWith("\\")) {
-    throw new Error(`nextop.cli.json ${label} must be a relative package path.`);
+    throw new Error(`tutti.cli.json ${label} must be a relative package path.`);
   }
   for (const part of value.split(/[\\/]/)) {
     if (part === "..") {
       throw new Error(
-        `nextop.cli.json ${label} must not contain parent path segments.`,
+        `tutti.cli.json ${label} must not contain parent path segments.`,
       );
     }
   }
@@ -1359,31 +1359,31 @@ function validatePackageRelativePath(value, label) {
 function validateCliSegment(value, label) {
   if (typeof value !== "string" || !CLI_SEGMENT_PATTERN.test(value.trim())) {
     throw new Error(
-      `nextop.cli.json ${label} must contain lowercase letters, numbers, and hyphen only.`,
+      `tutti.cli.json ${label} must contain lowercase letters, numbers, and hyphen only.`,
     );
   }
 }
 
 function validateCliManifest(cliManifest) {
-  if (cliManifest.schemaVersion !== "nextop.app.cli.v1") {
+  if (cliManifest.schemaVersion !== "tutti.app.cli.v1") {
     throw new Error(
-      "nextop.cli.json must use schemaVersion nextop.app.cli.v1.",
+      "tutti.cli.json must use schemaVersion tutti.app.cli.v1.",
     );
   }
   validateCliSegment(cliManifest.scope, "scope");
   if (!Array.isArray(cliManifest.commands) || cliManifest.commands.length === 0) {
-    throw new Error("nextop.cli.json commands must be a non-empty array.");
+    throw new Error("tutti.cli.json commands must be a non-empty array.");
   }
 
   const seenPaths = new Set();
   for (const [index, command] of cliManifest.commands.entries()) {
     const label = `commands[${index}]`;
     if (!Array.isArray(command.path) || command.path.length === 0) {
-      throw new Error(`nextop.cli.json ${label}.path is required.`);
+      throw new Error(`tutti.cli.json ${label}.path is required.`);
     }
     if (command.path[0] === cliManifest.scope) {
       throw new Error(
-        `nextop.cli.json ${label}.path must not repeat scope.`,
+        `tutti.cli.json ${label}.path must not repeat scope.`,
       );
     }
     for (const [segmentIndex, segment] of command.path.entries()) {
@@ -1391,11 +1391,11 @@ function validateCliManifest(cliManifest) {
     }
     const pathKey = command.path.join(".");
     if (seenPaths.has(pathKey)) {
-      throw new Error(`nextop.cli.json command path ${pathKey} is duplicated.`);
+      throw new Error(`tutti.cli.json command path ${pathKey} is duplicated.`);
     }
     seenPaths.add(pathKey);
     if (typeof command.summary !== "string" || command.summary.trim() === "") {
-      throw new Error(`nextop.cli.json ${label}.summary is required.`);
+      throw new Error(`tutti.cli.json ${label}.summary is required.`);
     }
     validateCliInputSchema(command.inputSchema, `${label}.inputSchema`);
     validateCliOutput(command.output, `${label}.output`);
@@ -1408,49 +1408,49 @@ function validateCliInputSchema(schema, label) {
     return;
   }
   if (schema.type !== "object") {
-    throw new Error(`nextop.cli.json ${label}.type must be object.`);
+    throw new Error(`tutti.cli.json ${label}.type must be object.`);
   }
   if (!schema.properties || typeof schema.properties !== "object") {
-    throw new Error(`nextop.cli.json ${label}.properties is required.`);
+    throw new Error(`tutti.cli.json ${label}.properties is required.`);
   }
   for (const [name, property] of Object.entries(schema.properties)) {
     validateCliSegment(name, `${label}.properties`);
     if (!property || typeof property !== "object") {
       throw new Error(
-        `nextop.cli.json ${label}.properties.${name} must be an object.`,
+        `tutti.cli.json ${label}.properties.${name} must be an object.`,
       );
     }
     if (!["string", "boolean", "integer"].includes(property.type)) {
       throw new Error(
-        `nextop.cli.json ${label}.properties.${name}.type must be string, boolean, or integer.`,
+        `tutti.cli.json ${label}.properties.${name}.type must be string, boolean, or integer.`,
       );
     }
     for (const key of Object.keys(property)) {
       if (!["type", "description"].includes(key)) {
         throw new Error(
-          `nextop.cli.json ${label}.properties.${name} has unsupported key ${key}.`,
+          `tutti.cli.json ${label}.properties.${name} has unsupported key ${key}.`,
         );
       }
     }
   }
   if (Object.hasOwn(schema, "required") && !Array.isArray(schema.required)) {
-    throw new Error(`nextop.cli.json ${label}.required must be an array.`);
+    throw new Error(`tutti.cli.json ${label}.required must be an array.`);
   }
   for (const required of schema.required ?? []) {
     if (typeof required !== "string") {
       throw new Error(
-        `nextop.cli.json ${label}.required entries must be strings.`,
+        `tutti.cli.json ${label}.required entries must be strings.`,
       );
     }
     if (!Object.hasOwn(schema.properties, required)) {
       throw new Error(
-        `nextop.cli.json ${label}.required contains unknown property ${required}.`,
+        `tutti.cli.json ${label}.required contains unknown property ${required}.`,
       );
     }
   }
   for (const key of Object.keys(schema)) {
     if (!["type", "properties", "required"].includes(key)) {
-      throw new Error(`nextop.cli.json ${label} has unsupported key ${key}.`);
+      throw new Error(`tutti.cli.json ${label} has unsupported key ${key}.`);
     }
   }
 }
@@ -1458,12 +1458,12 @@ function validateCliInputSchema(schema, label) {
 function validateCliOutput(output, label) {
   if (!output || !["json", "table"].includes(output.defaultMode)) {
     throw new Error(
-      `nextop.cli.json ${label}.defaultMode must be json or table.`,
+      `tutti.cli.json ${label}.defaultMode must be json or table.`,
     );
   }
   if (output.defaultMode === "json" && output.json !== true) {
     throw new Error(
-      `nextop.cli.json ${label}.json must be true when defaultMode is json.`,
+      `tutti.cli.json ${label}.json must be true when defaultMode is json.`,
     );
   }
   if (
@@ -1473,7 +1473,7 @@ function validateCliOutput(output, label) {
       output.table.columns.length === 0)
   ) {
     throw new Error(
-      `nextop.cli.json ${label}.table.columns is required when defaultMode is table.`,
+      `tutti.cli.json ${label}.table.columns is required when defaultMode is table.`,
     );
   }
   if (output.table?.columns) {
@@ -1482,12 +1482,12 @@ function validateCliOutput(output, label) {
       validateCliSegment(column.key, `${label}.table.columns[${index}].key`);
       if (typeof column.label !== "string" || column.label.trim() === "") {
         throw new Error(
-          `nextop.cli.json ${label}.table.columns[${index}].label is required.`,
+          `tutti.cli.json ${label}.table.columns[${index}].label is required.`,
         );
       }
       if (seenColumnKeys.has(column.key)) {
         throw new Error(
-          `nextop.cli.json ${label}.table.columns key ${column.key} is duplicated.`,
+          `tutti.cli.json ${label}.table.columns key ${column.key} is duplicated.`,
         );
       }
       seenColumnKeys.add(column.key);
@@ -1497,17 +1497,17 @@ function validateCliOutput(output, label) {
 
 function validateCliHandler(handler, label) {
   if (handler?.kind !== "http") {
-    throw new Error(`nextop.cli.json ${label}.kind must be http.`);
+    throw new Error(`tutti.cli.json ${label}.kind must be http.`);
   }
   if (handler.method !== "POST") {
-    throw new Error(`nextop.cli.json ${label}.method must be POST.`);
+    throw new Error(`tutti.cli.json ${label}.method must be POST.`);
   }
   if (
     typeof handler.path !== "string" ||
-    !handler.path.startsWith("/nextop/cli/")
+    !handler.path.startsWith("/tutti/cli/")
   ) {
     throw new Error(
-      `nextop.cli.json ${label}.path must start with /nextop/cli/.`,
+      `tutti.cli.json ${label}.path must start with /tutti/cli/.`,
     );
   }
   if (
@@ -1517,7 +1517,7 @@ function validateCliHandler(handler, label) {
       handler.timeoutMs > 300000)
   ) {
     throw new Error(
-      `nextop.cli.json ${label}.timeoutMs must be between 1000 and 300000.`,
+      `tutti.cli.json ${label}.timeoutMs must be between 1000 and 300000.`,
     );
   }
 }
@@ -1528,7 +1528,7 @@ function validateCliHandler(handler, label) {
 Run:
 
 ```bash
-node --test tests/package-nextop-app.test.mjs
+node --test tests/package-tutti-app.test.mjs
 ```
 
 Expected:
@@ -1541,18 +1541,18 @@ ok
 
 **Files:**
 
-- Modify: `docs/architecture/nextop-packaging.md`
+- Modify: `docs/architecture/tutti-packaging.md`
 
 - [ ] **Step 1: Document optional CLI package files**
 
 In the "Optional files" list, add:
 
 ````markdown
-- `nextop.cli.json` can be included when `nextop.app.json` declares
+- `tutti.cli.json` can be included when `tutti.app.json` declares
   `cli.manifest`; each command must route to an app-owned
-  `POST /nextop/cli/*` handler.
+  `POST /tutti/cli/*` handler.
 - `COMMANDS.md` or another package-local documentation file can be referenced
-  by `nextop.cli.json` for CLI help output.
+  by `tutti.cli.json` for CLI help output.
 ````
 
 - [ ] **Step 2: Document the Daily Tech Radar CLI surface**
@@ -1563,12 +1563,12 @@ After the Daily Tech Radar package shape section, add:
 Daily Tech Radar also exposes the optional `radar` CLI scope:
 
 ```txt
-nextop.cli.json
+tutti.cli.json
 COMMANDS.md
 ```
 
 The command handlers live in the TanStack Start server routes under
-`/nextop/cli/*` and are packaged through the same server bundle as the UI.
+`/tutti/cli/*` and are packaged through the same server bundle as the UI.
 ````
 
 - [ ] **Step 3: Verify docs formatting**
@@ -1596,8 +1596,8 @@ No Biome errors.
 Run:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar test
-pnpm --filter @nextop-apps/daily-tech-radar typecheck
+pnpm --filter @tutti-apps/daily-tech-radar test
+pnpm --filter @tutti-apps/daily-tech-radar typecheck
 ```
 
 Expected:
@@ -1612,7 +1612,7 @@ No TypeScript errors.
 Run:
 
 ```bash
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 ```
 
 Expected:
@@ -1626,14 +1626,14 @@ Packaged daily-tech-radar at ...
 Run:
 
 ```bash
-node -e 'const fs=require("node:fs"); for (const file of ["nextop.app.json","nextop.cli.json","COMMANDS.md"]) { console.log(file, fs.existsSync(`build/nextop-app/daily-tech-radar/package/${file}`)); }'
+node -e 'const fs=require("node:fs"); for (const file of ["tutti.app.json","tutti.cli.json","COMMANDS.md"]) { console.log(file, fs.existsSync(`build/tutti-app/daily-tech-radar/package/${file}`)); }'
 ```
 
 Expected:
 
 ```txt
-nextop.app.json true
-nextop.cli.json true
+tutti.app.json true
+tutti.cli.json true
 COMMANDS.md true
 ```
 
@@ -1642,11 +1642,11 @@ COMMANDS.md true
 Run:
 
 ```bash
-NEXTOP_APP_PACKAGE_DIR=build/nextop-app/daily-tech-radar/package \
-NEXTOP_APP_HOST=127.0.0.1 \
-NEXTOP_APP_PORT=3302 \
-NEXTOP_APP_DATA_DIR=build/nextop-app/daily-tech-radar/data \
-node build/nextop-app/daily-tech-radar/package/server.mjs
+TUTTI_APP_PACKAGE_DIR=build/tutti-app/daily-tech-radar/package \
+TUTTI_APP_HOST=127.0.0.1 \
+TUTTI_APP_PORT=3302 \
+TUTTI_APP_DATA_DIR=build/tutti-app/daily-tech-radar/data \
+node build/tutti-app/daily-tech-radar/package/server.mjs
 ```
 
 Expected:
@@ -1660,9 +1660,9 @@ daily-tech-radar listening on http://127.0.0.1:3302
 In a second terminal, run:
 
 ```bash
-curl -sS -X POST http://127.0.0.1:3302/nextop/cli/board \
+curl -sS -X POST http://127.0.0.1:3302/tutti/cli/board \
   -H 'content-type: application/json' \
-  -d '{"schemaVersion":"nextop.app.cli.invoke.v1","commandId":"app.daily-tech-radar.radar.board","appId":"daily-tech-radar","scope":"radar","path":["board"],"workspaceId":"local","input":{"locale":"en-US","source":"github","limit":2},"outputMode":"json","context":{"source":"cli","parentCommandId":null}}' | node -e 'let s=""; process.stdin.on("data",d=>s+=d); process.stdin.on("end",()=>{const j=JSON.parse(s); console.log(j.kind, j.value.ok, Array.isArray(j.value.data.cards), j.value.data.cards.length <= 2)})'
+  -d '{"schemaVersion":"tutti.app.cli.invoke.v1","commandId":"app.daily-tech-radar.radar.board","appId":"daily-tech-radar","scope":"radar","path":["board"],"workspaceId":"local","input":{"locale":"en-US","source":"github","limit":2},"outputMode":"json","context":{"source":"cli","parentCommandId":null}}' | node -e 'let s=""; process.stdin.on("data",d=>s+=d); process.stdin.on("end",()=>{const j=JSON.parse(s); console.log(j.kind, j.value.ok, Array.isArray(j.value.data.cards), j.value.data.cards.length <= 2)})'
 ```
 
 Expected:
@@ -1674,7 +1674,7 @@ json true true true
 Then run:
 
 ```bash
-curl -sS -X POST http://127.0.0.1:3302/nextop/cli/board \
+curl -sS -X POST http://127.0.0.1:3302/tutti/cli/board \
   -H 'content-type: application/json' \
   -d '{"locale":"en-US","include-cards":false}' | node -e 'let s=""; process.stdin.on("data",d=>s+=d); process.stdin.on("end",()=>{const j=JSON.parse(s); console.log(j.kind, j.value.ok, Array.isArray(j.value.data.availableDates), j.value.data.cards.length)})'
 ```
@@ -1688,7 +1688,7 @@ json true true 0
 Then run:
 
 ```bash
-curl -sS -X POST http://127.0.0.1:3302/nextop/cli/search \
+curl -sS -X POST http://127.0.0.1:3302/tutti/cli/search \
   -H 'content-type: application/json' \
   -d '{"locale":"en-US","source":"github","query":"ai","limit":5}' | node -e 'let s=""; process.stdin.on("data",d=>s+=d); process.stdin.on("end",()=>{const j=JSON.parse(s); console.log(j.kind, j.value.ok, j.value.data.query.source, j.value.data.cards.length <= 5)})'
 ```
@@ -1730,7 +1730,7 @@ No TypeScript errors.
 Run:
 
 ```bash
-git diff -- apps/daily-tech-radar/nextop-package scripts tests docs
+git diff -- apps/daily-tech-radar/tutti-package scripts tests docs
 ```
 
 Expected:
@@ -1744,8 +1744,8 @@ Diff only includes CLI manifest/docs, CLI route/helper implementation, package v
 - `radar board` may return many cards if no limit is provided. This is intentional because it mirrors `/api/radar`; agents that need smaller payloads can pass `limit` or `include-cards: false`.
 - `radar board --source github` returns filtered cards while preserving board-level `metrics` and `categories` from the loaded board. This keeps source-of-truth metadata intact; callers needing filtered category counts should use `radar search` results or compute them locally.
 - The command scope is `radar` rather than `daily-tech-radar` because CLI scopes should be short and command-like.
-- Route filenames assume TanStack Start maps `src/routes/nextop.cli.board.ts` to `/nextop/cli/board`. If typecheck or route generation shows a mismatch, use the existing route naming convention that produces the exact same URL path.
-- Package validation mirrors the important local CLI manifest contract checks, but Nextop remains the final authority for installed app acceptance.
+- Route filenames assume TanStack Start maps `src/routes/tutti.cli.board.ts` to `/tutti/cli/board`. If typecheck or route generation shows a mismatch, use the existing route naming convention that produces the exact same URL path.
+- Package validation mirrors the important local CLI manifest contract checks, but Tutti remains the final authority for installed app acceptance.
 
 ## 7. Self-Review
 

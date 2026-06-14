@@ -11,7 +11,8 @@
       "apps/**/.output/**",
       "apps/**/dist/**",
       "apps/**/src/routeTree.gen.ts",
-      "build/**"
+      "build/**",
+      ".worktrees/**"
     ]
   }
 }

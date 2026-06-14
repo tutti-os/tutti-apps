@@ -3,11 +3,11 @@
 ## Workspace Layout
 
 ```txt
-nextop-apps/
+tutti-apps/
   apps/
     daily-tech-radar/
       docs/
-      nextop-package/
+      tutti-package/
       src/
       package.json
       tsconfig.json
@@ -43,7 +43,7 @@ An app owns:
 - route structure and product UI
 - app-specific server functions and API routes
 - app-specific docs under `apps/<app-id>/docs`
-- Nextop package source under `apps/<app-id>/nextop-package` when publishable
+- Tutti package source under `apps/<app-id>/tutti-package` when publishable
 - app-specific validation scripts
 
 Apps must not import from another app's private `src`.
@@ -69,7 +69,7 @@ First-version product boundary:
 - Product Hunt and GitHub daily discovery cards
 - card grid and detail drawer UI
 - Daily Tech Radar SDK integration
-- Nextop package source under `apps/daily-tech-radar/nextop-package`
+- Tutti package source under `apps/daily-tech-radar/tutti-package`
 
 If future apps need shared trend data access, promote the boundary into a
 domain package under `packages/*`.

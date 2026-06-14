@@ -104,9 +104,7 @@ function validatePackageRelativePath(value, label) {
     throw new Error(`tutti.cli.json ${label} is required.`);
   }
   if (path.isAbsolute(value) || value.startsWith("\\")) {
-    throw new Error(
-      `tutti.cli.json ${label} must be a relative package path.`,
-    );
+    throw new Error(`tutti.cli.json ${label} must be a relative package path.`);
   }
   for (const part of value.split(/[\\/]/)) {
     if (part === "..") {
@@ -246,9 +244,7 @@ function validateCliHandler(handler, label) {
 
 function validateCliManifest(cliManifest) {
   if (cliManifest.schemaVersion !== "tutti.app.cli.v1") {
-    throw new Error(
-      "tutti.cli.json must use schemaVersion tutti.app.cli.v1.",
-    );
+    throw new Error("tutti.cli.json must use schemaVersion tutti.app.cli.v1.");
   }
   validateCliSegment(cliManifest.scope, "scope");
   if (
@@ -479,7 +475,7 @@ async function bundleServer({ appConfig, appSourceDir, packageRoot }) {
     "--platform=node",
     "--format=esm",
     "--target=node22",
-    "--banner:js=import { createRequire as __nextopCreateRequire } from 'node:module'; const require = __nextopCreateRequire(import.meta.url);",
+    "--banner:js=import { createRequire as __tuttiCreateRequire } from 'node:module'; const require = __tuttiCreateRequire(import.meta.url);",
     `--outfile=${path.join(packageRoot, "server", "server.js")}`,
   ]);
 }

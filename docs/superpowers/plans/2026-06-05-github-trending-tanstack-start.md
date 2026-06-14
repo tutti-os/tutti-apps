@@ -6,18 +6,18 @@
 
 **Architecture:** Implement the app as a TanStack Start dashboard with file routes, typed Server Functions, TanStack Query-backed loaders, SQLite-ready server modules, and feature-oriented UI modules. The first implementation should use deterministic seed data while keeping the service boundaries ready for GitHub Trending ingestion, SQLite snapshots, and README cache.
 
-**Tech Stack:** TanStack Start, TanStack Router, TanStack Query, React 19, Tailwind CSS v4, shadcn-style primitives, lucide-react, react-markdown, remark-gfm, rehype-sanitize, SQLite with Drizzle ORM and better-sqlite3, Turbo, Nextop app package output.
+**Tech Stack:** TanStack Start, TanStack Router, TanStack Query, React 19, Tailwind CSS v4, shadcn-style primitives, lucide-react, react-markdown, remark-gfm, rehype-sanitize, SQLite with Drizzle ORM and better-sqlite3, Turbo, Tutti app package output.
 
 ---
 
 ## Source Material
 
 - Product/architecture spec: `/Users/wwcome/work/demo/github-trending-reader-tech-plan.md`
-- Repo-local copy: `/Users/wwcome/work/demo/nextop-apps/apps/github-trending/docs/technical-plan.md`
-- Design guidance: `/Users/wwcome/work/demo/nextop-apps/apps/github-trending/docs/design.md`
+- Repo-local copy: `/Users/wwcome/work/demo/tutti-apps/apps/github-trending/docs/technical-plan.md`
+- Design guidance: `/Users/wwcome/work/demo/tutti-apps/apps/github-trending/docs/design.md`
 - Visual direction: dark `TrendReader` command-center screenshot supplied in the user prompt
-- Packaging rules: `/Users/wwcome/work/demo/nextop-apps/docs/architecture/nextop-packaging.md`
-- App rules: `/Users/wwcome/work/demo/nextop-apps/apps/github-trending/AGENTS.md`
+- Packaging rules: `/Users/wwcome/work/demo/tutti-apps/docs/architecture/tutti-packaging.md`
+- App rules: `/Users/wwcome/work/demo/tutti-apps/apps/github-trending/AGENTS.md`
 
 ## Scope Decisions
 
@@ -27,7 +27,7 @@
 - Keep the right panel README-only. Do not add issues, PRs, discussions, releases, related repos, or AI summary cards.
 - Keep `README thumbnail preview` in repo rows as structured visual previews, not generated screenshots.
 - Use SQLite design and module boundaries, but do not require a live GitHub token or external crawler for the first UI pass.
-- Replace the placeholder Nextop package `server/` and `static/` only after TanStack Start build succeeds and `.output/server/index.mjs` is packaged.
+- Replace the placeholder Tutti package `server/` and `static/` only after TanStack Start build succeeds and `.output/server/index.mjs` is packaged.
 - Use Tailwind utilities directly in TSX for app visuals. Do not add CSS Modules or custom global business classes. Define the fixed visual palette by overriding Tailwind/shadcn semantic color tokens such as `background`, `foreground`, `card`, `border`, `primary`, `muted`, and `accent`; components should consume those tokens with classes like `bg-background`, `text-foreground`, `border-border`, and `text-muted-foreground`.
 
 ## File Map
@@ -75,18 +75,18 @@ Modify:
 
 - `apps/github-trending/package.json` - replace placeholder scripts, add dependencies/dev dependencies.
 - `apps/github-trending/tsconfig.json` - include Start route files, JSX, path alias if needed.
-- `scripts/package-nextop-app.mjs` - run app build and copy `.output` for TanStack Start packages.
-- `tests/package-nextop-app.test.mjs` - assert `.output/server/index.mjs` packaging instead of `server/server.mjs`.
-- `nextop.publish.json` - add app build command if package script needs explicit config.
-- `apps/github-trending/nextop-package/bootstrap.sh` - run `.output/server/index.mjs`.
-- `apps/github-trending/nextop-package/AGENTS.md` - update layout to `.output`, remove long-term `server/` wording.
-- `apps/github-trending/nextop-package/README.md` - mark placeholder folders as removed after app build.
-- `docs/architecture/nextop-packaging.md` - keep it aligned if implementation details change.
+- `scripts/package-tutti-app.mjs` - run app build and copy `.output` for TanStack Start packages.
+- `tests/package-tutti-app.test.mjs` - assert `.output/server/index.mjs` packaging instead of `server/server.mjs`.
+- `tutti.publish.json` - add app build command if package script needs explicit config.
+- `apps/github-trending/tutti-package/bootstrap.sh` - run `.output/server/index.mjs`.
+- `apps/github-trending/tutti-package/AGENTS.md` - update layout to `.output`, remove long-term `server/` wording.
+- `apps/github-trending/tutti-package/README.md` - mark placeholder folders as removed after app build.
+- `docs/architecture/tutti-packaging.md` - keep it aligned if implementation details change.
 
 Delete in Task 6 after the TanStack Start package output is copied:
 
-- `apps/github-trending/nextop-package/server/server.mjs`
-- `apps/github-trending/nextop-package/static/index.html`
+- `apps/github-trending/tutti-package/server/server.mjs`
+- `apps/github-trending/tutti-package/static/index.html`
 
 ## Visual Acceptance Criteria
 
@@ -132,8 +132,8 @@ Use the app's package-level scripts for the real framework lifecycle:
 Add dependencies if missing:
 
 ```bash
-pnpm --filter @nextop-apps/github-trending add @tanstack/react-query @tanstack/react-router @tanstack/react-start react react-dom zod lucide-react react-markdown remark-gfm rehype-sanitize clsx tailwind-merge class-variance-authority
-pnpm --filter @nextop-apps/github-trending add -D vite @vitejs/plugin-react @tailwindcss/vite tailwindcss typescript @types/node @types/react @types/react-dom vitest
+pnpm --filter @tutti-apps/github-trending add @tanstack/react-query @tanstack/react-router @tanstack/react-start react react-dom zod lucide-react react-markdown remark-gfm rehype-sanitize clsx tailwind-merge class-variance-authority
+pnpm --filter @tutti-apps/github-trending add -D vite @vitejs/plugin-react @tailwindcss/vite tailwindcss typescript @types/node @types/react @types/react-dom vitest
 ```
 
 Expected: package scripts no longer print "not scaffolded yet".
@@ -321,8 +321,8 @@ Expected: Tailwind compiles. All visual styling, including dark colors, borders,
 Run:
 
 ```bash
-pnpm --filter @nextop-apps/github-trending typecheck
-pnpm --filter @nextop-apps/github-trending build
+pnpm --filter @tutti-apps/github-trending typecheck
+pnpm --filter @tutti-apps/github-trending build
 ```
 
 Expected: both commands pass and `.output/server/index.mjs` exists after build.
@@ -632,8 +632,8 @@ describe("mockCategoryBoard", () => {
 - [ ] **Step 7: Verify and commit**
 
 ```bash
-pnpm --filter @nextop-apps/github-trending test
-pnpm --filter @nextop-apps/github-trending typecheck
+pnpm --filter @tutti-apps/github-trending test
+pnpm --filter @tutti-apps/github-trending typecheck
 git add apps/github-trending
 git commit -m "Add GitHub Trending seed data services"
 ```
@@ -810,7 +810,7 @@ Expected: page loads with route search params and no client-only data waterfall.
 Run:
 
 ```bash
-pnpm --filter @nextop-apps/github-trending dev
+pnpm --filter @tutti-apps/github-trending dev
 ```
 
 Open `http://127.0.0.1:3000`.
@@ -826,9 +826,9 @@ Check:
 - [ ] **Step 7: Verify and commit**
 
 ```bash
-pnpm --filter @nextop-apps/github-trending test
-pnpm --filter @nextop-apps/github-trending typecheck
-pnpm --filter @nextop-apps/github-trending build
+pnpm --filter @tutti-apps/github-trending test
+pnpm --filter @tutti-apps/github-trending typecheck
+pnpm --filter @tutti-apps/github-trending build
 git add apps/github-trending
 git commit -m "Build GitHub Trending command center UI"
 ```
@@ -981,8 +981,8 @@ git commit -m "Add GitHub Trending API routes"
 - [ ] **Step 1: Add DB dependencies**
 
 ```bash
-pnpm --filter @nextop-apps/github-trending add drizzle-orm better-sqlite3
-pnpm --filter @nextop-apps/github-trending add -D drizzle-kit @types/better-sqlite3
+pnpm --filter @tutti-apps/github-trending add drizzle-orm better-sqlite3
+pnpm --filter @tutti-apps/github-trending add -D drizzle-kit @types/better-sqlite3
 ```
 
 - [ ] **Step 2: Create SQLite schema**
@@ -1038,7 +1038,7 @@ import * as schema from "./schema"
 
 export function resolveSqlitePath() {
   const dataDir =
-    process.env.NEXTOP_APP_DATA_DIR || path.resolve(process.cwd(), "data")
+    process.env.TUTTI_APP_DATA_DIR || path.resolve(process.cwd(), "data")
   mkdirSync(dataDir, { recursive: true })
   return path.join(dataDir, "trendreader.sqlite")
 }
@@ -1051,7 +1051,7 @@ export function createDb(sqlitePath = resolveSqlitePath()) {
 }
 ```
 
-Expected: SQLite path respects `NEXTOP_APP_DATA_DIR`.
+Expected: SQLite path respects `TUTTI_APP_DATA_DIR`.
 
 - [ ] **Step 4: Add schema test**
 
@@ -1063,16 +1063,16 @@ import { describe, expect, it } from "vitest"
 import { resolveSqlitePath } from "../src/db/client.server"
 
 describe("SQLite runtime path", () => {
-  it("uses NEXTOP_APP_DATA_DIR when provided", () => {
-    const previous = process.env.NEXTOP_APP_DATA_DIR
-    process.env.NEXTOP_APP_DATA_DIR = "/tmp/trendreader-test"
+  it("uses TUTTI_APP_DATA_DIR when provided", () => {
+    const previous = process.env.TUTTI_APP_DATA_DIR
+    process.env.TUTTI_APP_DATA_DIR = "/tmp/trendreader-test"
 
     expect(resolveSqlitePath()).toBe("/tmp/trendreader-test/trendreader.sqlite")
 
     if (previous === undefined) {
-      delete process.env.NEXTOP_APP_DATA_DIR
+      delete process.env.TUTTI_APP_DATA_DIR
     } else {
-      process.env.NEXTOP_APP_DATA_DIR = previous
+      process.env.TUTTI_APP_DATA_DIR = previous
     }
   })
 })
@@ -1081,8 +1081,8 @@ describe("SQLite runtime path", () => {
 - [ ] **Step 5: Verify and commit**
 
 ```bash
-pnpm --filter @nextop-apps/github-trending test
-pnpm --filter @nextop-apps/github-trending typecheck
+pnpm --filter @tutti-apps/github-trending test
+pnpm --filter @tutti-apps/github-trending typecheck
 git add apps/github-trending
 git commit -m "Add SQLite storage foundation"
 ```
@@ -1162,33 +1162,33 @@ Write enriched data into:
 
 The UI should continue reading through Server Functions, not directly from live GitHub calls.
 
-## Task 6: Migrate Nextop Package to TanStack Start Output
+## Task 6: Migrate Tutti Package to TanStack Start Output
 
 **Files:**
 
-- Modify: `scripts/package-nextop-app.mjs`
-- Modify: `tests/package-nextop-app.test.mjs`
-- Modify: `nextop.publish.json`
-- Modify: `apps/github-trending/nextop-package/bootstrap.sh`
-- Modify: `apps/github-trending/nextop-package/AGENTS.md`
-- Modify: `apps/github-trending/nextop-package/README.md`
-- Delete: `apps/github-trending/nextop-package/server/server.mjs`
-- Delete: `apps/github-trending/nextop-package/static/index.html`
+- Modify: `scripts/package-tutti-app.mjs`
+- Modify: `tests/package-tutti-app.test.mjs`
+- Modify: `tutti.publish.json`
+- Modify: `apps/github-trending/tutti-package/bootstrap.sh`
+- Modify: `apps/github-trending/tutti-package/AGENTS.md`
+- Modify: `apps/github-trending/tutti-package/README.md`
+- Delete: `apps/github-trending/tutti-package/server/server.mjs`
+- Delete: `apps/github-trending/tutti-package/static/index.html`
 
 - [ ] **Step 1: Add build command to publish config**
 
-Update `nextop.publish.json` app config:
+Update `tutti.publish.json` app config:
 
 ```json
 {
-  "buildCommand": "pnpm --filter @nextop-apps/github-trending build",
-  "packageSourceDir": "apps/github-trending/nextop-package"
+  "buildCommand": "pnpm --filter @tutti-apps/github-trending build",
+  "packageSourceDir": "apps/github-trending/tutti-package"
 }
 ```
 
 - [ ] **Step 2: Run app build from package script**
 
-In `scripts/package-nextop-app.mjs`, before copying package files, run `appConfig.buildCommand` when present. Split it safely:
+In `scripts/package-tutti-app.mjs`, before copying package files, run `appConfig.buildCommand` when present. Split it safely:
 
 ```js
 async function runShell(command) {
@@ -1245,39 +1245,39 @@ if (!copiedOutput) {
 
 - [ ] **Step 4: Update bootstrap**
 
-Change `apps/github-trending/nextop-package/bootstrap.sh`:
+Change `apps/github-trending/tutti-package/bootstrap.sh`:
 
 ```sh
 #!/bin/sh
 set -eu
 
-: "${NEXTOP_APP_PACKAGE_DIR:?}"
-: "${NEXTOP_APP_HOST:?}"
-: "${NEXTOP_APP_PORT:?}"
-: "${NEXTOP_APP_DATA_DIR:?}"
+: "${TUTTI_APP_PACKAGE_DIR:?}"
+: "${TUTTI_APP_HOST:?}"
+: "${TUTTI_APP_PORT:?}"
+: "${TUTTI_APP_DATA_DIR:?}"
 
-export HOST="$NEXTOP_APP_HOST"
-export PORT="$NEXTOP_APP_PORT"
-export GITHUB_TRENDING_DATA_DIR="$NEXTOP_APP_DATA_DIR"
+export HOST="$TUTTI_APP_HOST"
+export PORT="$TUTTI_APP_PORT"
+export GITHUB_TRENDING_DATA_DIR="$TUTTI_APP_DATA_DIR"
 
-exec node "$NEXTOP_APP_PACKAGE_DIR/.output/server/index.mjs"
+exec node "$TUTTI_APP_PACKAGE_DIR/.output/server/index.mjs"
 ```
 
 - [ ] **Step 5: Delete placeholder files**
 
 ```bash
-rm -rf apps/github-trending/nextop-package/server
-rm -rf apps/github-trending/nextop-package/static
+rm -rf apps/github-trending/tutti-package/server
+rm -rf apps/github-trending/tutti-package/static
 ```
 
 - [ ] **Step 6: Update tests**
 
-In `tests/package-nextop-app.test.mjs`, replace:
+In `tests/package-tutti-app.test.mjs`, replace:
 
 ```ts
 assert.match(
   bootstrap,
-  /exec node "\$NEXTOP_APP_PACKAGE_DIR\/server\/server\.mjs"/,
+  /exec node "\$TUTTI_APP_PACKAGE_DIR\/server\/server\.mjs"/,
 )
 assert.match(index, /TanStack Start/)
 ```
@@ -1287,7 +1287,7 @@ with:
 ```ts
 assert.match(
   bootstrap,
-  /exec node "\$NEXTOP_APP_PACKAGE_DIR\/\.output\/server\/index\.mjs"/,
+  /exec node "\$TUTTI_APP_PACKAGE_DIR\/\.output\/server\/index\.mjs"/,
 )
 await readFile(path.join(packageRoot, ".output", "server", "index.mjs"), "utf8")
 ```
@@ -1295,8 +1295,8 @@ await readFile(path.join(packageRoot, ".output", "server", "index.mjs"), "utf8")
 - [ ] **Step 7: Verify package output**
 
 ```bash
-pnpm package:nextop --app github-trending
-test -f build/nextop-app/github-trending/package/.output/server/index.mjs
+pnpm package:tutti --app github-trending
+test -f build/tutti-app/github-trending/package/.output/server/index.mjs
 ```
 
 Expected: package zip includes `.output/server/index.mjs`.
@@ -1304,7 +1304,7 @@ Expected: package zip includes `.output/server/index.mjs`.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add scripts/package-nextop-app.mjs tests/package-nextop-app.test.mjs nextop.publish.json apps/github-trending
+git add scripts/package-tutti-app.mjs tests/package-tutti-app.test.mjs tutti.publish.json apps/github-trending
 git commit -m "Package GitHub Trending TanStack Start output"
 ```
 
@@ -1321,8 +1321,8 @@ git commit -m "Package GitHub Trending TanStack Start output"
 pnpm lint
 pnpm test
 pnpm typecheck
-pnpm --filter @nextop-apps/github-trending build
-pnpm package:nextop --app github-trending
+pnpm --filter @tutti-apps/github-trending build
+pnpm package:tutti --app github-trending
 ```
 
 Expected: all commands pass.
@@ -1330,7 +1330,7 @@ Expected: all commands pass.
 - [ ] **Step 2: Run local dev server**
 
 ```bash
-pnpm --filter @nextop-apps/github-trending dev
+pnpm --filter @tutti-apps/github-trending dev
 ```
 
 Expected: server prints local URL, usually `http://127.0.0.1:3000`.
@@ -1354,16 +1354,16 @@ Check:
 - no layout overlap at desktop or mobile widths
 - no blank screen or hydration error
 
-- [ ] **Step 4: Nextop package smoke test**
+- [ ] **Step 4: Tutti package smoke test**
 
 Run package script and start packaged bootstrap with temporary env:
 
 ```bash
-NEXTOP_APP_PACKAGE_DIR="$PWD/build/nextop-app/github-trending/package" \
-NEXTOP_APP_HOST=127.0.0.1 \
-NEXTOP_APP_PORT=4567 \
-NEXTOP_APP_DATA_DIR="$(mktemp -d)" \
-build/nextop-app/github-trending/package/bootstrap.sh
+TUTTI_APP_PACKAGE_DIR="$PWD/build/tutti-app/github-trending/package" \
+TUTTI_APP_HOST=127.0.0.1 \
+TUTTI_APP_PORT=4567 \
+TUTTI_APP_DATA_DIR="$(mktemp -d)" \
+build/tutti-app/github-trending/package/bootstrap.sh
 ```
 
 In another shell:
@@ -1379,7 +1379,7 @@ Expected: health route returns success or the app root loads successfully. If Ta
 Only if verification required changes:
 
 ```bash
-git add apps/github-trending scripts tests docs nextop.publish.json
+git add apps/github-trending scripts tests docs tutti.publish.json
 git commit -m "Verify GitHub Trending app runtime"
 ```
 
@@ -1394,9 +1394,9 @@ git commit -m "Verify GitHub Trending app runtime"
 Prompt the review subagent with:
 
 ```txt
-Review /Users/wwcome/work/demo/nextop-apps against:
+Review /Users/wwcome/work/demo/tutti-apps against:
 - /Users/wwcome/work/demo/github-trending-reader-tech-plan.md
-- /Users/wwcome/work/demo/nextop-apps/docs/superpowers/plans/2026-06-05-github-trending-tanstack-start.md
+- /Users/wwcome/work/demo/tutti-apps/docs/superpowers/plans/2026-06-05-github-trending-tanstack-start.md
 - the supplied TrendReader dark command-center screenshot
 
 Focus on mismatches:
@@ -1404,7 +1404,7 @@ Focus on mismatches:
 - category-first board, not global ranking
 - SQLite storage plan and server-only DB boundary
 - TanStack Start + Query + Router architecture
-- Nextop package should use .output/server/index.mjs after implementation
+- Tutti package should use .output/server/index.mjs after implementation
 - UI density and dark command-center visual direction
 
 Return findings ordered by severity with file/line references.
@@ -1417,7 +1417,7 @@ Expected: reviewer either approves or lists actionable mismatches.
 Prompt:
 
 ```txt
-Review code quality for /Users/wwcome/work/demo/nextop-apps after the GitHub Trending TanStack Start implementation.
+Review code quality for /Users/wwcome/work/demo/tutti-apps after the GitHub Trending TanStack Start implementation.
 
 Prioritize:
 - runtime bugs
@@ -1448,7 +1448,7 @@ Run:
 pnpm lint
 pnpm test
 pnpm typecheck
-pnpm package:nextop --app github-trending
+pnpm package:tutti --app github-trending
 ```
 
 Expected: all checks pass after review fixes.
@@ -1473,7 +1473,7 @@ Report:
 - [ ] The plan uses TanStack Start Server Functions and Server Routes.
 - [ ] The plan uses TanStack Query query options and route loader prefetch.
 - [ ] The implementation follows `apps/github-trending/docs/design.md` for semantic tokens, component states, accessibility, and prohibited patterns.
-- [ ] The plan replaces placeholder `nextop-package/server` with `.output` during implementation.
+- [ ] The plan replaces placeholder `tutti-package/server` with `.output` during implementation.
 - [ ] The plan includes browser verification for the supplied visual style.
 - [ ] The plan includes subagent review after implementation.
 - [ ] The plan avoids private GitHub data and user login in MVP.

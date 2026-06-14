@@ -3,7 +3,7 @@
   "buildRoot": "build/tutti-app",
   "apps": {
     "daily-tech-radar": {
-      "packageName": "@nextop-apps/daily-tech-radar",
+      "packageName": "@tutti-apps/daily-tech-radar",
       "sourceDir": "apps/daily-tech-radar",
       "packageSourceDir": "apps/daily-tech-radar/tutti-package",
       "packageDir": "build/tutti-app/daily-tech-radar/package",

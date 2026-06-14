@@ -8,7 +8,7 @@ This package is the installed Tutti runtime for `daily-tech-radar`.
   but keeps local direct-start fallbacks for development.
 - `server.mjs` serves packaged `dist/` assets, delegates requests to the
   TanStack Start server build, and exposes `/api/health`.
-- The app reads trend data through `@nextop-os/daily-tech-radar`.
+- The app reads trend data through `@tutti-os/daily-tech-radar`.
 - `DAILY_TECH_RADAR_BASE_URL` may point to a private mirror; otherwise the SDK
   default CDN is used.
 - v1 does not use SQLite or local GitHub/Product Hunt scraping.

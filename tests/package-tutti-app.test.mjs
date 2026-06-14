@@ -31,10 +31,7 @@ test("publish config registers daily-tech-radar as the default app", async () =>
 
   assert.equal(appId, "daily-tech-radar");
   assert.equal(app.packageSourceDir, "apps/daily-tech-radar/tutti-package");
-  assert.equal(
-    app.packageCommand,
-    "pnpm package:tutti --app daily-tech-radar",
-  );
+  assert.equal(app.packageCommand, "pnpm package:tutti --app daily-tech-radar");
   assert.equal(app.packageDir, "build/tutti-app/daily-tech-radar/package");
   assert.equal(
     app.iconPath,
@@ -49,10 +46,7 @@ test("publish config registers daily-tech-radar as an explicit app", async () =>
 
   assert.equal(appId, "daily-tech-radar");
   assert.equal(app.packageSourceDir, "apps/daily-tech-radar/tutti-package");
-  assert.equal(
-    app.packageCommand,
-    "pnpm package:tutti --app daily-tech-radar",
-  );
+  assert.equal(app.packageCommand, "pnpm package:tutti --app daily-tech-radar");
   assert.equal(app.packageDir, "build/tutti-app/daily-tech-radar/package");
   assert.equal(
     app.iconPath,
@@ -164,12 +158,7 @@ test("packageTuttiApp creates a valid daily-tech-radar package", async () => {
   );
   const sourceManifest = JSON.parse(
     await readFile(
-      path.join(
-        "apps",
-        "daily-tech-radar",
-        "tutti-package",
-        "tutti.app.json",
-      ),
+      path.join("apps", "daily-tech-radar", "tutti-package", "tutti.app.json"),
       "utf8",
     ),
   );
@@ -225,21 +214,12 @@ test("packageTuttiApp creates a valid daily-tech-radar package", async () => {
   assert.equal(manifestLocale.name, "每日产品雷达");
   assert.match(bootstrap, /TUTTI_APP_PACKAGE_DIR/);
   assert.match(bootstrap, /TUTTI_APP_NODE/);
-  assert.match(
-    bootstrap,
-    /app_node="\$\{TUTTI_APP_NODE:-\$\{NEXTOP_APP_NODE:-node\}\}"/,
-  );
-  assert.match(
-    bootstrap,
-    /app_host="\$\{TUTTI_APP_HOST:-\$\{NEXTOP_APP_HOST:-127\.0\.0\.1\}\}"/,
-  );
-  assert.match(
-    bootstrap,
-    /app_port="\$\{TUTTI_APP_PORT:-\$\{NEXTOP_APP_PORT:-3002\}\}"/,
-  );
+  assert.match(bootstrap, /app_node="\$\{TUTTI_APP_NODE:-node\}"/);
+  assert.match(bootstrap, /app_host="\$\{TUTTI_APP_HOST:-127\.0\.0\.1\}"/);
+  assert.match(bootstrap, /app_port="\$\{TUTTI_APP_PORT:-3002\}"/);
   assert.match(bootstrap, /exec "\$app_node" "\$app_package_dir\/server\.mjs"/);
   assert.doesNotMatch(bootstrap, /exec node /);
-  assert.match(agents, /@nextop-os\/daily-tech-radar/);
+  assert.match(agents, /@tutti-os\/daily-tech-radar/);
   assert.equal(cliManifest.schemaVersion, "tutti.app.cli.v1");
   assert.equal(cliManifest.scope, "radar");
   assert.equal(cliManifest.documentation.file, "COMMANDS.md");

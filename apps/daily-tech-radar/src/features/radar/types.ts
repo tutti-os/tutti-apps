@@ -6,7 +6,7 @@ export type {
   GitHubTrendRepo,
   Locale,
   TrendIndex,
-} from "@nextop-os/daily-tech-radar";
+} from "@tutti-os/daily-tech-radar";
 
 export type RadarSource = "all" | "producthunt" | "github";
 export type RadarViewMode = "grid" | "compact";

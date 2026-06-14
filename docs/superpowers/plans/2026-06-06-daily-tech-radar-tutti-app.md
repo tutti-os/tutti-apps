@@ -1,12 +1,12 @@
-# Daily Tech Radar Nextop App Implementation Plan
+# Daily Tech Radar Tutti App Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a new Nextop app that reproduces the UI and interaction logic from `/Users/wwcome/work/demo/.codex-artifacts/tech-radar-card-prototype/index.html`, backed by `@nextop-os/daily-tech-radar`.
+**Goal:** Add a new Tutti app that reproduces the UI and interaction logic from `/Users/wwcome/work/demo/.codex-artifacts/tech-radar-card-prototype/index.html`, backed by `@tutti-os/daily-tech-radar`.
 
-**Architecture:** Use `apps/github-trending` only as a software architecture reference for TanStack Start, TanStack Query, Server Functions, file-based routes, Tailwind/shadcn setup, and Nextop packaging. Do not reuse or imitate `github-trending` product UI, category board behavior, repo-row workflow, command-bar layout, README panel, or app logic.
+**Architecture:** Use `apps/github-trending` only as a software architecture reference for TanStack Start, TanStack Query, Server Functions, file-based routes, Tailwind/shadcn setup, and Tutti packaging. Do not reuse or imitate `github-trending` product UI, category board behavior, repo-row workflow, command-bar layout, README panel, or app logic.
 
-**Tech Stack:** TanStack Start, TanStack Router, TanStack Query, React 19, Tailwind CSS v4, shadcn/ui, lucide-react, `@nextop-os/daily-tech-radar`.
+**Tech Stack:** TanStack Start, TanStack Router, TanStack Query, React 19, Tailwind CSS v4, shadcn/ui, lucide-react, `@tutti-os/daily-tech-radar`.
 
 ---
 
@@ -42,18 +42,18 @@ apps/daily-tech-radar/
 
 Primary files:
 
-- `package.json`: package name `@nextop-apps/daily-tech-radar`; depends on TanStack packages, React, Tailwind/shadcn dependencies, lucide-react, zod, and `@nextop-os/daily-tech-radar`.
+- `package.json`: package name `@tutti-apps/daily-tech-radar`; depends on TanStack packages, React, Tailwind/shadcn dependencies, lucide-react, zod, and `@tutti-os/daily-tech-radar`.
 - `src/routes/index.tsx`: route search-param validation, loader prefetch, top-level app state wiring.
 - `src/features/radar/*`: SDK access, server functions, query options, data normalization, filtering helpers, tests.
 - `src/components/*`: prototype-shaped UI components only: app shell, top nav, hero, signal panel, toolbar, sidebar, card grid, radar card, detail drawer.
 - `src/styles.css`: tokenized reproduction of the prototype palette, background texture, card shadows, responsive layout, and compact mode.
-- `nextop-package/*`: manifest, bootstrap, server wrapper, package AGENTS, icon.
+- `tutti-package/*`: manifest, bootstrap, server wrapper, package AGENTS, icon.
 
 Repository-level updates:
 
-- `nextop.publish.json`: register `daily-tech-radar`; enable it in staging and production `appIds`; keep `github-trending` as default.
+- `tutti.publish.json`: register `daily-tech-radar`; enable it in staging and production `appIds`; keep `github-trending` as default.
 - `README.md`: add the new app to the app table.
-- `docs/architecture/nextop-packaging.md`: mention the new app only if package behavior or examples need updating.
+- `docs/architecture/tutti-packaging.md`: mention the new app only if package behavior or examples need updating.
 - `tests/*`: extend package and publish-target tests so both apps are covered.
 
 ## 3. Data Contract
@@ -61,7 +61,7 @@ Repository-level updates:
 Use SDK APIs as the only data source:
 
 ```ts
-import { DailyTechRadarClient } from "@nextop-os/daily-tech-radar";
+import { DailyTechRadarClient } from "@tutti-os/daily-tech-radar";
 
 const client = new DailyTechRadarClient({
   baseUrl: process.env.DAILY_TECH_RADAR_BASE_URL,
@@ -179,7 +179,7 @@ Normalization rules:
 - [ ] Copy the TanStack Start project shape from `apps/github-trending`, but rename package, scripts, title, paths, and app identity to `daily-tech-radar`.
 - [ ] Keep framework defaults: file routes, router context with `QueryClient`, default preload `intent`, scroll restoration.
 - [ ] Do not copy GitHub Trending components or feature modules.
-- [ ] Verify with `pnpm --filter @nextop-apps/daily-tech-radar typecheck`.
+- [ ] Verify with `pnpm --filter @tutti-apps/daily-tech-radar typecheck`.
 
 ### Task 2: Add SDK-Backed Radar Data Layer
 
@@ -199,7 +199,7 @@ Normalization rules:
 - [ ] Derive categories from Product Hunt keywords and GitHub taxonomy/views labels.
 - [ ] Calculate `aiPercent` from cards whose keyword/category text contains `AI`, `agent`, `llm`, `模型`, or `智能`.
 - [ ] Add fixture tests for Product Hunt mapping, GitHub mapping, merged dates, category counts, and AI percent.
-- [ ] Verify with `pnpm --filter @nextop-apps/daily-tech-radar test`.
+- [ ] Verify with `pnpm --filter @tutti-apps/daily-tech-radar test`.
 
 ### Task 3: Reproduce Prototype UI And Logic
 
@@ -244,21 +244,21 @@ Normalization rules:
   - mobile: single column, wrapped nav/actions, no horizontal scroll.
 - [ ] Do not import or copy `github-trending` visual classes such as its command bar, category board, or README panel styling.
 
-### Task 5: Add Nextop Package
+### Task 5: Add Tutti Package
 
 **Files:**
 
-- Create: `apps/daily-tech-radar/nextop-package/nextop.app.json`
-- Create: `apps/daily-tech-radar/nextop-package/bootstrap.sh`
-- Create: `apps/daily-tech-radar/nextop-package/server.mjs`
-- Create: `apps/daily-tech-radar/nextop-package/AGENTS.md`
-- Create: `apps/daily-tech-radar/nextop-package/README.md`
-- Create: `apps/daily-tech-radar/nextop-package/icon.png`
+- Create: `apps/daily-tech-radar/tutti-package/tutti.app.json`
+- Create: `apps/daily-tech-radar/tutti-package/bootstrap.sh`
+- Create: `apps/daily-tech-radar/tutti-package/server.mjs`
+- Create: `apps/daily-tech-radar/tutti-package/AGENTS.md`
+- Create: `apps/daily-tech-radar/tutti-package/README.md`
+- Create: `apps/daily-tech-radar/tutti-package/icon.png`
 
 - [ ] Use `appId = "daily-tech-radar"`.
 - [ ] Manifest name should be `每日产品雷达`.
 - [ ] Runtime kind stays `custom`, bootstrap `bootstrap.sh`, health path `/api/health`.
-- [ ] Bootstrap validates `NEXTOP_APP_PACKAGE_DIR`, `NEXTOP_APP_HOST`, `NEXTOP_APP_PORT`, `NEXTOP_APP_DATA_DIR`.
+- [ ] Bootstrap validates `TUTTI_APP_PACKAGE_DIR`, `TUTTI_APP_HOST`, `TUTTI_APP_PORT`, `TUTTI_APP_DATA_DIR`.
 - [ ] Server wrapper serves `dist/`, delegates to `server/server.js`, and returns `{ app: "daily-tech-radar", ok: true }` from `/api/health`.
 - [ ] Package AGENTS explains that runtime data comes from SDK/CDN and optional `DAILY_TECH_RADAR_BASE_URL`, with no SQLite dependency in v1.
 
@@ -266,11 +266,11 @@ Normalization rules:
 
 **Files:**
 
-- Modify: `nextop.publish.json`
+- Modify: `tutti.publish.json`
 - Modify: `README.md`
-- Modify: `tests/package-nextop-app.test.mjs`
-- Modify: `tests/resolve-nextop-publish-target.test.mjs`
-- Modify: `tests/publish-nextop-app-workflows.test.mjs` only if workflow defaults or app selection semantics change.
+- Modify: `tests/package-tutti-app.test.mjs`
+- Modify: `tests/resolve-tutti-publish-target.test.mjs`
+- Modify: `tests/publish-tutti-app-workflows.test.mjs` only if workflow defaults or app selection semantics change.
 
 - [ ] Register `daily-tech-radar` package paths and package command.
 - [ ] Add `daily-tech-radar` to production and staging `appIds`.
@@ -284,16 +284,16 @@ Normalization rules:
 Run narrow checks first:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar typecheck
-pnpm --filter @nextop-apps/daily-tech-radar test
+pnpm --filter @tutti-apps/daily-tech-radar typecheck
+pnpm --filter @tutti-apps/daily-tech-radar test
 pnpm run test:workspace
-pnpm package:nextop --app daily-tech-radar
+pnpm package:tutti --app daily-tech-radar
 ```
 
 Then run UI verification:
 
 ```bash
-pnpm --filter @nextop-apps/daily-tech-radar dev
+pnpm --filter @tutti-apps/daily-tech-radar dev
 ```
 
 Browser acceptance criteria:

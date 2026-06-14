@@ -1,20 +1,20 @@
 # Architecture
 
-This directory explains how `nextop-apps` is structured and where future agents
+This directory explains how `tutti-apps` is structured and where future agents
 should look before changing module boundaries.
 
 ## Documents
 
 - `project-structure.md`: workspace shape and ownership rules.
 - `build-system.md`: why the root uses Turbo and how app-level builds work.
-- `nextop-packaging.md`: package source layout, local packaging, and release workflows.
+- `tutti-packaging.md`: package source layout, local packaging, and release workflows.
 
 ## Current Architecture Summary
 
-`nextop-apps` is a pnpm workspace with Turbo task orchestration.
+`tutti-apps` is a pnpm workspace with Turbo task orchestration.
 
 ```txt
-nextop-apps/
+tutti-apps/
   apps/
     daily-tech-radar/
   packages/

@@ -31,12 +31,12 @@ const board: RadarBoard = {
         starsGained: 10,
       },
       name: "agent-kit",
-      owner: "nextop",
+      owner: "tutti",
       rank: 1,
       sourceLabel: "GitHub · #1 · TypeScript",
-      sourceUrl: "https://github.com/nextop/agent-kit",
+      sourceUrl: "https://github.com/tutti/agent-kit",
       summary: "Build coding agents",
-      title: "nextop / agent-kit",
+      title: "tutti / agent-kit",
       type: "github",
     },
     {
@@ -156,7 +156,7 @@ describe("radar CLI helpers", () => {
       cards: [
         {
           id: "github:1",
-          title: "nextop / agent-kit",
+          title: "tutti / agent-kit",
           type: "github",
         },
       ],
@@ -210,7 +210,7 @@ describe("radar CLI helpers", () => {
   });
 
   it("reads Tutti invoke envelopes and bare debug inputs", async () => {
-    const envelopeRequest = new Request("http://app/nextop/cli/board", {
+    const envelopeRequest = new Request("http://app/tutti/cli/board", {
       body: JSON.stringify({
         input: {
           locale: "zh-CN",
@@ -225,7 +225,7 @@ describe("radar CLI helpers", () => {
       source: "github",
     });
 
-    const bareRequest = new Request("http://app/nextop/cli/board", {
+    const bareRequest = new Request("http://app/tutti/cli/board", {
       body: JSON.stringify({
         locale: "en-US",
       }),
