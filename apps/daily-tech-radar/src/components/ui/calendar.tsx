@@ -173,6 +173,7 @@ function Calendar({
         },
         DayButton: CalendarDayButton,
         Dropdown: CalendarDropdown,
+        DropdownNav: CalendarDropdownNav,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -187,6 +188,49 @@ function Calendar({
       {...props}
     />
   );
+}
+
+function CalendarDropdownNav({
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
+  const controls = React.Children.toArray(children);
+  const yearControl = controls.find((child) =>
+    isCalendarDropdownControl(child, "year"),
+  );
+  const monthControl = controls.find((child) =>
+    isCalendarDropdownControl(child, "month"),
+  );
+
+  return (
+    <div {...props}>
+      {yearControl && monthControl
+        ? [
+            yearControl,
+            monthControl,
+            ...controls.filter(
+              (child) => child !== yearControl && child !== monthControl,
+            ),
+          ]
+        : children}
+    </div>
+  );
+}
+
+function isCalendarDropdownControl(
+  child: React.ReactNode,
+  type: "month" | "year",
+) {
+  if (!React.isValidElement<{ className?: string }>(child)) {
+    return false;
+  }
+
+  const key = child.key === null ? "" : String(child.key);
+  const className = child.props.className ?? "";
+  const classNameToken =
+    type === "month" ? "months_dropdown" : "years_dropdown";
+
+  return key.includes(type) || className.includes(classNameToken);
 }
 
 function CalendarDropdown({

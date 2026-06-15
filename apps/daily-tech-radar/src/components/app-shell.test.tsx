@@ -169,23 +169,25 @@ describe("AppShell", () => {
     expect(html).toContain('<select aria-hidden="true"');
   });
 
-  it("places the year before the month in the Chinese date picker caption", () => {
-    const html = renderToStaticMarkup(
-      <Calendar
-        captionLayout="dropdown"
-        endMonth={new Date(2026, 11, 31)}
-        locale={getDatePickerCalendarLocale("zh-CN")}
-        month={new Date(2026, 4, 1)}
-        startMonth={new Date(2026, 0, 1)}
-      />,
-    );
+  it("places the year before the month in every date picker caption locale", () => {
+    for (const locale of ["zh-CN", "en-US"] as const) {
+      const html = renderToStaticMarkup(
+        <Calendar
+          captionLayout="dropdown"
+          endMonth={new Date(2026, 11, 31)}
+          locale={getDatePickerCalendarLocale(locale)}
+          month={new Date(2026, 4, 1)}
+          startMonth={new Date(2026, 0, 1)}
+        />,
+      );
 
-    const yearIndex = html.indexOf("rdp-years_dropdown");
-    const monthIndex = html.indexOf("rdp-months_dropdown");
+      const yearIndex = html.indexOf("rdp-years_dropdown");
+      const monthIndex = html.indexOf("rdp-months_dropdown");
 
-    expect(yearIndex).toBeGreaterThan(-1);
-    expect(monthIndex).toBeGreaterThan(-1);
-    expect(yearIndex).toBeLessThan(monthIndex);
+      expect(yearIndex).toBeGreaterThan(-1);
+      expect(monthIndex).toBeGreaterThan(-1);
+      expect(yearIndex).toBeLessThan(monthIndex);
+    }
   });
 
   it("renders a loading shell before radar data is available", () => {
