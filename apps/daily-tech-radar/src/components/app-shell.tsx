@@ -20,6 +20,10 @@ import {
   XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  enUS as calendarEnUS,
+  zhCN as calendarZhCN,
+} from "react-day-picker/locale";
 import { useTranslation } from "react-i18next";
 import Zoom from "react-medium-image-zoom";
 
@@ -426,6 +430,7 @@ function TopNav({
           className="radar-nav-date"
           date={date}
           label={date}
+          locale={locale}
           t={t}
           onDateChange={onDateChange}
         />
@@ -652,6 +657,7 @@ function RadarSidebar({
               availableDates={board.availableDates}
               date={date}
               label={t("date.more")}
+              locale={locale}
               t={t}
               onDateChange={onDateChange}
             />
@@ -667,6 +673,7 @@ function DatePicker({
   className = "",
   date,
   label,
+  locale,
   onDateChange,
   t,
 }: {
@@ -674,10 +681,12 @@ function DatePicker({
   className?: string;
   date: string;
   label: string;
+  locale: Locale;
   onDateChange: (date: string) => void;
   t: RadarT;
 }) {
   const [open, setOpen] = useState(false);
+  const calendarLocale = getDatePickerCalendarLocale(locale);
   const selectedDate = parseDateKey(date);
   const anchorMonth = getDatePickerAnchorMonth(date, availableDates);
   const [month, setMonth] = useState<Date | undefined>(anchorMonth);
@@ -732,6 +741,7 @@ function DatePicker({
             !availableDateSet.has(dateKeyFromLocalDate(calendarDate))
           }
           captionLayout="dropdown"
+          locale={calendarLocale}
         />
         <div className="radar-date-popover-footer">
           <span>{t("date.footer")}</span>
@@ -749,6 +759,10 @@ export function getDatePickerAnchorMonth(
   availableDates: string[],
 ) {
   return parseDateKey(date) ?? parseDateKey(availableDates[0] ?? "");
+}
+
+export function getDatePickerCalendarLocale(locale: Locale) {
+  return locale === "zh-CN" ? calendarZhCN : calendarEnUS;
 }
 
 function CardGrid({
