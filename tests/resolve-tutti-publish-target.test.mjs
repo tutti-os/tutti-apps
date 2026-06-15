@@ -37,8 +37,7 @@ test("resolvePublishTarget returns reusable workflow inputs", () => {
       package_command: "pnpm package:tutti --app daily-tech-radar",
       package_dir: "build/tutti-app/daily-tech-radar/package",
       icon_path: "build/tutti-app/daily-tech-radar/package/icon.png",
-      version_manifest_path:
-        "apps/daily-tech-radar/tutti-package/tutti.app.json",
+      release_tag_prefix: "daily-tech-radar-v",
     },
   );
 });
@@ -54,8 +53,7 @@ test("resolvePublishTarget returns daily-tech-radar when explicitly requested", 
       package_command: "pnpm package:tutti --app daily-tech-radar",
       package_dir: "build/tutti-app/daily-tech-radar/package",
       icon_path: "build/tutti-app/daily-tech-radar/package/icon.png",
-      version_manifest_path:
-        "apps/daily-tech-radar/tutti-package/tutti.app.json",
+      release_tag_prefix: "daily-tech-radar-v",
     },
   );
 });
@@ -83,15 +81,14 @@ test("resolvePublishTargets expands all enabled apps for an environment", () => 
         package_command: "pnpm package:tutti --app daily-tech-radar",
         package_dir: "build/tutti-app/daily-tech-radar/package",
         icon_path: "build/tutti-app/daily-tech-radar/package/icon.png",
-        version_manifest_path:
-          "apps/daily-tech-radar/tutti-package/tutti.app.json",
+        release_tag_prefix: "daily-tech-radar-v",
       },
       {
         app_id: "second-app",
         package_command: "pnpm package:tutti --app second-app",
         package_dir: "build/tutti-app/second-app/package",
         icon_path: "build/tutti-app/second-app/package/icon.png",
-        version_manifest_path: "apps/second-app/tutti-package/tutti.app.json",
+        release_tag_prefix: "second-app-v",
       },
     ],
   );

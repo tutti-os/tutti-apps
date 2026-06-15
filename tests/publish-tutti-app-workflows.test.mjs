@@ -22,7 +22,7 @@ function workflowTriggers(workflow) {
   return workflow.on ?? workflow.true;
 }
 
-test("production Tutti app workflow publishes configured apps on main", async () => {
+test("production Tutti app workflow publishes configured apps from a release bump", async () => {
   const workflowPath = ".github/workflows/publish-tutti-app.yml";
   const source = await readFile(workflowPath, "utf8");
   const workflow = parseWorkflow(workflowPath);
@@ -31,15 +31,22 @@ test("production Tutti app workflow publishes configured apps on main", async ()
 
   assert.equal(workflow.name, "Publish Tutti App Production");
   assert.equal(workflow.permissions.contents, "write");
-  assert.deepEqual(on.push.branches, ["main"]);
+  assert.equal(on.push, undefined);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
   assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
     "all",
     "daily-tech-radar",
   ]);
+  assert.equal(on.workflow_dispatch.inputs.release_bump.type, "choice");
+  assert.equal(on.workflow_dispatch.inputs.release_bump.default, "patch");
+  assert.deepEqual(on.workflow_dispatch.inputs.release_bump.options, [
+    "patch",
+    "minor",
+    "major",
+  ]);
   assert.equal(on.workflow_dispatch.inputs.publish_catalog.type, "boolean");
-  assert.equal(on.workflow_dispatch.inputs.publish_catalog.default, false);
+  assert.equal(on.workflow_dispatch.inputs.publish_catalog.default, true);
   assert.equal(on.workflow_dispatch.inputs.catalog_only.type, "boolean");
   assert.equal(on.workflow_dispatch.inputs.catalog_only.default, false);
   assert.equal(
@@ -62,12 +69,15 @@ test("production Tutti app workflow publishes configured apps on main", async ()
   assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
   assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
   assert.equal(
-    publish.with.version_manifest_path,
-    "${{ matrix.target.version_manifest_path }}",
+    publish.with.release_tag_prefix,
+    "${{ matrix.target.release_tag_prefix }}",
   );
+  assert.equal(publish.with.release_bump, "${{ inputs.release_bump }}");
+  assert.equal(publish.with.create_release_tag, "${{ !inputs.catalog_only }}");
   assert.match(source, /inputs\.publish_catalog/);
   assert.match(source, /inputs\.catalog_only/);
-  assert.match(source, /TUTTI_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
+  assert.doesNotMatch(source, /release_version/);
+  assert.doesNotMatch(source, /TUTTI_APP_RELEASES_PRODUCTION_PUBLISH_CATALOG/);
   assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
@@ -85,7 +95,7 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
   const publish = workflow.jobs.publish;
 
   assert.equal(workflow.name, "Publish Tutti App Staging");
-  assert.equal(workflow.permissions.contents, "write");
+  assert.equal(workflow.permissions.contents, "read");
   assert.equal(on.push, undefined);
   assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
   assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
@@ -117,11 +127,13 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
   assert.equal(publish.with.package_dir, "${{ matrix.target.package_dir }}");
   assert.equal(publish.with.icon_path, "${{ matrix.target.icon_path }}");
   assert.equal(
-    publish.with.version_manifest_path,
-    "${{ matrix.target.version_manifest_path }}",
+    publish.with.release_tag_prefix,
+    "${{ matrix.target.release_tag_prefix }}",
   );
   assert.equal(publish.with.publish_catalog, "${{ inputs.publish_catalog }}");
   assert.equal(publish.with.catalog_only, "${{ inputs.catalog_only }}");
+  assert.equal(on.workflow_dispatch.inputs.release_version, undefined);
+  assert.equal(publish.with.release_version, undefined);
   assert.match(source, /catalog_cloudfront_distribution_id/);
   assert.match(
     source,
