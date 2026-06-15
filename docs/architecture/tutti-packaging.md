@@ -136,7 +136,7 @@ The package directory is the input consumed by the reusable release workflow in
 Production workflow:
 
 - `.github/workflows/publish-tutti-app.yml`
-- runs on `main` pushes and manual dispatch
+- runs on production release tag pushes and manual dispatch
 - defaults to the production default app in `tutti.publish.json`
 - manual dispatch can select one configured app or `all`
 
@@ -155,16 +155,19 @@ They publish the resulting target matrix through:
 tutti-os/tutti/.github/workflows/publish-tutti-app-release.yml@main
 ```
 
-The resolver must pass each target's source app manifest as
-`version_manifest_path`. For the standard app layout this is:
+The resolver passes each target's `release_tag_prefix`. For the standard app
+layout this is:
 
 ```txt
-apps/<app-id>/tutti-package/tutti.app.json
+<app-id>-v
 ```
 
-Automatic release version bumps update and commit that source manifest before
-the package command runs. The package command then copies the bumped manifest
-into `build/tutti-app/<app-id>/package/tutti.app.json`.
+Production releases are workflow-driven. Manual dispatch passes `release_bump`
+(`patch`, `minor`, or `major`) to the reusable workflow, which calculates the
+next version from tags such as `daily-tech-radar-v1.2.3`, publishes the S3
+release, verifies it, then creates the next annotated tag. Staging releases
+leave `release_bump` empty and publish `manifest.version+<short git sha>` from
+the packaged manifest.
 
 Manual publishing has three catalog modes:
 

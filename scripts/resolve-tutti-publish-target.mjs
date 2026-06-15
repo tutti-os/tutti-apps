@@ -74,9 +74,7 @@ export function resolvePublishTarget(
     package_command: app.packageCommand,
     package_dir: app.packageDir,
     icon_path: app.iconPath,
-    version_manifest_path:
-      app.versionManifestPath ??
-      path.join(app.packageSourceDir, "tutti.app.json"),
+    release_tag_prefix: app.releaseTagPrefix ?? `${resolvedAppId}-v`,
   };
 }
 
