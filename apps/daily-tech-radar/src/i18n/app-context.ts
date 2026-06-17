@@ -7,10 +7,8 @@ type HostLocaleValue = {
   locale?: unknown;
 };
 
-type HostAppContext = HostLocaleValue & {
-  get?: () => HostLocaleValue | Promise<HostLocaleValue>;
-  getLocale?: () => string | Promise<string>;
-  onLocaleChanged?: (listener: (locale: string | null) => void) => () => void;
+type HostExternalApp = {
+  getContext?: () => HostLocaleValue | Promise<HostLocaleValue>;
   subscribe?: (listener: (context: HostLocaleValue) => void) => () => void;
 };
 
@@ -24,10 +22,9 @@ type HostWindow = {
     language?: string;
     languages?: readonly string[];
   };
-  tutti?: {
-    appContext?: HostAppContext;
+  tuttiExternal?: {
+    app?: HostExternalApp;
   };
-  tuttiAppContext?: HostAppContext;
 };
 
 export const defaultLocale: Locale = "en-US";
@@ -36,8 +33,8 @@ function currentHost(): HostWindow {
   return typeof window === "undefined" ? {} : window;
 }
 
-function getAppContext(host: HostWindow) {
-  return host.tutti?.appContext || host.tuttiAppContext;
+function getExternalApp(host: HostWindow) {
+  return host.tuttiExternal?.app;
 }
 
 export function resolveLocale(locale: unknown): Locale {
@@ -56,23 +53,11 @@ export function resolveAppLocale(
 }
 
 export async function readHostLocale(host: HostWindow = currentHost()) {
-  const appContext = getAppContext(host);
+  const externalApp = getExternalApp(host);
 
-  if (typeof appContext?.get === "function") {
-    const context = await appContext.get();
+  if (typeof externalApp?.getContext === "function") {
+    const context = await externalApp.getContext();
     return resolveLocale(context?.locale || context?.language);
-  }
-
-  if (typeof appContext?.locale === "string") {
-    return resolveLocale(appContext.locale);
-  }
-
-  if (typeof appContext?.language === "string") {
-    return resolveLocale(appContext.language);
-  }
-
-  if (typeof appContext?.getLocale === "function") {
-    return resolveLocale(await appContext.getLocale());
   }
 
   return resolveLocale(
@@ -86,17 +71,11 @@ export function subscribeHostLocale(
   listener: (locale: Locale) => void,
   host: HostWindow = currentHost(),
 ) {
-  const appContext = getAppContext(host);
+  const externalApp = getExternalApp(host);
 
-  if (typeof appContext?.subscribe === "function") {
-    return appContext.subscribe((context) => {
+  if (typeof externalApp?.subscribe === "function") {
+    return externalApp.subscribe((context) => {
       listener(resolveLocale(context?.locale || context?.language));
-    });
-  }
-
-  if (typeof appContext?.onLocaleChanged === "function") {
-    return appContext.onLocaleChanged((locale) => {
-      listener(resolveLocale(locale));
     });
   }
 
