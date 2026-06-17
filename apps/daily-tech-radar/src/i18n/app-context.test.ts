@@ -13,11 +13,11 @@ describe("Tutti app context locale", () => {
     expect(await readHostLocale({})).toBe("en-US");
   });
 
-  it("reads the locale from window.tutti.appContext.get", async () => {
+  it("reads the locale from window.tuttiExternal.app.getContext", async () => {
     const host = {
-      tutti: {
-        appContext: {
-          get: async () => ({ locale: "zh-CN" }),
+      tuttiExternal: {
+        app: {
+          getContext: async () => ({ locale: "zh-CN" }),
         },
       },
     };
@@ -32,15 +32,17 @@ describe("Tutti app context locale", () => {
     expect(resolveAppLocale(undefined, undefined)).toBe("en-US");
   });
 
-  it("subscribes to host locale changes and normalizes unsupported values", () => {
+  it("subscribes to host locale changes through tuttiExternal.app", () => {
     const unsubscribe = vi.fn();
     const listener = vi.fn();
     const host = {
-      tuttiAppContext: {
-        subscribe: (callback: (context: { language: string }) => void) => {
-          callback({ language: "fr-FR" });
-          callback({ language: "zh-CN" });
-          return unsubscribe;
+      tuttiExternal: {
+        app: {
+          subscribe: (callback: (context: { language: string }) => void) => {
+            callback({ language: "fr-FR" });
+            callback({ language: "zh-CN" });
+            return unsubscribe;
+          },
         },
       },
     };

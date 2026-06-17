@@ -24,9 +24,10 @@ pnpm package:tutti --app daily-tech-radar
 
 - Locale may come from the app's own URL/router state or language switcher.
   When no app-local locale is set, read
-  `window.tutti?.appContext || window.tuttiAppContext` with `get()` and
-  `subscribe()`, then fall back to English. App-local language switching must
-  not mutate host app context or the main application's global language.
+  `window.tuttiExternal?.app?.getContext()` and subscribe through
+  `window.tuttiExternal?.app?.subscribe()`, then fall back to English.
+  App-local language switching must not mutate host context or the main
+  application's global language.
 - Radar data requests and UI i18n must use the same locale.
 - `src/i18n/locales/*/radar.json` is the only source for Daily Tech Radar UI
   copy.
