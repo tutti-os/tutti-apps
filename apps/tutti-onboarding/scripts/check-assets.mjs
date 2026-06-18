@@ -63,8 +63,32 @@ if (
     "tutti.app.json must match the built-in onboarding manifest.",
   );
 }
+await assertManifestLocalizations(manifest);
 
 console.log("tutti-onboarding assets are present");
+
+async function assertManifestLocalizations(manifest) {
+  const info = manifest.localizationInfo;
+  if (!info) {
+    throw new Error("tutti.app.json must declare localizationInfo.");
+  }
+  if (info.defaultLocale !== "en") {
+    throw new Error("tutti.app.json defaultLocale must match the source app.");
+  }
+  for (const locale of info.additionalLocales ?? []) {
+    const localeManifest = JSON.parse(
+      await readFile(path.join(appRoot, "tutti-package", locale.file), "utf8"),
+    );
+    for (const key of ["name", "description", "tags"]) {
+      if (!(key in localeManifest)) {
+        throw new Error(`${locale.file} must define ${key}.`);
+      }
+    }
+    if (!Array.isArray(localeManifest.tags)) {
+      throw new Error(`${locale.file} tags must be an array.`);
+    }
+  }
+}
 
 function readTranslations(source) {
   const match = source.match(/const T = (\{[\s\S]*?\n\});\n\nlet lang/);
