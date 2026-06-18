@@ -6,10 +6,18 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev --host 127.0.0.1 --port 3003",
-    "test": "node scripts/check-assets.mjs",
+    "test": "vitest run && node scripts/check-assets.mjs",
     "typecheck": "node scripts/check-assets.mjs"
   },
   "dependencies": {
+    "i18next": "^26.3.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^17.0.8",
     "vite": "^8.0.16"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "vitest": "^3.0.7"
   }
 }

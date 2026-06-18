@@ -9,5 +9,12 @@ app.
 - `server.mjs` serves packaged static assets and exposes `/healthz`.
 - The app is read-only and stores no durable data. If storage is introduced
   later, write only under `$TUTTI_APP_DATA_DIR`.
+- In-app copy is bundled from the authoring app's React i18n dictionaries:
+  `src/i18n/locales/en-US/onboarding.json` and
+  `src/i18n/locales/zh-CN/onboarding.json`.
+- Manifest metadata localization lives in `locales/zh-CN/manifest.json`.
+- Locale is read from `window.tuttiExternal.app.getContext()` /
+  `subscribe()` with browser locale fallback. Query params are for local web
+  debugging only.
 
 Treat `TUTTI_APP_PACKAGE_DIR` as read-only after startup.

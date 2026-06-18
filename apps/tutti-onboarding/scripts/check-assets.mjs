@@ -1,7 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import vm from "node:vm";
 
 const appRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -9,7 +8,6 @@ const appRoot = path.resolve(
 );
 
 const requiredFiles = [
-  "public/app.js",
   "public/styles.css",
   "public/assets/apps-agent.mp4",
   "public/assets/apps-example.webp",
@@ -26,6 +24,12 @@ const requiredFiles = [
   "public/assets/goal-run.webp",
   "public/assets/goal-set.webp",
   "public/icon.png",
+  "src/App.jsx",
+  "src/main.jsx",
+  "src/i18n/app-context.js",
+  "src/i18n/index.js",
+  "src/i18n/locales/en-US/onboarding.json",
+  "src/i18n/locales/zh-CN/onboarding.json",
   "tutti-package/tutti.app.json",
   "tutti-package/bootstrap.sh",
   "tutti-package/icon.png",
@@ -44,13 +48,20 @@ if (/\p{Script=Han}/u.test(indexHtml)) {
   throw new Error("index.html must not hard-code Chinese copy.");
 }
 
-const appJs = await readFile(path.join(appRoot, "public/app.js"), "utf8");
-if (!appJs.includes("开始使用 Tutti 👋")) {
-  throw new Error("public/app.js must include the source onboarding copy.");
-}
-const translations = readTranslations(appJs);
+const appSource = await readFile(path.join(appRoot, "src/App.jsx"), "utf8");
+const appContextSource = await readFile(
+  path.join(appRoot, "src/i18n/app-context.js"),
+  "utf8",
+);
+assertNoHardCodedChinese({
+  "src/App.jsx": appSource,
+  "src/i18n/app-context.js": appContextSource,
+});
+assertHostContextApi(appContextSource);
+
+const translations = await readTranslations();
 assertLocaleKeys(translations);
-assertReferencedTranslationKeys(indexHtml, translations);
+assertReferencedTranslationKeys(appSource, translations);
 
 const manifest = JSON.parse(
   await readFile(path.join(appRoot, "tutti-package/tutti.app.json"), "utf8"),
@@ -66,6 +77,28 @@ if (
 await assertManifestLocalizations(manifest);
 
 console.log("tutti-onboarding assets are present");
+
+function assertNoHardCodedChinese(sources) {
+  for (const [file, source] of Object.entries(sources)) {
+    if (/\p{Script=Han}/u.test(source)) {
+      throw new Error(`${file} must not hard-code Chinese copy.`);
+    }
+  }
+}
+
+function assertHostContextApi(source) {
+  if (!source.includes("tuttiExternal?.app")) {
+    throw new Error("React app must read the Tutti host app context.");
+  }
+  if (source.includes("window.tutti") || source.includes("tuttiAppContext")) {
+    throw new Error("React app must not use legacy Tutti globals.");
+  }
+  if (!source.includes("getContext") || !source.includes("subscribe")) {
+    throw new Error(
+      "React app must use tuttiExternal.app.getContext/subscribe for locale.",
+    );
+  }
+}
 
 async function assertManifestLocalizations(manifest) {
   const info = manifest.localizationInfo;
@@ -90,25 +123,32 @@ async function assertManifestLocalizations(manifest) {
   }
 }
 
-function readTranslations(source) {
-  const match = source.match(/const T = (\{[\s\S]*?\n\});\n\nlet lang/);
-  if (!match) {
-    throw new Error(
-      "public/app.js must define the onboarding translation map.",
-    );
+async function readTranslations() {
+  const translations = {
+    "en-US": JSON.parse(
+      await readFile(
+        path.join(appRoot, "src/i18n/locales/en-US/onboarding.json"),
+        "utf8",
+      ),
+    ),
+    "zh-CN": JSON.parse(
+      await readFile(
+        path.join(appRoot, "src/i18n/locales/zh-CN/onboarding.json"),
+        "utf8",
+      ),
+    ),
+  };
+
+  if (!translations["zh-CN"].t_title.includes("开始使用 Tutti")) {
+    throw new Error("zh-CN onboarding copy must be preserved.");
   }
-  const translations = vm.runInNewContext(`(${match[1]})`);
-  for (const locale of ["zh", "en"]) {
-    if (!translations[locale] || typeof translations[locale] !== "object") {
-      throw new Error(`public/app.js must define ${locale} translations.`);
-    }
-  }
+
   return translations;
 }
 
 function assertLocaleKeys(translations) {
-  const zhKeys = Object.keys(translations.zh).sort();
-  const enKeys = Object.keys(translations.en).sort();
+  const zhKeys = Object.keys(translations["zh-CN"]).sort();
+  const enKeys = Object.keys(translations["en-US"]).sort();
   const missingInEn = zhKeys.filter((key) => !enKeys.includes(key));
   const missingInZh = enKeys.filter((key) => !zhKeys.includes(key));
   if (missingInEn.length || missingInZh.length) {
@@ -124,18 +164,18 @@ function assertLocaleKeys(translations) {
   }
 }
 
-function assertReferencedTranslationKeys(html, translations) {
+function assertReferencedTranslationKeys(source, translations) {
   const referencedKeys = new Set(["t_doc_title", "t_soon"]);
-  for (const match of html.matchAll(/data-i18n="([^"]+)"/g)) {
+  for (const match of source.matchAll(/t\("([^"]+)"\)/g)) {
     referencedKeys.add(match[1]);
   }
-  for (const match of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
-    for (const entry of match[1].split(/\s+/)) {
-      const [, key] = entry.split(":");
-      if (key) referencedKeys.add(key);
-    }
+  for (const match of source.matchAll(/i18nKey="([^"]+)"/g)) {
+    referencedKeys.add(match[1]);
   }
-  for (const locale of ["zh", "en"]) {
+  for (const match of source.matchAll(/(?:altKey|labelKey): "([^"]+)"/g)) {
+    referencedKeys.add(match[1]);
+  }
+  for (const locale of ["zh-CN", "en-US"]) {
     const missing = [...referencedKeys].filter(
       (key) => !(key in translations[locale]),
     );
