@@ -53,6 +53,8 @@ cards by date, source, category, language, and keyword.
   metadata, static assets, and server wrappers under `build/tutti-app`.
 - Read-only CLI surface: packaged installs expose the `radar` command scope for
   board, search, and item lookup commands.
+- Onboarding app: package the Tutti agent setup and workspace collaboration
+  guide as a local app with screenshots, video, and `onboarding status`.
 - Bilingual UI: the app ships `en-US` by default and includes Simplified
   Chinese localization.
 
@@ -130,6 +132,7 @@ for the full command reference and response envelope shape.
 ```txt
 apps/
   daily-tech-radar/      TanStack Start app and Tutti package files
+  tutti-onboarding/      Static onboarding guide and Tutti package files
 packages/                Shared packages when more than one app needs them
 docs/                    Architecture notes and workflow conventions
 scripts/                 Repository-level packaging and validation helpers
@@ -205,6 +208,7 @@ This repository currently contains one publishable MVP app:
 | App | Package | Path |
 | --- | --- | --- |
 | Daily Product Radar | `@tutti-apps/daily-tech-radar` | `apps/daily-tech-radar` |
+| Tutti Onboarding | `@tutti-apps/tutti-onboarding` | `apps/tutti-onboarding` |
 
 ## License
 

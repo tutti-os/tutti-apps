@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "tutti.app.cli.v1",
+  "scope": "onboarding",
+  "description": "Inspect the Tutti onboarding guide package.",
+  "documentation": {
+    "file": "COMMANDS.md"
+  },
+  "commands": [
+    {
+      "path": ["status"],
+      "summary": "Show onboarding package status",
+      "description": "Return package readiness and the main onboarding guide sections.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "output": {
+        "defaultMode": "json",
+        "json": true
+      },
+      "handler": {
+        "kind": "http",
+        "method": "POST",
+        "path": "/tutti/cli/status",
+        "timeoutMs": 30000
+      }
+    }
+  ]
+}

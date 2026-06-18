@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "tutti.app.manifest.v1",
+  "appId": "tutti-onboarding",
+  "version": "0.1.0",
+  "name": "Tutti Onboarding",
+  "description": "A guided onboarding experience for Tutti apps and local agent collaboration.",
+  "icon": {
+    "type": "asset",
+    "src": "icon.png"
+  },
+  "runtime": {
+    "bootstrap": "bootstrap.sh",
+    "healthcheckPath": "/api/health"
+  },
+  "cli": {
+    "manifest": "tutti.cli.json"
+  },
+  "localizationInfo": {
+    "defaultLocale": "en-US",
+    "additionalLocales": [
+      {
+        "locale": "zh-CN",
+        "file": "locales/zh-CN/manifest.json"
+      }
+    ]
+  },
+  "launch": {
+    "mode": "workspace-open"
+  },
+  "author": {
+    "name": "Tutti"
+  },
+  "tags": ["onboarding", "agents", "codex", "claude-code", "workspace"]
+}
