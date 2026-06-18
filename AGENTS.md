@@ -64,6 +64,11 @@ Use this root file for repository-wide defaults only.
   `docs/architecture` or `docs/conventions`.
 - When Tutti app packaging behavior changes, update
   `docs/architecture/tutti-packaging.md`.
+- When adding or enabling a publishable Tutti app, update all publishing entry
+  points together: `tutti.publish.json`, the manual `app_id` choices in
+  `.github/workflows/publish-tutti-app.yml` and
+  `.github/workflows/publish-tutti-app-staging.yml`, and resolver checks for
+  both the explicit app id and `all`.
 - When a fix resolves a recurring bug pattern or agent trap, add the durable
   note to `docs/conventions/agent-workflow.md`.
 

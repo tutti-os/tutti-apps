@@ -115,6 +115,15 @@ enabled for each release environment.
 
 Add a new app to this file before enabling it in release workflows.
 
+When enabling a new publishable app, also add the app id to the manual
+`app_id` choice list in both release workflows:
+
+- `.github/workflows/publish-tutti-app.yml`
+- `.github/workflows/publish-tutti-app-staging.yml`
+
+Then validate both the explicit app id and `all` through
+`scripts/resolve-tutti-publish-target.mjs` for production and staging.
+
 ## Local Packaging
 
 ```bash
