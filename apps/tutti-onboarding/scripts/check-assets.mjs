@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 
 const appRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -44,6 +45,9 @@ const appJs = await readFile(path.join(appRoot, "public/app.js"), "utf8");
 if (!appJs.includes("开始使用 Tutti 👋")) {
   throw new Error("public/app.js must include the source onboarding copy.");
 }
+const translations = readTranslations(appJs);
+assertLocaleKeys(translations);
+assertReferencedTranslationKeys(indexHtml, translations);
 
 const manifest = JSON.parse(
   await readFile(path.join(appRoot, "tutti-package/tutti.app.json"), "utf8"),
@@ -58,3 +62,60 @@ if (
 }
 
 console.log("tutti-onboarding assets are present");
+
+function readTranslations(source) {
+  const match = source.match(/const T = (\{[\s\S]*?\n\});\n\nlet lang/);
+  if (!match) {
+    throw new Error(
+      "public/app.js must define the onboarding translation map.",
+    );
+  }
+  const translations = vm.runInNewContext(`(${match[1]})`);
+  for (const locale of ["zh", "en"]) {
+    if (!translations[locale] || typeof translations[locale] !== "object") {
+      throw new Error(`public/app.js must define ${locale} translations.`);
+    }
+  }
+  return translations;
+}
+
+function assertLocaleKeys(translations) {
+  const zhKeys = Object.keys(translations.zh).sort();
+  const enKeys = Object.keys(translations.en).sort();
+  const missingInEn = zhKeys.filter((key) => !enKeys.includes(key));
+  const missingInZh = enKeys.filter((key) => !zhKeys.includes(key));
+  if (missingInEn.length || missingInZh.length) {
+    throw new Error(
+      [
+        "zh/en translation keys must match.",
+        missingInEn.length ? `Missing in en: ${missingInEn.join(", ")}` : "",
+        missingInZh.length ? `Missing in zh: ${missingInZh.join(", ")}` : "",
+      ]
+        .filter(Boolean)
+        .join(" "),
+    );
+  }
+}
+
+function assertReferencedTranslationKeys(html, translations) {
+  const referencedKeys = new Set(["t_doc_title", "t_soon"]);
+  for (const match of html.matchAll(/id="(t_[^"]+)"/g)) {
+    referencedKeys.add(match[1]);
+  }
+  for (const match of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
+    for (const entry of match[1].split(/\s+/)) {
+      const [, key] = entry.split(":");
+      if (key) referencedKeys.add(key);
+    }
+  }
+  for (const locale of ["zh", "en"]) {
+    const missing = [...referencedKeys].filter(
+      (key) => !(key in translations[locale]),
+    );
+    if (missing.length) {
+      throw new Error(
+        `${locale} translations are missing referenced keys: ${missing.join(", ")}`,
+      );
+    }
+  }
+}

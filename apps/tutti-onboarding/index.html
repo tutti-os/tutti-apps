@@ -13,7 +13,7 @@
       <p class="tag" id="t_tag">人与 Agent「同频」创造的地方。<br>上下文、文件、应用、任务，全部打通。</p>
     </header>
 
-    <nav class="nav" aria-label="Onboarding sections">
+    <nav class="nav" aria-label="Onboarding sections" data-i18n-attr="aria-label:t_nav_label">
       <button class="nav-btn on" style="--tone:#3b6fe0" data-scroll="s1">
         <span class="nav-ico">🔌</span>
         <b class="nav-title" id="t_n1">绑定 Agent</b>
@@ -39,8 +39,8 @@
           <button class="tab-btn soon" type="button" aria-disabled="true">OpenClaw</button>
           <button class="tab-btn soon" type="button" aria-disabled="true">Gemini</button>
         </div>
-        <div class="tab-pane on"><div class="shot"><img src="/assets/bind-claude.webp" alt="Claude Code 绑定流程"></div></div>
-        <div class="tab-pane"><div class="shot"><img src="/assets/bind-codex.webp" alt="Codex 绑定流程"></div></div>
+        <div class="tab-pane on"><div class="shot"><img src="/assets/bind-claude.webp" alt="Claude Code 绑定流程" data-i18n-attr="alt:t_s1a"></div></div>
+        <div class="tab-pane"><div class="shot"><img src="/assets/bind-codex.webp" alt="Codex 绑定流程" data-i18n-attr="alt:t_s1b"></div></div>
       </div>
       <div class="btns">
         <button class="btn blue" data-action="agent-connect" data-provider="claude-code"><span id="t_b1a">绑定 Claude Code</span></button>
@@ -65,10 +65,10 @@
               <button class="tab-btn" data-t="2"><span id="t_at3">@ 任务</span></button>
               <button class="tab-btn" data-t="3"><span id="t_at4">@ 应用</span></button>
             </div>
-            <div class="tab-pane on"><div class="shot"><img src="/assets/at-chat.webp" alt="@ 另一个 Agent，共享会话上下文"></div></div>
-            <div class="tab-pane"><div class="shot"><img src="/assets/at-file.webp" alt="@ 文件，Agent 直接读取"></div></div>
-            <div class="tab-pane"><div class="shot"><img src="/assets/at-task.webp" alt="@ 任务，Agent 获取任务上下文"></div></div>
-            <div class="tab-pane"><div class="shot"><img src="/assets/at-app.webp" alt="@ 应用，让 Agent 调用应用能力"></div></div>
+            <div class="tab-pane on"><div class="shot"><img src="/assets/at-chat.webp" alt="@ 另一个 Agent，共享会话上下文" data-i18n-attr="alt:t_atd1"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-file.webp" alt="@ 文件，Agent 直接读取" data-i18n-attr="alt:t_atd2"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-task.webp" alt="@ 任务，Agent 获取任务上下文" data-i18n-attr="alt:t_atd3"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-app.webp" alt="@ 应用，让 Agent 调用应用能力" data-i18n-attr="alt:t_atd4"></div></div>
           </div>
         </div>
         <div class="sec-pane">
@@ -81,9 +81,9 @@
                 <button class="tab-btn" data-t="1"><span id="t_gt2">Agent 拆解</span></button>
                 <button class="tab-btn" data-t="2"><span id="t_gt3">Agent 执行</span></button>
               </div>
-              <div class="tab-pane on"><div class="shot"><img src="/assets/goal-set.webp" alt="输入你的目标描述"></div></div>
-              <div class="tab-pane"><div class="shot"><img src="/assets/goal-breakdown.webp" alt="Agent 自动拆解为子任务"></div></div>
-              <div class="tab-pane"><div class="shot"><img src="/assets/goal-run.webp" alt="Agent 分工执行中"></div></div>
+              <div class="tab-pane on"><div class="shot"><img src="/assets/goal-set.webp" alt="输入你的目标描述" data-i18n-attr="alt:t_gd1"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/goal-breakdown.webp" alt="Agent 自动拆解为子任务" data-i18n-attr="alt:t_gd2"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/goal-run.webp" alt="Agent 分工执行中" data-i18n-attr="alt:t_gd3"></div></div>
             </div>
             <div class="btns"><button class="btn ghost" data-action="issue-manager"><span id="t_bg1">去设置目标任务 →</span></button></div>
           </article>
@@ -95,8 +95,8 @@
                 <button class="tab-btn on" data-t="0"><span id="t_ct1">需要你处理</span></button>
                 <button class="tab-btn" data-t="1"><span id="t_ct2">全局查看</span></button>
               </div>
-              <div class="tab-pane on"><div class="shot"><img src="/assets/control-waiting.webp" alt="主动提醒 · 需要你确认或操作的事项"></div></div>
-              <div class="tab-pane"><div class="shot"><img src="/assets/control-overview.webp" alt="常驻面板 · 按优先级 / Agent 筛选查看"></div></div>
+              <div class="tab-pane on"><div class="shot"><img src="/assets/control-waiting.webp" alt="主动提醒 · 需要你确认或操作的事项" data-i18n-attr="alt:t_cd1"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/control-overview.webp" alt="常驻面板 · 按优先级 / Agent 筛选查看" data-i18n-attr="alt:t_cd2"></div></div>
             </div>
             <div class="btns"><button class="btn ghost" data-action="message-center"><span id="t_bg2">去任务面板看看 →</span></button></div>
           </article>
@@ -118,8 +118,8 @@
               <button class="tab-btn on" data-t="0"><span id="t_apt1">应用全景</span></button>
               <button class="tab-btn" data-t="1"><span id="t_apt2">使用示例</span></button>
             </div>
-            <div class="tab-pane on"><div class="shot"><img src="/assets/apps-overview.webp" alt="应用中心 · 全部应用一览"></div></div>
-            <div class="tab-pane"><div class="shot"><img src="/assets/apps-example.webp" alt="单个应用的使用界面"></div></div>
+            <div class="tab-pane on"><div class="shot"><img src="/assets/apps-overview.webp" alt="应用中心 · 全部应用一览" data-i18n-attr="alt:t_apd1"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/apps-example.webp" alt="单个应用的使用界面" data-i18n-attr="alt:t_apd2"></div></div>
           </div>
           <div class="btns"><button class="btn ghost" data-action="app-center"><span id="t_bg3">去应用中心看看 →</span></button></div>
         </div>
@@ -130,7 +130,7 @@
               <button class="tab-btn on" data-t="0"><span id="t_agt1">@ 应用完成任务</span></button>
               <button class="tab-btn" data-t="1"><span id="t_agt2">使用应用产物</span></button>
             </div>
-            <div class="tab-pane on"><div class="shot shot-video"><video src="/assets/apps-agent.mp4" loop muted playsinline preload="metadata" controls controlslist="nodownload"></video><button class="video-play" type="button" aria-label="播放/暂停"><span>▶</span></button></div></div>
+            <div class="tab-pane on"><div class="shot shot-video"><video src="/assets/apps-agent.mp4" loop muted playsinline preload="metadata" controls controlslist="nodownload" aria-label="Agent 在对话中 @ 应用，直接完成任务" data-i18n-attr="aria-label:t_agd1"></video><button class="video-play" type="button" aria-label="播放/暂停" data-i18n-attr="aria-label:t_play_pause"><span>▶</span></button></div></div>
             <div class="tab-pane"><div class="shot shot-empty"><span>🖼</span><span id="t_agd2">Agent 引用应用产物继续工作</span></div></div>
           </div>
         </div>
@@ -148,7 +148,7 @@
   </main>
   <div class="lightbox" id="lightbox" hidden>
     <img class="lightbox-img" id="lightboxImg" alt="">
-    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭">×</button>
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭" data-i18n-attr="aria-label:t_close">×</button>
   </div>
   <script src="/app.js"></script>
 </body>

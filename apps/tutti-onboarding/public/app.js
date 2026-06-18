@@ -1,8 +1,10 @@
 const T = {
   zh: {
+    t_doc_title: "Tutti · 开始使用",
     t_title: "开始使用 Tutti 👋",
     t_tag: "人与 Agent「同频」创造的地方。<br>上下文、文件、应用、任务，全部打通。",
     t_n1: "绑定 Agent", t_n2: "Agent 协作", t_n3: "试试内置应用",
+    t_nav_label: "入门引导章节",
     t_soon: "即将推出",
     t_h1: "先把你的 Agent 接进来",
     t_i1: "目前仅支持 Claude Code 和 Codex。更多 Agent 能力正在开发中 💻",
@@ -32,12 +34,16 @@ const T = {
     t_agt1: "@ 应用完成任务", t_agt2: "使用应用产物",
     t_agd1: "Agent 在对话中 @ 应用，直接完成任务", t_agd2: "Agent 引用应用产物继续工作",
     t_end: "人与 Agent，同频共建",
-    t_be1: "绑定 Agent，开始使用", t_be2: "已绑定，去使用 →"
+    t_be1: "绑定 Agent，开始使用", t_be2: "已绑定，去使用 →",
+    t_play_pause: "播放/暂停",
+    t_close: "关闭"
   },
   en: {
+    t_doc_title: "Tutti · Getting Started",
     t_title: "Get Started with Tutti 👋",
     t_tag: "Where people and agents build in tune.<br>Tutti puts them in one live workspace: shared context, files, apps, and running tasks.",
     t_n1: "Set Up", t_n2: "Collaboration", t_n3: "Built-in Apps",
+    t_nav_label: "Onboarding sections",
     t_soon: "Coming soon",
     t_h1: "Bring your agents in",
     t_i1: "Currently supports Claude Code and Codex. More agents on the way 💻",
@@ -67,7 +73,9 @@ const T = {
     t_agt1: "@ an app to complete tasks", t_agt2: "Use app outputs",
     t_agd1: "Agent @ an app in conversation to get things done", t_agd2: "Agent picks up app outputs and keeps working",
     t_end: "People and agents, building in tune",
-    t_be1: "Connect agents to get started", t_be2: "Already connected, let's go →"
+    t_be1: "Connect agents to get started", t_be2: "Already connected, let's go →",
+    t_play_pause: "Play/Pause",
+    t_close: "Close"
   }
 };
 
@@ -86,9 +94,17 @@ function applyLanguage(nextLang) {
       element.textContent = dictionary[key];
     }
   });
+  document.querySelectorAll("[data-i18n-attr]").forEach((element) => {
+    element.dataset.i18nAttr.split(/\s+/).forEach((entry) => {
+      const [attribute, key] = entry.split(":");
+      if (!attribute || !key || !dictionary[key]) return;
+      element.setAttribute(attribute, dictionary[key]);
+    });
+  });
   document.querySelectorAll(".tab-btn.soon").forEach((element) => {
     element.dataset.soon = dictionary.t_soon;
   });
+  document.title = dictionary.t_doc_title;
 }
 
 async function readHostLocale() {
