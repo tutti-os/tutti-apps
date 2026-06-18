@@ -85,9 +85,9 @@ function applyLanguage(nextLang) {
   lang = nextLang;
   document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   const dictionary = T[lang];
-  Object.keys(dictionary).forEach((key) => {
-    const element = document.getElementById(key);
-    if (!element) return;
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const key = element.dataset.i18n;
+    if (!key || !dictionary[key]) return;
     if (dictionary[key].includes("<")) {
       element.innerHTML = dictionary[key];
     } else {

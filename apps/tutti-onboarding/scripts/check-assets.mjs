@@ -40,6 +40,9 @@ const indexHtml = await readFile(path.join(appRoot, "index.html"), "utf8");
 if (!indexHtml.includes("Tutti · Getting Started")) {
   throw new Error("index.html must match the built-in onboarding entrypoint.");
 }
+if (/\p{Script=Han}/u.test(indexHtml)) {
+  throw new Error("index.html must not hard-code Chinese copy.");
+}
 
 const appJs = await readFile(path.join(appRoot, "public/app.js"), "utf8");
 if (!appJs.includes("开始使用 Tutti 👋")) {
@@ -99,7 +102,7 @@ function assertLocaleKeys(translations) {
 
 function assertReferencedTranslationKeys(html, translations) {
   const referencedKeys = new Set(["t_doc_title", "t_soon"]);
-  for (const match of html.matchAll(/id="(t_[^"]+)"/g)) {
+  for (const match of html.matchAll(/data-i18n="([^"]+)"/g)) {
     referencedKeys.add(match[1]);
   }
   for (const match of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
