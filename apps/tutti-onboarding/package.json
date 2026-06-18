@@ -10,11 +10,6 @@
     "typecheck": "node scripts/check-assets.mjs"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^6.0.2",
-    "i18next": "^26.3.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-i18next": "^17.0.8",
     "vite": "^8.0.16"
   }
 }

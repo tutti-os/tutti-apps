@@ -11,6 +11,9 @@
       "apps/**/.output/**",
       "apps/**/dist/**",
       "apps/**/src/routeTree.gen.ts",
+      "apps/tutti-onboarding/public/app.js",
+      "apps/tutti-onboarding/public/styles.css",
+      ".worktrees/**",
       "build/**"
     ]
   }
