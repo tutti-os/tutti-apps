@@ -55,6 +55,14 @@ const appTabs = [
   },
 ];
 
+const sectionIcons = {
+  setup: "/assets/icon-electric-plug.png",
+  collaboration: "/assets/icon-satellite-antenna.png",
+  task: "/assets/icon-clipboard.png",
+  control: "/assets/icon-joystick.png",
+  apps: "/assets/icon-toolbox.png",
+};
+
 function HtmlText({ as: Tag = "p", className, i18nKey }) {
   return (
     <Tag className={className}>
@@ -65,11 +73,23 @@ function HtmlText({ as: Tag = "p", className, i18nKey }) {
           dot: <span className="info-dot" />,
           info: <span className="info-wrap" />,
           tip: <span className="info-tip" />,
+          wave: (
+            <img
+              alt=""
+              aria-hidden="true"
+              className="title-wave"
+              src="/assets/tone-light.png"
+            />
+          ),
         }}
         i18nKey={i18nKey}
       />
     </Tag>
   );
+}
+
+function IconImage({ alt = "", className, src }) {
+  return <img alt={alt} className={className} src={src} />;
 }
 
 function openAction(action, provider) {
@@ -131,12 +151,12 @@ function ShotImage({ altKey, onOpen, src }) {
   );
 }
 
-function Tabs({ items, onOpen }) {
+function Tabs({ initialActive = 0, items, onOpen, variant = "underline" }) {
   const { t } = useTranslation();
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(initialActive);
 
   return (
-    <div className="tabs" data-tabs>
+    <div className={`tabs tabs-${variant}`} data-tabs>
       <div className="tab-bar">
         {items.map((item, index) => {
           const isActive = active === index && !item.soon;
@@ -192,7 +212,7 @@ function SectionTabs({ active, items, onChange }) {
           type="button"
           onClick={() => onChange(index)}
         >
-          <span>{item.icon}</span>
+          {item.icon ? <span>{item.icon}</span> : null}
           <b>{t(item.labelKey)}</b>
         </button>
       ))}
@@ -336,9 +356,13 @@ export default function App() {
   const { t } = useTranslation();
   const locale = useAppLocale();
   const [activeSection, setActiveSection] = useState("s1");
-  const [section2Tab, setSection2Tab] = useState(0);
   const [section3Tab, setSection3Tab] = useState(0);
   const [lightbox, setLightbox] = useState(null);
+  const [isNavStuck, setIsNavStuck] = useState(false);
+  const navRef = useRef(null);
+  const navTopRef = useRef(0);
+  const navHeightRef = useRef(0);
+  const isNavStuckRef = useRef(false);
 
   useEffect(() => {
     void i18n.changeLanguage(locale);
@@ -379,8 +403,79 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const measureNavBounds = () => {
+      const nav = navRef.current;
+      if (!nav) return;
+      navTopRef.current = nav.offsetTop;
+      if (!isNavStuckRef.current) {
+        navHeightRef.current = nav.offsetHeight;
+      }
+    };
+
+    const updateNavStuck = () => {
+      const nav = navRef.current;
+      const navBottom = navTopRef.current + navHeightRef.current;
+      const currentHeight = nav?.offsetHeight || navHeightRef.current;
+      const compactDelta = Math.max(0, navHeightRef.current - currentHeight);
+      const shouldStick = isNavStuckRef.current
+        ? window.scrollY >= navBottom - compactDelta
+        : window.scrollY >= navBottom;
+
+      if (shouldStick === isNavStuckRef.current) return;
+      isNavStuckRef.current = shouldStick;
+      setIsNavStuck(shouldStick);
+    };
+
+    const handleResize = () => {
+      measureNavBounds();
+      updateNavStuck();
+    };
+
+    measureNavBounds();
+    updateNavStuck();
+    window.addEventListener("scroll", updateNavStuck, { passive: true });
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("scroll", updateNavStuck);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const openLightbox = (src, alt) => setLightbox({ src, alt });
   const closeLightbox = () => setLightbox(null);
+  const navItems = [
+    {
+      id: "s1",
+      icon: sectionIcons.setup,
+      labelKey: "t_n1",
+      tone: "var(--accent-codex)",
+    },
+    {
+      id: "s2",
+      icon: sectionIcons.collaboration,
+      labelKey: "t_n2",
+      tone: "var(--accent-claude)",
+    },
+    {
+      id: "s3",
+      icon: sectionIcons.task,
+      labelKey: "t_n3",
+      tone: "var(--accent-claude)",
+    },
+    {
+      id: "s4",
+      icon: sectionIcons.control,
+      labelKey: "t_n4",
+      tone: "var(--accent-claude)",
+    },
+    {
+      id: "s5",
+      icon: sectionIcons.apps,
+      labelKey: "t_n5",
+      tone: "var(--tutti-purple)",
+    },
+  ];
 
   return (
     <>
@@ -390,12 +485,12 @@ export default function App() {
           <HtmlText className="tag" i18nKey="t_tag" />
         </header>
 
-        <nav aria-label={t("t_nav_label")} className="nav">
-          {[
-            { id: "s1", icon: "🔌", labelKey: "t_n1", tone: "#3b6fe0" },
-            { id: "s2", icon: "⚡", labelKey: "t_n2", tone: "#e2603a" },
-            { id: "s3", icon: "✨", labelKey: "t_n3", tone: "#e3b341" },
-          ].map((item) => (
+        <nav
+          aria-label={t("t_nav_label")}
+          className={`nav${isNavStuck ? " stuck" : ""}`}
+          ref={navRef}
+        >
+          {navItems.map((item) => (
             <button
               className={`nav-btn${activeSection === item.id ? " on" : ""}`}
               data-scroll={item.id}
@@ -408,7 +503,7 @@ export default function App() {
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
-              <span className="nav-ico">{item.icon}</span>
+              <IconImage className="nav-ico" src={item.icon} />
               <b className="nav-title">{t(item.labelKey)}</b>
             </button>
           ))}
@@ -417,76 +512,56 @@ export default function App() {
         <section
           className="sec"
           id="s1"
-          style={{ "--tone": "#3b6fe0", "--tone-fg": "#ffffff" }}
+          style={{
+            "--tone": "var(--accent-codex)",
+            "--tone-fg": "var(--white-stationary)",
+          }}
         >
           <div className="sec-h">
-            <span>🔌</span>
+            <IconImage className="sec-ico" src={sectionIcons.setup} />
             <h2>{t("t_h1")}</h2>
           </div>
           <HtmlText className="sec-intro" i18nKey="t_i1" />
-          <Tabs items={agentTabs} onOpen={openLightbox} />
+          <Tabs items={agentTabs} onOpen={openLightbox} variant="segment" />
           <div className="btns">
             <ActionButton
               action="agent-connect"
-              className="btn blue"
+              className="btn ghost"
               provider="claude-code"
             >
               {t("t_b1a")}
             </ActionButton>
             <ActionButton
               action="agent-connect"
-              className="btn dark"
+              className="btn ghost"
               provider="codex"
             >
               {t("t_b1b")}
             </ActionButton>
           </div>
-          <HtmlText className="note" i18nKey="t_note1" />
         </section>
 
         <section
           className="sec"
           id="s2"
-          style={{ "--tone": "#e2603a", "--tone-fg": "#ffffff" }}
+          style={{
+            "--tone": "var(--accent-claude)",
+            "--tone-fg": "var(--white-stationary)",
+          }}
         >
           <div className="sec-h">
-            <span>⚡</span>
+            <IconImage className="sec-ico" src={sectionIcons.collaboration} />
             <h2>{t("t_h2")}</h2>
           </div>
-          <SectionTabs
-            active={section2Tab}
-            items={[
-              { icon: "🪄", labelKey: "t_st1" },
-              { icon: "📋", labelKey: "t_st2" },
-            ]}
-            onChange={setSection2Tab}
-          />
+          <HtmlText className="sec-intro" i18nKey="t_atdesc" />
           <div className="sec-panes">
-            <div className={`sec-pane${section2Tab === 0 ? " on" : ""}`}>
-              <HtmlText className="pane-desc" i18nKey="t_atdesc" />
-              <Tabs items={atTabs} onOpen={openLightbox} />
-            </div>
-            <div className={`sec-pane${section2Tab === 1 ? " on" : ""}`}>
-              <article className="task">
-                <h3>{t("t_tl1")}</h3>
-                <p>{t("t_td1")}</p>
-                <Tabs items={goalTabs} onOpen={openLightbox} />
-                <div className="btns">
-                  <ActionButton action="issue-manager" className="btn ghost">
-                    {t("t_bg1")}
-                  </ActionButton>
-                </div>
-              </article>
-              <article className="task">
-                <h3>{t("t_tl2")}</h3>
-                <p>{t("t_td2")}</p>
-                <Tabs items={controlTabs} onOpen={openLightbox} />
-                <div className="btns">
-                  <ActionButton action="message-center" className="btn ghost">
-                    {t("t_bg2")}
-                  </ActionButton>
-                </div>
-              </article>
+            <div className="sec-pane on">
+              <Tabs
+                initialActive={3}
+                items={atTabs}
+                onOpen={openLightbox}
+                variant="segment"
+              />
             </div>
           </div>
         </section>
@@ -494,23 +569,73 @@ export default function App() {
         <section
           className="sec"
           id="s3"
-          style={{ "--tone": "#e3b341", "--tone-fg": "#4a3712" }}
+          style={{
+            "--tone": "var(--accent-claude)",
+            "--tone-fg": "var(--white-stationary)",
+          }}
         >
           <div className="sec-h">
-            <span>✨</span>
+            <IconImage className="sec-ico" src={sectionIcons.task} />
+            <h2>{t("t_st2")}</h2>
+          </div>
+          <HtmlText className="sec-intro" i18nKey="t_td1" />
+          <article className="task">
+            <Tabs items={goalTabs} onOpen={openLightbox} variant="segment" />
+            <div className="btns">
+              <ActionButton action="issue-manager" className="btn ghost">
+                {t("t_bg1")}
+              </ActionButton>
+            </div>
+          </article>
+        </section>
+
+        <section
+          className="sec"
+          id="s4"
+          style={{
+            "--tone": "var(--accent-claude)",
+            "--tone-fg": "var(--white-stationary)",
+          }}
+        >
+          <div className="sec-h">
+            <IconImage className="sec-ico" src={sectionIcons.control} />
+            <h2>{t("t_tl2")}</h2>
+          </div>
+          <HtmlText className="sec-intro" i18nKey="t_td2" />
+          <Tabs items={controlTabs} onOpen={openLightbox} variant="segment" />
+          <div className="btns">
+            <ActionButton action="message-center" className="btn ghost">
+              {t("t_bg2")}
+            </ActionButton>
+          </div>
+        </section>
+
+        <section
+          className="sec"
+          id="s5"
+          style={{
+            "--tone": "var(--tutti-purple)",
+            "--tone-fg": "var(--white-stationary)",
+          }}
+        >
+          <div className="sec-h">
+            <IconImage className="sec-ico" src={sectionIcons.apps} />
             <h2>{t("t_h3")}</h2>
           </div>
+          <HtmlText
+            className="sec-intro"
+            i18nKey={section3Tab === 0 ? "t_appdesc" : "t_agappdesc"}
+          />
           <SectionTabs
             active={section3Tab}
             items={[
-              { icon: "🧑‍💻", labelKey: "t_st3" },
-              { icon: "🤖", labelKey: "t_st4" },
+              { labelKey: "t_st3" },
+              { labelKey: "t_st4" },
             ]}
             onChange={setSection3Tab}
           />
           <div className="sec-panes">
             <div className={`sec-pane${section3Tab === 0 ? " on" : ""}`}>
-              <HtmlText className="pane-desc" i18nKey="t_appdesc" />
               <Tabs items={appTabs} onOpen={openLightbox} />
               <div className="btns">
                 <ActionButton action="app-center" className="btn ghost">
@@ -519,14 +644,17 @@ export default function App() {
               </div>
             </div>
             <div className={`sec-pane${section3Tab === 1 ? " on" : ""}`}>
-              <HtmlText className="pane-desc" i18nKey="t_agappdesc" />
               <AgentAppTabs />
             </div>
           </div>
         </section>
 
         <footer className="end">
-          <div className="end-emoji">🎵</div>
+          <IconImage
+            alt="Tutti"
+            className="end-logo"
+            src="/assets/logo1.png"
+          />
           <h2>{t("t_end")}</h2>
           <div className="btns center">
             <ActionButton

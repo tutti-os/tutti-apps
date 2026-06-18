@@ -1,5 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import "@fontsource-variable/lexend";
 
 import App from "./App";
 import i18n from "./i18n";
