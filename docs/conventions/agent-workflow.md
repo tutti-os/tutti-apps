@@ -49,3 +49,10 @@ pnpm typecheck
 ```
 
 For frontend changes, start the target app and verify the UI in a browser.
+
+## Recurring Traps
+
+- Publishable Tutti apps have more than one release entry point. When adding or
+  enabling an app, do not stop after `tutti.publish.json`; also check the
+  production and staging workflow `app_id` choice lists, then run the resolver
+  for the explicit app id and `all`.

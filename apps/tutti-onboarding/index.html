@@ -1,17 +1,155 @@
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Tutti onboarding guide for installing agents, binding Codex or Claude Code, and collaborating with workspace apps."
-    />
-    <link rel="icon" type="image/png" href="/icon.png" />
-    <title>Tutti Onboarding</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <title>Tutti · Getting Started</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1 data-i18n="t_title"></h1>
+      <p class="tag" data-i18n="t_tag"></p>
+    </header>
+
+    <nav class="nav" aria-label="" data-i18n-attr="aria-label:t_nav_label">
+      <button class="nav-btn on" style="--tone:#3b6fe0" data-scroll="s1">
+        <span class="nav-ico">🔌</span>
+        <b class="nav-title" data-i18n="t_n1"></b>
+      </button>
+      <button class="nav-btn" style="--tone:#e2603a" data-scroll="s2">
+        <span class="nav-ico">⚡</span>
+        <b class="nav-title" data-i18n="t_n2"></b>
+      </button>
+      <button class="nav-btn" style="--tone:#e3b341" data-scroll="s3">
+        <span class="nav-ico">✨</span>
+        <b class="nav-title" data-i18n="t_n3"></b>
+      </button>
+    </nav>
+
+    <section class="sec" id="s1" style="--tone:#3b6fe0;--tone-fg:#ffffff">
+      <div class="sec-h"><span>🔌</span><h2 data-i18n="t_h1"></h2></div>
+      <p class="sec-intro" data-i18n="t_i1"></p>
+      <div class="tabs" data-tabs>
+        <div class="tab-bar">
+          <button class="tab-btn on" data-t="0">Claude Code</button>
+          <button class="tab-btn" data-t="1">Codex</button>
+          <button class="tab-btn soon" type="button" aria-disabled="true">Hermes Agent</button>
+          <button class="tab-btn soon" type="button" aria-disabled="true">OpenClaw</button>
+          <button class="tab-btn soon" type="button" aria-disabled="true">Gemini</button>
+        </div>
+        <div class="tab-pane on"><div class="shot"><img src="/assets/bind-claude.webp" alt="" data-i18n-attr="alt:t_s1a"></div></div>
+        <div class="tab-pane"><div class="shot"><img src="/assets/bind-codex.webp" alt="" data-i18n-attr="alt:t_s1b"></div></div>
+      </div>
+      <div class="btns">
+        <button class="btn blue" data-action="agent-connect" data-provider="claude-code"><span data-i18n="t_b1a"></span></button>
+        <button class="btn dark" data-action="agent-connect" data-provider="codex"><span data-i18n="t_b1b"></span></button>
+      </div>
+      <p class="note" data-i18n="t_note1"></p>
+    </section>
+
+    <section class="sec" id="s2" style="--tone:#e2603a;--tone-fg:#ffffff">
+      <div class="sec-h"><span>⚡</span><h2 data-i18n="t_h2"></h2></div>
+      <div class="sec-tabs" data-sectabs="s2">
+        <button class="sec-tab on" data-st="0"><span>🪄</span><b data-i18n="t_st1"></b></button>
+        <button class="sec-tab" data-st="1"><span>📋</span><b data-i18n="t_st2"></b></button>
+      </div>
+      <div class="sec-panes" data-sp="s2">
+        <div class="sec-pane on">
+          <p class="pane-desc" data-i18n="t_atdesc"></p>
+          <div class="tabs" data-tabs>
+            <div class="tab-bar">
+              <button class="tab-btn on" data-t="0"><span data-i18n="t_at1"></span></button>
+              <button class="tab-btn" data-t="1"><span data-i18n="t_at2"></span></button>
+              <button class="tab-btn" data-t="2"><span data-i18n="t_at3"></span></button>
+              <button class="tab-btn" data-t="3"><span data-i18n="t_at4"></span></button>
+            </div>
+            <div class="tab-pane on"><div class="shot"><img src="/assets/at-chat.webp" alt="" data-i18n-attr="alt:t_atd1"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-file.webp" alt="" data-i18n-attr="alt:t_atd2"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-task.webp" alt="" data-i18n-attr="alt:t_atd3"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-app.webp" alt="" data-i18n-attr="alt:t_atd4"></div></div>
+          </div>
+        </div>
+        <div class="sec-pane">
+          <article class="task">
+            <h3 data-i18n="t_tl1"></h3>
+            <p data-i18n="t_td1"></p>
+            <div class="tabs" data-tabs>
+              <div class="tab-bar">
+                <button class="tab-btn on" data-t="0"><span data-i18n="t_gt1"></span></button>
+                <button class="tab-btn" data-t="1"><span data-i18n="t_gt2"></span></button>
+                <button class="tab-btn" data-t="2"><span data-i18n="t_gt3"></span></button>
+              </div>
+              <div class="tab-pane on"><div class="shot"><img src="/assets/goal-set.webp" alt="" data-i18n-attr="alt:t_gd1"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/goal-breakdown.webp" alt="" data-i18n-attr="alt:t_gd2"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/goal-run.webp" alt="" data-i18n-attr="alt:t_gd3"></div></div>
+            </div>
+            <div class="btns"><button class="btn ghost" data-action="issue-manager"><span data-i18n="t_bg1"></span></button></div>
+          </article>
+          <article class="task">
+            <h3 data-i18n="t_tl2"></h3>
+            <p data-i18n="t_td2"></p>
+            <div class="tabs" data-tabs>
+              <div class="tab-bar">
+                <button class="tab-btn on" data-t="0"><span data-i18n="t_ct1"></span></button>
+                <button class="tab-btn" data-t="1"><span data-i18n="t_ct2"></span></button>
+              </div>
+              <div class="tab-pane on"><div class="shot"><img src="/assets/control-waiting.webp" alt="" data-i18n-attr="alt:t_cd1"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/control-overview.webp" alt="" data-i18n-attr="alt:t_cd2"></div></div>
+            </div>
+            <div class="btns"><button class="btn ghost" data-action="message-center"><span data-i18n="t_bg2"></span></button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="s3" style="--tone:#e3b341;--tone-fg:#4a3712">
+      <div class="sec-h"><span>✨</span><h2 data-i18n="t_h3"></h2></div>
+      <div class="sec-tabs" data-sectabs="s3">
+        <button class="sec-tab on" data-st="0"><span>🧑‍💻</span><b data-i18n="t_st3"></b></button>
+        <button class="sec-tab" data-st="1"><span>🤖</span><b data-i18n="t_st4"></b></button>
+      </div>
+      <div class="sec-panes" data-sp="s3">
+        <div class="sec-pane on">
+          <p class="pane-desc" data-i18n="t_appdesc"></p>
+          <div class="tabs" data-tabs>
+            <div class="tab-bar">
+              <button class="tab-btn on" data-t="0"><span data-i18n="t_apt1"></span></button>
+              <button class="tab-btn" data-t="1"><span data-i18n="t_apt2"></span></button>
+            </div>
+            <div class="tab-pane on"><div class="shot"><img src="/assets/apps-overview.webp" alt="" data-i18n-attr="alt:t_apd1"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/apps-example.webp" alt="" data-i18n-attr="alt:t_apd2"></div></div>
+          </div>
+          <div class="btns"><button class="btn ghost" data-action="app-center"><span data-i18n="t_bg3"></span></button></div>
+        </div>
+        <div class="sec-pane">
+          <p class="pane-desc" data-i18n="t_agappdesc"></p>
+          <div class="tabs" data-tabs>
+            <div class="tab-bar">
+              <button class="tab-btn on" data-t="0"><span data-i18n="t_agt1"></span></button>
+              <button class="tab-btn" data-t="1"><span data-i18n="t_agt2"></span></button>
+            </div>
+            <div class="tab-pane on"><div class="shot shot-video"><video src="/assets/apps-agent.mp4" loop muted playsinline preload="metadata" controls controlslist="nodownload" aria-label="" data-i18n-attr="aria-label:t_agd1"></video><button class="video-play" type="button" aria-label="" data-i18n-attr="aria-label:t_play_pause"><span>▶</span></button></div></div>
+            <div class="tab-pane"><div class="shot shot-empty"><span>🖼</span><span data-i18n="t_agd2"></span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="end">
+      <div class="end-emoji">🎵</div>
+      <h2 data-i18n="t_end"></h2>
+      <div class="btns center">
+        <button class="btn blue" data-action="agent-connect" data-provider="codex"><span data-i18n="t_be1"></span></button>
+        <button class="btn ghost" data-action="agent-chat"><span data-i18n="t_be2"></span></button>
+      </div>
+    </footer>
+  </main>
+  <div class="lightbox" id="lightbox" hidden>
+    <img class="lightbox-img" id="lightboxImg" alt="">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="" data-i18n-attr="aria-label:t_close">×</button>
+  </div>
+  <script src="/app.js"></script>
+</body>
 </html>

@@ -57,23 +57,9 @@ const server = createServer(async (request, response) => {
     `http://${request.headers.host || `${host}:${port}`}`,
   );
 
-  if (url.pathname === "/api/health") {
-    sendJson(response, 200, { app: "tutti-onboarding", ok: true });
-    return;
-  }
-
-  if (url.pathname === "/tutti/cli/status" && request.method === "POST") {
-    sendJson(response, 200, {
-      kind: "json",
-      value: {
-        ok: true,
-        data: {
-          appId: "tutti-onboarding",
-          guide: "ready",
-          sections: ["plugin", "agent-binding", "mentions", "tasks"],
-        },
-      },
-    });
+  if (request.method === "GET" && url.pathname === "/healthz") {
+    response.writeHead(204);
+    response.end();
     return;
   }
 
@@ -86,6 +72,9 @@ const server = createServer(async (request, response) => {
   response.writeHead(200, {
     "content-type":
       contentTypes.get(path.extname(staticPath)) || "application/octet-stream",
+    "cache-control": url.pathname.startsWith("/assets/")
+      ? "public, max-age=31536000, immutable"
+      : "no-store",
   });
   createReadStream(staticPath).pipe(response);
 });
