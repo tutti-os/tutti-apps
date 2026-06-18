@@ -5,16 +5,16 @@ import { I18nextProvider, useTranslation } from "react-i18next";
 import "./styles.css";
 
 const media = {
-  panorama: "/assets/应用-全景图.png",
-  appExample: "/assets/应用-示例.png",
-  codex: "/assets/绑定agent-codex.png",
-  claude: "/assets/绑定agent- Claude code.png",
-  taskSplit: "/assets/agent协作-任务拆解.png",
-  taskRun: "/assets/agent协作-任务执行.png",
-  mentionApp: "/assets/agent协作-@应用.png",
-  mentionFile: "/assets/agent协作-@文件.png",
-  mentionTask: "/assets/agent协作-@任务.png",
-  needsUser: "/assets/agent协作-需要用户处理.png",
+  panorama: "/assets/应用-全景图.webp",
+  appExample: "/assets/应用-示例.webp",
+  codex: "/assets/绑定agent-codex.webp",
+  claude: "/assets/绑定agent- Claude code.webp",
+  taskSplit: "/assets/agent协作-任务拆解.webp",
+  taskRun: "/assets/agent协作-任务执行.webp",
+  mentionApp: "/assets/agent协作-@应用.webp",
+  mentionFile: "/assets/agent协作-@文件.webp",
+  mentionTask: "/assets/agent协作-@任务.webp",
+  needsUser: "/assets/agent协作-需要用户处理.webp",
   video: "/assets/应用-agent用-@应用.mp4",
 };
 
