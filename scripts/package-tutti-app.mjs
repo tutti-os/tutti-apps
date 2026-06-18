@@ -480,6 +480,10 @@ async function bundleServer({ appConfig, appSourceDir, packageRoot }) {
   ]);
 }
 
+function isStaticPackage(appConfig) {
+  return appConfig.packageKind === "static";
+}
+
 async function writePackageFiles({ appConfig, manifest }) {
   const packageSourceDir = path.join(rootDir, appConfig.packageSourceDir);
   const packageRoot = path.join(rootDir, appConfig.packageDir);
@@ -514,7 +518,9 @@ async function writePackageFiles({ appConfig, manifest }) {
     path.join(packageRoot, "dist"),
     { recursive: true },
   );
-  await bundleServer({ appConfig, appSourceDir, packageRoot });
+  if (!isStaticPackage(appConfig)) {
+    await bundleServer({ appConfig, appSourceDir, packageRoot });
+  }
   await writeRuntimePackageJson({ packageRoot });
 
   await copyIfExists(
