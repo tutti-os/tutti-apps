@@ -278,5 +278,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: .3, rootMargin: "-96px 0px -40% 0px" });
 sections.forEach((section) => observer.observe(section));
 
+applyLanguage(localeToLang(navigator.language));
 readHostLocale().then((locale) => applyLanguage(localeToLang(locale || navigator.language)));
 subscribeHostLocale((locale) => applyLanguage(localeToLang(locale || navigator.language)));
