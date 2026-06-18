@@ -132,6 +132,11 @@ function localeToLang(locale) {
   return String(locale || "").toLowerCase().startsWith("zh") ? "zh" : "en";
 }
 
+function readQueryLocale() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("locale") || params.get("lang");
+}
+
 function bindTabs(rootSelector, buttonSelector, paneSelector, indexAttr) {
   document.querySelectorAll(rootSelector).forEach((root) => {
     const buttons = root.querySelectorAll(buttonSelector);
@@ -278,6 +283,9 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: .3, rootMargin: "-96px 0px -40% 0px" });
 sections.forEach((section) => observer.observe(section));
 
-applyLanguage(localeToLang(navigator.language));
-readHostLocale().then((locale) => applyLanguage(localeToLang(locale || navigator.language)));
-subscribeHostLocale((locale) => applyLanguage(localeToLang(locale || navigator.language)));
+const queryLocale = readQueryLocale();
+applyLanguage(localeToLang(queryLocale || navigator.language));
+if (!queryLocale) {
+  readHostLocale().then((locale) => applyLanguage(localeToLang(locale || navigator.language)));
+  subscribeHostLocale((locale) => applyLanguage(localeToLang(locale || navigator.language)));
+}
