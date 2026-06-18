@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import i18n from "./i18n";
 import { readQueryLocale, resolveAppLocale } from "./i18n/app-context";
+import "./styles.css";
 
 const initialLocale = resolveAppLocale(
   import.meta.env.DEV ? readQueryLocale() : null,

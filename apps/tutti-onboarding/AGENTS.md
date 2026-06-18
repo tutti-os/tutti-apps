@@ -35,6 +35,10 @@ The UI entrypoint is React:
 - `src/i18n/app-context.js` reads locale from `window.tuttiExternal.app`.
 - `src/i18n/locales/en-US/onboarding.json` and
   `src/i18n/locales/zh-CN/onboarding.json` own all user-facing copy.
+- `src/styles.css`, `components.json`, `src/lib/utils.js`, and
+  `src/components/ui/` provide Tailwind CSS v4 + shadcn/ui foundation.
+  Keep the current 1:1 onboarding page on `public/styles.css`; use shadcn for
+  new UI surfaces unless the built-in onboarding source changes.
 
 When adding or renaming a copy key, update both locale JSON files and run
 `pnpm --filter @tutti-apps/tutti-onboarding test`. Query params `?locale=` and

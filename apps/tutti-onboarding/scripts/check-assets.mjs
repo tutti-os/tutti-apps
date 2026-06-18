@@ -8,6 +8,8 @@ const appRoot = path.resolve(
 );
 
 const requiredFiles = [
+  "components.json",
+  "jsconfig.json",
   "public/styles.css",
   "public/assets/apps-agent.mp4",
   "public/assets/apps-example.webp",
@@ -26,10 +28,13 @@ const requiredFiles = [
   "public/icon.png",
   "src/App.jsx",
   "src/main.jsx",
+  "src/styles.css",
+  "src/components/ui/button.jsx",
   "src/i18n/app-context.js",
   "src/i18n/index.js",
   "src/i18n/locales/en-US/onboarding.json",
   "src/i18n/locales/zh-CN/onboarding.json",
+  "src/lib/utils.js",
   "tutti-package/tutti.app.json",
   "tutti-package/bootstrap.sh",
   "tutti-package/icon.png",
@@ -58,6 +63,7 @@ assertNoHardCodedChinese({
   "src/i18n/app-context.js": appContextSource,
 });
 assertHostContextApi(appContextSource);
+await assertShadcnFoundation();
 
 const translations = await readTranslations();
 assertLocaleKeys(translations);
@@ -97,6 +103,49 @@ function assertHostContextApi(source) {
     throw new Error(
       "React app must use tuttiExternal.app.getContext/subscribe for locale.",
     );
+  }
+}
+
+async function assertShadcnFoundation() {
+  const componentsConfig = JSON.parse(
+    await readFile(path.join(appRoot, "components.json"), "utf8"),
+  );
+  if (
+    componentsConfig.tailwind?.css !== "src/styles.css" ||
+    componentsConfig.aliases?.ui !== "@/components/ui" ||
+    componentsConfig.iconLibrary !== "lucide"
+  ) {
+    throw new Error("components.json must configure shadcn for this app.");
+  }
+
+  const mainSource = await readFile(path.join(appRoot, "src/main.jsx"), "utf8");
+  if (!mainSource.includes('import "./styles.css";')) {
+    throw new Error("src/main.jsx must import the Tailwind/shadcn CSS entry.");
+  }
+
+  const tailwindSource = await readFile(
+    path.join(appRoot, "src/styles.css"),
+    "utf8",
+  );
+  for (const required of [
+    '@import "tailwindcss/theme.css"',
+    '@import "tailwindcss/utilities.css"',
+    '@import "shadcn/tailwind.css"',
+  ]) {
+    if (!tailwindSource.includes(required)) {
+      throw new Error(`src/styles.css must include ${required}.`);
+    }
+  }
+
+  const buttonSource = await readFile(
+    path.join(appRoot, "src/components/ui/button.jsx"),
+    "utf8",
+  );
+  if (
+    !buttonSource.includes("buttonVariants") ||
+    !buttonSource.includes("@radix-ui/react-slot")
+  ) {
+    throw new Error("shadcn Button foundation must be present.");
   }
 }
 
