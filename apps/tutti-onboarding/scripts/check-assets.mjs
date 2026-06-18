@@ -1,4 +1,4 @@
-import { access } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,20 +8,24 @@ const appRoot = path.resolve(
 );
 
 const requiredFiles = [
-  "public/assets/应用-全景图.webp",
-  "public/assets/应用-示例.webp",
-  "public/assets/绑定agent-codex.webp",
-  "public/assets/绑定agent- Claude code.webp",
-  "public/assets/agent协作-任务拆解.webp",
-  "public/assets/agent协作-任务执行.webp",
-  "public/assets/agent协作-@应用.webp",
-  "public/assets/agent协作-@文件.webp",
-  "public/assets/agent协作-@任务.webp",
-  "public/assets/agent协作-需要用户处理.webp",
-  "public/assets/应用-agent用-@应用.mp4",
+  "public/app.js",
+  "public/styles.css",
+  "public/assets/apps-agent.mp4",
+  "public/assets/apps-example.png",
+  "public/assets/apps-overview.png",
+  "public/assets/at-app.png",
+  "public/assets/at-chat.png",
+  "public/assets/at-file.png",
+  "public/assets/at-task.png",
+  "public/assets/bind-claude.png",
+  "public/assets/bind-codex.png",
+  "public/assets/control-overview.png",
+  "public/assets/control-waiting.png",
+  "public/assets/goal-breakdown.png",
+  "public/assets/goal-run.png",
+  "public/assets/goal-set.png",
   "public/icon.png",
   "tutti-package/tutti.app.json",
-  "tutti-package/tutti.cli.json",
   "tutti-package/bootstrap.sh",
   "tutti-package/icon.png",
   "tutti-package/server.mjs",
@@ -30,5 +34,27 @@ const requiredFiles = [
 await Promise.all(
   requiredFiles.map((file) => access(path.join(appRoot, file))),
 );
+
+const indexHtml = await readFile(path.join(appRoot, "index.html"), "utf8");
+if (!indexHtml.includes("Tutti · Getting Started")) {
+  throw new Error("index.html must match the built-in onboarding entrypoint.");
+}
+
+const appJs = await readFile(path.join(appRoot, "public/app.js"), "utf8");
+if (!appJs.includes("开始使用 Tutti 👋")) {
+  throw new Error("public/app.js must include the source onboarding copy.");
+}
+
+const manifest = JSON.parse(
+  await readFile(path.join(appRoot, "tutti-package/tutti.app.json"), "utf8"),
+);
+if (
+  manifest.name !== "Getting Started" ||
+  manifest.runtime?.healthcheckPath !== "/healthz"
+) {
+  throw new Error(
+    "tutti.app.json must match the built-in onboarding manifest.",
+  );
+}
 
 console.log("tutti-onboarding assets are present");

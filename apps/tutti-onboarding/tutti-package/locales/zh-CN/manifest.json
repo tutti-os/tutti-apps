@@ -1,4 +1,5 @@
 {
-  "name": "Tutti 入门导览",
-  "description": "用于了解 Tutti 应用与本地 agent 协作流程的入门导览。"
+  "name": "开始使用",
+  "description": "引导你完成 Agent 绑定、协作、任务和应用的 Tutti 入门页面。",
+  "tags": ["入门", "引导", "工作区"]
 }

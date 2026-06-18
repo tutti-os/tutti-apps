@@ -1,17 +1,155 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Tutti onboarding guide for installing agents, binding Codex or Claude Code, and collaborating with workspace apps."
-    />
-    <link rel="icon" type="image/png" href="/icon.png" />
-    <title>Tutti Onboarding</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <title>Tutti · Getting Started</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1 id="t_title">开始使用 Tutti 👋</h1>
+      <p class="tag" id="t_tag">人与 Agent「同频」创造的地方。<br>上下文、文件、应用、任务，全部打通。</p>
+    </header>
+
+    <nav class="nav" aria-label="Onboarding sections">
+      <button class="nav-btn on" style="--tone:#3b6fe0" data-scroll="s1">
+        <span class="nav-ico">🔌</span>
+        <b class="nav-title" id="t_n1">绑定 Agent</b>
+      </button>
+      <button class="nav-btn" style="--tone:#e2603a" data-scroll="s2">
+        <span class="nav-ico">⚡</span>
+        <b class="nav-title" id="t_n2">Agent 协作</b>
+      </button>
+      <button class="nav-btn" style="--tone:#e3b341" data-scroll="s3">
+        <span class="nav-ico">✨</span>
+        <b class="nav-title" id="t_n3">试试内置应用</b>
+      </button>
+    </nav>
+
+    <section class="sec" id="s1" style="--tone:#3b6fe0;--tone-fg:#ffffff">
+      <div class="sec-h"><span>🔌</span><h2 id="t_h1">先把你的 Agent 接进来</h2></div>
+      <p class="sec-intro" id="t_i1">目前仅支持 Claude Code 和 Codex。更多 Agent 能力正在开发中 💻</p>
+      <div class="tabs" data-tabs>
+        <div class="tab-bar">
+          <button class="tab-btn on" data-t="0">Claude Code</button>
+          <button class="tab-btn" data-t="1">Codex</button>
+          <button class="tab-btn soon" type="button" aria-disabled="true">Hermes Agent</button>
+          <button class="tab-btn soon" type="button" aria-disabled="true">OpenClaw</button>
+          <button class="tab-btn soon" type="button" aria-disabled="true">Gemini</button>
+        </div>
+        <div class="tab-pane on"><div class="shot"><img src="/assets/bind-claude.png" alt="Claude Code 绑定流程"></div></div>
+        <div class="tab-pane"><div class="shot"><img src="/assets/bind-codex.png" alt="Codex 绑定流程"></div></div>
+      </div>
+      <div class="btns">
+        <button class="btn blue" data-action="agent-connect" data-provider="claude-code"><span id="t_b1a">绑定 Claude Code</span></button>
+        <button class="btn dark" data-action="agent-connect" data-provider="codex"><span id="t_b1b">绑定 Codex</span></button>
+      </div>
+      <p class="note" id="t_note1">绑定后就可以在 Tutti 里使用你的 Agent 啦。<b>无需终端，上手简单。不同 Agent 间交互体验一致。</b></p>
+    </section>
+
+    <section class="sec" id="s2" style="--tone:#e2603a;--tone-fg:#ffffff">
+      <div class="sec-h"><span>⚡</span><h2 id="t_h2">看看 Agent 怎么协作</h2></div>
+      <div class="sec-tabs" data-sectabs="s2">
+        <button class="sec-tab on" data-st="0"><span>🪄</span><b id="t_st1">Big @</b></button>
+        <button class="sec-tab" data-st="1"><span>📋</span><b id="t_st2">任务管理</b></button>
+      </div>
+      <div class="sec-panes" data-sp="s2">
+        <div class="sec-pane on">
+          <p class="pane-desc" id="t_atdesc">对话中打个 @，让 Agent 获取彼此的<b>会话、文件、任务</b>，带着上下文工作；也可以 @ 应用，让 Agent 使用。</p>
+          <div class="tabs" data-tabs>
+            <div class="tab-bar">
+              <button class="tab-btn on" data-t="0"><span id="t_at1">@ 会话</span></button>
+              <button class="tab-btn" data-t="1"><span id="t_at2">@ 文件</span></button>
+              <button class="tab-btn" data-t="2"><span id="t_at3">@ 任务</span></button>
+              <button class="tab-btn" data-t="3"><span id="t_at4">@ 应用</span></button>
+            </div>
+            <div class="tab-pane on"><div class="shot"><img src="/assets/at-chat.png" alt="@ 另一个 Agent，共享会话上下文"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-file.png" alt="@ 文件，Agent 直接读取"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-task.png" alt="@ 任务，Agent 获取任务上下文"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/at-app.png" alt="@ 应用，让 Agent 调用应用能力"></div></div>
+          </div>
+        </div>
+        <div class="sec-pane">
+          <article class="task">
+            <h3 id="t_tl1">🎯 你说目标，Agent 拆解执行</h3>
+            <p id="t_td1">说你想做什么就行。接着再委派 Agent 自动拆成子任务，指定合适的 Agent 去执行。</p>
+            <div class="tabs" data-tabs>
+              <div class="tab-bar">
+                <button class="tab-btn on" data-t="0"><span id="t_gt1">你设目标</span></button>
+                <button class="tab-btn" data-t="1"><span id="t_gt2">Agent 拆解</span></button>
+                <button class="tab-btn" data-t="2"><span id="t_gt3">Agent 执行</span></button>
+              </div>
+              <div class="tab-pane on"><div class="shot"><img src="/assets/goal-set.png" alt="输入你的目标描述"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/goal-breakdown.png" alt="Agent 自动拆解为子任务"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/goal-run.png" alt="Agent 分工执行中"></div></div>
+            </div>
+            <div class="btns"><button class="btn ghost" data-action="issue-manager"><span id="t_bg1">去设置目标任务 →</span></button></div>
+          </article>
+          <article class="task">
+            <h3 id="t_tl2">📡 全局任务管控</h3>
+            <p id="t_td2">Agent 的消息、运行状态、异常，不用你盯着，也不会漏掉。</p>
+            <div class="tabs" data-tabs>
+              <div class="tab-bar">
+                <button class="tab-btn on" data-t="0"><span id="t_ct1">需要你处理</span></button>
+                <button class="tab-btn" data-t="1"><span id="t_ct2">全局查看</span></button>
+              </div>
+              <div class="tab-pane on"><div class="shot"><img src="/assets/control-waiting.png" alt="主动提醒 · 需要你确认或操作的事项"></div></div>
+              <div class="tab-pane"><div class="shot"><img src="/assets/control-overview.png" alt="常驻面板 · 按优先级 / Agent 筛选查看"></div></div>
+            </div>
+            <div class="btns"><button class="btn ghost" data-action="message-center"><span id="t_bg2">去任务面板看看 →</span></button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="s3" style="--tone:#e3b341;--tone-fg:#4a3712">
+      <div class="sec-h"><span>✨</span><h2 id="t_h3">试试内置应用</h2></div>
+      <div class="sec-tabs" data-sectabs="s3">
+        <button class="sec-tab on" data-st="0"><span>🧑‍💻</span><b id="t_st3">自己用</b></button>
+        <button class="sec-tab" data-st="1"><span>🤖</span><b id="t_st4">Agent 用</b></button>
+      </div>
+      <div class="sec-panes" data-sp="s3">
+        <div class="sec-pane on">
+          <p class="pane-desc" id="t_appdesc">内置一系列生产力应用，开箱即用。<span class="info-wrap"><b>复用已有的 Agent 订阅</b> <span class="info-dot">i</span><span class="info-tip">可使用的应用能力取决于你已有的 Agent / 模型订阅</span></span></p>
+          <div class="tabs" data-tabs>
+            <div class="tab-bar">
+              <button class="tab-btn on" data-t="0"><span id="t_apt1">应用全景</span></button>
+              <button class="tab-btn" data-t="1"><span id="t_apt2">使用示例</span></button>
+            </div>
+            <div class="tab-pane on"><div class="shot"><img src="/assets/apps-overview.png" alt="应用中心 · 全部应用一览"></div></div>
+            <div class="tab-pane"><div class="shot"><img src="/assets/apps-example.png" alt="单个应用的使用界面"></div></div>
+          </div>
+          <div class="btns"><button class="btn ghost" data-action="app-center"><span id="t_bg3">去应用中心看看 →</span></button></div>
+        </div>
+        <div class="sec-pane">
+          <p class="pane-desc" id="t_agappdesc">Agent 可以直接 @ 应用完成任务，也能拿应用的产物继续工作。<b>不需要你手动搬运。</b></p>
+          <div class="tabs" data-tabs>
+            <div class="tab-bar">
+              <button class="tab-btn on" data-t="0"><span id="t_agt1">@ 应用完成任务</span></button>
+              <button class="tab-btn" data-t="1"><span id="t_agt2">使用应用产物</span></button>
+            </div>
+            <div class="tab-pane on"><div class="shot shot-video"><video src="/assets/apps-agent.mp4" loop muted playsinline preload="metadata" controls controlslist="nodownload"></video><button class="video-play" type="button" aria-label="播放/暂停"><span>▶</span></button></div></div>
+            <div class="tab-pane"><div class="shot shot-empty"><span>🖼</span><span id="t_agd2">Agent 引用应用产物继续工作</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="end">
+      <div class="end-emoji">🎵</div>
+      <h2 id="t_end">人与 Agent，同频共建</h2>
+      <div class="btns center">
+        <button class="btn blue" data-action="agent-connect" data-provider="codex"><span id="t_be1">绑定 Agent，开始使用</span></button>
+        <button class="btn ghost" data-action="agent-chat"><span id="t_be2">已绑定，去使用 →</span></button>
+      </div>
+    </footer>
+  </main>
+  <div class="lightbox" id="lightbox" hidden>
+    <img class="lightbox-img" id="lightboxImg" alt="">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭">×</button>
+  </div>
+  <script src="/app.js"></script>
+</body>
 </html>

@@ -2,14 +2,16 @@
 
 ## App Overview
 
-`apps/tutti-onboarding` owns the Tutti Onboarding guide app.
+`apps/tutti-onboarding` mirrors the Tutti built-in Getting Started onboarding
+app.
 
 Product scope:
 
-- introduce the Tutti workspace app and agent collaboration workflow
-- show the provided onboarding screenshots and video as inspectable media
-- explain installing/binding Codex or Claude Code agents
-- expose a read-only `onboarding status` CLI command for Tutti discovery
+- keep the UI, copy, asset names, and interactions aligned with
+  `services/tuttid/builtin-apps/onboarding`
+- serve the built-in onboarding screenshots and video as inspectable media
+- preserve the host bridge behavior for agent binding, app center, task panel,
+  and agent chat actions
 
 ## Validation
 
@@ -22,9 +24,8 @@ pnpm package:tutti --app tutti-onboarding
 
 ## Runtime Notes
 
-This app is a static Vite/React app. The package runtime uses
-`tutti-package/server.mjs` to serve built assets, `/api/health`, and the
-read-only Tutti CLI endpoint.
+This app is a static Vite app. The package runtime uses
+`tutti-package/server.mjs` to serve built assets and `/healthz`.
 
-Keep user-facing copy in the i18n resources inside `src/main.jsx` unless the app
-grows enough to justify separate locale files.
+Keep user-facing copy in `public/app.js` unless the source built-in onboarding
+app changes.
