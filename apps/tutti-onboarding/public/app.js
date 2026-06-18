@@ -92,14 +92,11 @@ function applyLanguage(nextLang) {
 }
 
 async function readHostLocale() {
-  const appContext = window.tutti?.appContext || window.tuttiAppContext;
+  const appContext = window.tuttiExternal?.app;
   try {
     if (typeof appContext?.get === "function") {
       const context = await appContext.get();
       return context?.locale || context?.language || null;
-    }
-    if (typeof appContext?.getLocale === "function") {
-      return await appContext.getLocale();
     }
   } catch {
     return null;
@@ -108,12 +105,9 @@ async function readHostLocale() {
 }
 
 function subscribeHostLocale(listener) {
-  const appContext = window.tutti?.appContext || window.tuttiAppContext;
+  const appContext = window.tuttiExternal?.app;
   if (typeof appContext?.subscribe === "function") {
     return appContext.subscribe((context) => listener(context?.locale || context?.language || null));
-  }
-  if (typeof appContext?.onLocaleChanged === "function") {
-    return appContext.onLocaleChanged(listener);
   }
   return () => {};
 }
@@ -157,10 +151,9 @@ function bindSectionTabs() {
 
 async function openAction(button) {
   const action = button.dataset.action;
-  const workspace = window.tutti?.workspace;
+  const workspace = window.tuttiExternal?.workspace;
   if (typeof workspace?.openFeature !== "function") return;
   if (action === "agent-connect") {
-    // 直接拉起绑定/使用 Agent，不跳设置面板；默认 Codex。
     await workspace.openFeature({
       feature: "agent-connect",
       provider: button.dataset.provider || "codex"
@@ -168,7 +161,6 @@ async function openAction(button) {
     return;
   }
   if (action === "agent-chat") {
-    // 打开已绑定的 Agent 对话框（由宿主选择默认/已绑定 provider）。
     await workspace.openFeature({ feature: "agent-chat" });
     return;
   }
