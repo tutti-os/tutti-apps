@@ -1,0 +1,81 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@source "./**/*.{js,jsx}";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #0f1722;
+  --card: #ffffff;
+  --card-foreground: #0f1722;
+  --popover: #ffffff;
+  --popover-foreground: #0f1722;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f7fa;
+  --secondary-foreground: #0f1722;
+  --muted: #f5f7fa;
+  --muted-foreground: #45505f;
+  --accent: #f5f7fa;
+  --accent-foreground: #0f1722;
+  --destructive: #dc2626;
+  --border: #e3e8ef;
+  --input: #e3e8ef;
+  --ring: rgba(37, 99, 235, 0.32);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111318;
+    --foreground: #f4f6fb;
+    --card: #111318;
+    --card-foreground: #f4f6fb;
+    --popover: #111318;
+    --popover-foreground: #f4f6fb;
+    --secondary: #1b1f28;
+    --secondary-foreground: #f4f6fb;
+    --muted: #1b1f28;
+    --muted-foreground: #c3ccd9;
+    --accent: #1b1f28;
+    --accent-foreground: #f4f6fb;
+    --border: #2a303b;
+    --input: #2a303b;
+  }
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
