@@ -1,7 +1,8 @@
 # Getting Started Onboarding
 
 This package mirrors the Tutti built-in Getting Started onboarding app from
-`services/tuttid/builtin-apps/onboarding`.
+`services/tuttid/builtin-apps/onboarding`, with packaged media assets compressed
+for distribution.
 
 ## Development
 
@@ -21,5 +22,5 @@ http://127.0.0.1:3003
 pnpm package:tutti --app tutti-onboarding
 ```
 
-The generated package includes the mirrored static assets, the Tutti manifest,
-and a local runtime server.
+The generated package includes optimized static assets, the Tutti manifest, and
+a local runtime server.

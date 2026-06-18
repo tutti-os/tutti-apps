@@ -3,13 +3,13 @@
 ## App Overview
 
 `apps/tutti-onboarding` mirrors the Tutti built-in Getting Started onboarding
-app.
+app UI and optimizes its packaged media assets.
 
 Product scope:
 
-- keep the UI, copy, asset names, and interactions aligned with
+- keep the UI, copy, and interactions aligned with
   `services/tuttid/builtin-apps/onboarding`
-- serve the built-in onboarding screenshots and video as inspectable media
+- serve compressed onboarding screenshots and video as inspectable media
 - preserve the host bridge behavior for agent binding, app center, task panel,
   and agent chat actions
 
