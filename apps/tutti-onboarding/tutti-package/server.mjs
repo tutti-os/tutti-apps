@@ -18,6 +18,7 @@ const contentTypes = new Map([
   [".mp4", "video/mp4"],
   [".png", "image/png"],
   [".svg", "image/svg+xml"],
+  [".webp", "image/webp"],
 ]);
 
 function sendJson(response, status, body) {
