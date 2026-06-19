@@ -19,12 +19,13 @@
   --radius-xl: calc(var(--radius) + 0.25rem);
 
   --background: oklch(0.986 0.004 84);
+  --background-1: oklch(0.986 0.004 84);
   --background-panel: rgb(248 250 252);
   --background-fronted: rgb(255 255 255 / 1);
   --background-soft: oklch(0.968 0.006 84);
   --foreground: oklch(0.248 0.016 258);
-  --text-primary: rgb(60 60 60);
-  --text-primary-hover: rgb(60 60 60 / 90%);
+  --text-primary: var(--black-stationary);
+  --text-primary-hover: rgb(0 0 0 / 90%);
   --text-secondary: rgb(60 60 60 / 70%);
   --text-tertiary: rgb(60 60 60 / 50%);
   --text-placeholder: rgb(60 60 60 / 30%);
@@ -66,7 +67,7 @@
   --segment-option-height: 36px;
   --segment-option-padding-x: 16px;
 
-  --bg: var(--background);
+  --bg: var(--background-1);
   --tint: var(--background-panel);
   --ink: var(--text-primary);
   --ink2: var(--text-secondary);
@@ -81,7 +82,7 @@
 html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
 body {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--background) 0%, var(--background-soft) 100%);
+  background: var(--background-1);
   color: var(--ink);
   font-family: var(--font-ui);
   font-weight: var(--font-weight-regular);
@@ -102,7 +103,7 @@ button { font: inherit; }
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: color-mix(in srgb, var(--white-stationary) 72%, transparent); cursor: pointer;
+  color: var(--text-primary); cursor: pointer;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   box-shadow: none;
@@ -128,53 +129,28 @@ button { font: inherit; }
   opacity: 0;
   pointer-events: none;
 }
-.nav-btn:hover { transform: translateY(-2px); color: color-mix(in srgb, var(--white-stationary) 88%, transparent); }
+.nav-btn:hover { transform: translateY(-2px); color: var(--text-primary-hover); }
 .nav-btn:active { transform: scale(.98); }
-.nav-ico { position: relative; z-index: 2; flex-shrink: 0; width: 48px; height: 48px; object-fit: contain; filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--black-stationary) 26%, transparent)); }
-.nav-title { position: relative; z-index: 2; display: block; font-size: 14.5px; font-weight: 600; line-height: 1.2; color: inherit; text-align: center; text-shadow: 0 2px 16px color-mix(in srgb, var(--black-stationary) 42%, transparent); white-space: nowrap; }
+.nav-ico { position: relative; z-index: 2; flex-shrink: 0; width: 48px; height: 48px; object-fit: contain; }
+.nav-title { position: relative; z-index: 2; display: block; font-size: 14.5px; font-weight: 600; line-height: 1.2; color: var(--text-primary); text-align: center; white-space: nowrap; }
 .nav.stuck {
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    var(--black-stationary) 0%,
-    var(--black-stationary) 72%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    180deg,
-    var(--black-stationary) 0%,
-    var(--black-stationary) 72%,
-    transparent 100%
-  );
+  background: var(--background-1);
+  border-bottom: 1px solid var(--border-1);
 }
 .nav.stuck .nav-btn.on {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--white-stationary) 18%, transparent),
-      color-mix(in srgb, var(--white-stationary) 6%, transparent) 36%,
-      color-mix(in srgb, var(--white-stationary) 10%, transparent)
-    ),
-    color-mix(in srgb, var(--black-stationary) 18%, transparent);
-  color: var(--white-stationary);
-  box-shadow:
-    0 22px 52px color-mix(in srgb, var(--black-stationary) 32%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--white-stationary) 28%, transparent);
-  -webkit-backdrop-filter: blur(22px) saturate(155%);
-  backdrop-filter: blur(22px) saturate(155%);
+  background: var(--background-fronted);
+  color: var(--text-primary);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 .nav.stuck .nav-btn.on::after,
 .nav.stuck .nav-btn.on::before {
-  opacity: 1;
-}
-.nav.stuck .nav-btn.on::after {
-  background: color-mix(in srgb, var(--black-stationary) 12%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
-  backdrop-filter: blur(28px) saturate(170%);
+  opacity: 0;
 }
 .nav.stuck .nav-btn.on:hover {
-  box-shadow:
-    0 24px 56px color-mix(in srgb, var(--black-stationary) 34%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--white-stationary) 30%, transparent);
+  background: var(--background-fronted);
+  box-shadow: none;
 }
 .nav.stuck .nav-btn {
   flex-direction: row;
@@ -207,11 +183,11 @@ button { font: inherit; }
 .sec-intro b, .pane-desc b, .note b { color: var(--ink); font-weight: 500; }
 
 /* 二级分段切换：segment bar */
-.sec-tabs { display: flex; align-items: center; justify-content: center; gap: 3px; width: fit-content; max-width: 100%; margin: 0 auto 24px; padding: var(--segment-control-padding); border: 1px solid var(--border-1); border-radius: var(--radius-xl); background: var(--transparency-block); }
+.sec-tabs { display: flex; align-items: center; justify-content: center; gap: 3px; width: fit-content; max-width: 100%; margin: 0 auto 24px; padding: var(--segment-control-padding); border: 1px solid var(--border-1); border-radius: 999px; background: var(--transparency-block); }
 .sec-tab {
   min-height: var(--segment-option-height); display: inline-flex; align-items: center; justify-content: center;
   border: 0;
-  border-radius: var(--radius-lg);
+  border-radius: 999px;
   background: transparent;
   color: var(--ink2);
   cursor: pointer; padding: 7px var(--segment-option-padding-x); text-align: center;
@@ -222,7 +198,7 @@ button { font: inherit; }
 .sec-tab.on {
   background: var(--tutti-purple);
   color: var(--white-stationary);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--tutti-purple) 32%, transparent);
+  box-shadow: none;
 }
 .sec-tab span { margin-right: 7px; font-size: 16px; }
 .sec-tab b { color: inherit; font-size: 14px; font-weight: 500; }
@@ -245,11 +221,11 @@ button { font: inherit; }
   padding: 5px 9px; border: 1px solid var(--border-1); border-radius: var(--radius-md); white-space: nowrap; z-index: var(--z-tooltip);
   box-shadow: var(--shadow-soft);
 }
-.tabs-segment .tab-bar { align-items: center; gap: 3px; padding: var(--segment-control-padding); border: 1px solid var(--border-1); border-radius: var(--radius-xl); background: var(--transparency-block); }
-.tabs-segment .tab-btn { min-height: var(--segment-option-height); display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); padding: 7px var(--segment-option-padding-x); color: var(--ink2); }
+.tabs-segment .tab-bar { align-items: center; gap: 3px; padding: var(--segment-control-padding); border: 1px solid var(--border-1); border-radius: 999px; background: var(--transparency-block); }
+.tabs-segment .tab-btn { min-height: var(--segment-option-height); display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; padding: 7px var(--segment-option-padding-x); color: var(--ink2); }
 .tabs-segment .tab-btn:not(.soon)::after { display: none; }
 .tabs-segment .tab-btn:hover:not(.on):not(.soon) { color: var(--ink); }
-.tabs-segment .tab-btn.on { background: var(--tutti-purple); color: var(--white-stationary); box-shadow: 0 6px 18px color-mix(in srgb, var(--tutti-purple) 32%, transparent); }
+.tabs-segment .tab-btn.on { background: var(--tutti-purple); color: var(--white-stationary); box-shadow: none; }
 .tabs-segment .tab-btn.soon::after { display: none; }
 .tabs-segment .tab-btn.soon:hover::after {
   display: block;
@@ -378,10 +354,15 @@ button { font: inherit; }
   }
 }
 
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     color-scheme: dark;
     --background: oklch(0.192 0.008 255);
+    --background-1: oklch(0.192 0.008 255);
     --background-panel: rgb(42 42 43);
     --background-fronted: rgb(51 51 51 / 1);
     --background-soft: oklch(0.224 0.01 255);
@@ -419,7 +400,11 @@ button { font: inherit; }
     --transparency-active: rgb(255 255 255 / 16%);
     --backdrop: rgb(0 0 0 / 60%);
   }
-  .nav { background: transparent; }
-  .btn.ghost { background: var(--transparency-block); }
-  .info-dot { background: var(--transparency-block); color: var(--text-tertiary); }
+  :root:not([data-theme="light"]) .nav { background: transparent; }
+  :root:not([data-theme="light"]) .nav.stuck {
+    background: var(--background-1);
+    border-bottom: 1px solid var(--border-1);
+  }
+  :root:not([data-theme="light"]) .btn.ghost { background: var(--transparency-block); }
+  :root:not([data-theme="light"]) .info-dot { background: var(--transparency-block); color: var(--text-tertiary); }
 }
