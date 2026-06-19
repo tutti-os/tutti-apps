@@ -14,6 +14,7 @@ const requiredFiles = [
   "public/assets/apps-agent.mp4",
   "public/assets/apps-example.webp",
   "public/assets/apps-overview.webp",
+  "public/assets/apps-output-reference.png",
   "public/assets/at-app.webp",
   "public/assets/at-chat.webp",
   "public/assets/at-file.webp",
