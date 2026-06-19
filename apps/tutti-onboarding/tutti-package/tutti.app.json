@@ -3,7 +3,7 @@
   "appId": "tutti-onboarding",
   "version": "0.1.0",
   "name": "Getting Started",
-  "description": "A guided introduction to setting up agents, collaboration, tasks, and apps in Tutti.",
+  "description": "Learn Tutti and Agent collaboration",
   "icon": {
     "type": "asset",
     "src": "icon.png"

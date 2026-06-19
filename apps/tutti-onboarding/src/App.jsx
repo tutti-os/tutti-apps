@@ -558,7 +558,7 @@ export default function App() {
           <div className="sec-panes">
             <div className="sec-pane on">
               <Tabs
-                initialActive={3}
+                initialActive={0}
                 items={atTabs}
                 onOpen={openLightbox}
                 variant="segment"
