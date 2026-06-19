@@ -264,7 +264,7 @@ function VideoPane() {
   );
 }
 
-function AgentAppTabs() {
+function AgentAppTabs({ onOpen }) {
   const { t } = useTranslation();
   const [active, setActive] = useState(0);
   const items = [
@@ -272,10 +272,11 @@ function AgentAppTabs() {
     {
       labelKey: "t_agt2",
       pane: (
-        <div className="shot shot-empty">
-          <span>🖼</span>
-          <span>{t("t_agd2")}</span>
-        </div>
+        <ShotImage
+          altKey="t_agd2"
+          onOpen={onOpen}
+          src="/assets/apps-output-reference.png"
+        />
       ),
     },
   ];
@@ -644,7 +645,7 @@ export default function App() {
               </div>
             </div>
             <div className={`sec-pane${section3Tab === 1 ? " on" : ""}`}>
-              <AgentAppTabs />
+              <AgentAppTabs onOpen={openLightbox} />
             </div>
           </div>
         </section>
