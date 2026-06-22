@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import i18n from "./i18n";
@@ -57,7 +57,7 @@ const appTabs = [
 
 const sectionIcons = {
   setup: "/assets/icon-electric-plug.webp",
-  collaboration: "/assets/icon-satellite-antenna.webp",
+  collaboration: "/assets/icon-at.png",
   task: "/assets/icon-clipboard.webp",
   control: "/assets/icon-joystick.webp",
   apps: "/assets/icon-toolbox.webp",
@@ -151,27 +151,82 @@ function ShotImage({ altKey, onOpen, src }) {
   );
 }
 
+function SegmentBar({ active, items, onChange }) {
+  const tabBarRef = useRef(null);
+  const tabRefs = useRef([]);
+
+  const updateSlider = () => {
+    const tabBar = tabBarRef.current;
+    const activeTab = tabRefs.current[active];
+    if (!tabBar || !activeTab) return;
+
+    tabBar.style.setProperty("--segment-slider-x", `${activeTab.offsetLeft}px`);
+    tabBar.style.setProperty(
+      "--segment-slider-width",
+      `${activeTab.offsetWidth}px`,
+    );
+  };
+
+  useLayoutEffect(() => {
+    updateSlider();
+  });
+
+  useEffect(() => {
+    window.addEventListener("resize", updateSlider);
+    return () => {
+      window.removeEventListener("resize", updateSlider);
+    };
+  }, [active]);
+
+  return (
+    <div className="segment-bar" ref={tabBarRef}>
+      {items.map((item, index) => {
+        const isActive = active === index && !item.soon;
+
+        return (
+          <button
+            aria-disabled={item.soon ? "true" : undefined}
+            className={`segment-btn${isActive ? " on" : ""}${item.soon ? " soon" : ""}`}
+            data-soon={item.soonLabel}
+            key={`${item.label}-${index}`}
+            ref={(element) => {
+              tabRefs.current[index] = element;
+            }}
+            type="button"
+            onClick={() => {
+              if (!item.soon) onChange(index);
+            }}
+          >
+            {item.icon ? <span>{item.icon}</span> : null}
+            <b>{item.label}</b>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function Tabs({ initialActive = 0, items, onOpen, variant = "underline" }) {
   const { t } = useTranslation();
   const [active, setActive] = useState(initialActive);
 
   return (
     <div className={`tabs tabs-${variant}`} data-tabs>
-      <div className="tab-bar">
-        {items.map((item, index) => {
-          const isActive = active === index && !item.soon;
-          const className = [
-            "tab-btn",
-            isActive ? "on" : "",
-            item.soon ? "soon" : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
-
-          return (
+      {variant === "segment" ? (
+        <SegmentBar
+          active={active}
+          items={items.map((item) => ({
+            label: item.label || t(item.labelKey),
+            soon: item.soon,
+            soonLabel: item.soon ? t("t_soon") : undefined,
+          }))}
+          onChange={setActive}
+        />
+      ) : (
+        <div className="tab-bar">
+          {items.map((item, index) => (
             <button
-              aria-disabled={item.soon ? "true" : undefined}
-              className={className}
+              className={`tab-btn${active === index ? " on" : ""}${item.soon ? " soon" : ""}`}
               data-soon={item.soon ? t("t_soon") : undefined}
               data-t={item.soon ? undefined : index}
               key={`${item.label || item.labelKey}-${index}`}
@@ -182,9 +237,9 @@ function Tabs({ initialActive = 0, items, onOpen, variant = "underline" }) {
             >
               <span>{item.label || t(item.labelKey)}</span>
             </button>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
       {items
         .filter((item) => !item.soon)
         .map((item, index) => (
@@ -203,20 +258,14 @@ function SectionTabs({ active, items, onChange }) {
   const { t } = useTranslation();
 
   return (
-    <div className="sec-tabs">
-      {items.map((item, index) => (
-        <button
-          className={`sec-tab${active === index ? " on" : ""}`}
-          data-st={index}
-          key={item.labelKey}
-          type="button"
-          onClick={() => onChange(index)}
-        >
-          {item.icon ? <span>{item.icon}</span> : null}
-          <b>{t(item.labelKey)}</b>
-        </button>
-      ))}
-    </div>
+    <SegmentBar
+      active={active}
+      items={items.map((item) => ({
+        icon: item.icon,
+        label: t(item.labelKey),
+      }))}
+      onChange={onChange}
+    />
   );
 }
 
@@ -361,8 +410,7 @@ export default function App() {
   const [lightbox, setLightbox] = useState(null);
   const [isNavStuck, setIsNavStuck] = useState(false);
   const navRef = useRef(null);
-  const navTopRef = useRef(0);
-  const navHeightRef = useRef(0);
+  const navSentinelRef = useRef(null);
   const isNavStuckRef = useRef(false);
 
   useEffect(() => {
@@ -388,58 +436,80 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const sections = document.querySelectorAll(".sec");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        }
-      },
-      { threshold: 0.3, rootMargin: "-96px 0px -40% 0px" },
-    );
+    let frame = 0;
 
-    for (const section of sections) {
-      observer.observe(section);
-    }
-    return () => observer.disconnect();
+    const updateActiveSection = () => {
+      frame = 0;
+      const sections = [...document.querySelectorAll(".sec")];
+      if (!sections.length) return;
+
+      const navBottom = navRef.current?.getBoundingClientRect().bottom || 0;
+      const sectionOffset =
+        Number.parseFloat(getComputedStyle(sections[0]).scrollMarginTop) || 0;
+      const activationLine = Math.max(navBottom + 8, sectionOffset + 1);
+      let nextActive = sections[0].id;
+
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= activationLine) {
+          nextActive = section.id;
+        } else {
+          break;
+        }
+      }
+
+      const pageBottom = window.scrollY + window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      if (pageBottom >= documentHeight - 2) {
+        nextActive = sections.at(-1).id;
+      }
+
+      setActiveSection((current) =>
+        current === nextActive ? current : nextActive,
+      );
+    };
+
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateActiveSection);
+    };
+
+    scheduleUpdate();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+    };
   }, []);
 
   useEffect(() => {
-    const measureNavBounds = () => {
-      const nav = navRef.current;
-      if (!nav) return;
-      navTopRef.current = nav.offsetTop;
-      if (!isNavStuckRef.current) {
-        navHeightRef.current = nav.offsetHeight;
-      }
-    };
+    let frame = 0;
 
     const updateNavStuck = () => {
-      const nav = navRef.current;
-      const navBottom = navTopRef.current + navHeightRef.current;
-      const currentHeight = nav?.offsetHeight || navHeightRef.current;
-      const compactDelta = Math.max(0, navHeightRef.current - currentHeight);
-      const shouldStick = isNavStuckRef.current
-        ? window.scrollY >= navBottom - compactDelta
-        : window.scrollY >= navBottom;
+      frame = 0;
+      const sentinel = navSentinelRef.current;
+      if (!sentinel) return;
+
+      const shouldStick = sentinel.getBoundingClientRect().top <= 0;
 
       if (shouldStick === isNavStuckRef.current) return;
       isNavStuckRef.current = shouldStick;
       setIsNavStuck(shouldStick);
     };
 
-    const handleResize = () => {
-      measureNavBounds();
-      updateNavStuck();
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateNavStuck);
     };
 
-    measureNavBounds();
-    updateNavStuck();
-    window.addEventListener("scroll", updateNavStuck, { passive: true });
-    window.addEventListener("resize", handleResize);
+    scheduleUpdate();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
     return () => {
-      window.removeEventListener("scroll", updateNavStuck);
-      window.removeEventListener("resize", handleResize);
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
     };
   }, []);
 
@@ -486,6 +556,7 @@ export default function App() {
           <HtmlText className="tag" i18nKey="t_tag" />
         </header>
 
+        <div aria-hidden="true" className="nav-sentinel" ref={navSentinelRef} />
         <nav
           aria-label={t("t_nav_label")}
           className={`nav${isNavStuck ? " stuck" : ""}`}
@@ -499,6 +570,7 @@ export default function App() {
               style={{ "--tone": item.tone }}
               type="button"
               onClick={() => {
+                setActiveSection(item.id);
                 document
                   .getElementById(item.id)
                   ?.scrollIntoView({ behavior: "smooth" });
