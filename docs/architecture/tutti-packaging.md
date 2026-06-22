@@ -13,7 +13,7 @@ apps/<app-id>/
     AGENTS.md
     bootstrap.sh
     server.mjs
-    icon.png
+    icon.<ext>
 ```
 
 Required files:
@@ -25,7 +25,8 @@ Required files:
 - `bootstrap.sh`: executable entrypoint called by Tutti.
 - `server.mjs`: optional package wrapper for frameworks that build request
   handlers instead of self-listening servers.
-- `icon.png`: App Center icon.
+- Manifest icon asset: App Center icon referenced by `tutti.app.json`
+  `icon.src`, commonly `icon.png`, `icon.webp`, or `icon.svg`.
 
 Optional files:
 
@@ -56,14 +57,14 @@ apps/<app-id>/
     tutti.app.json
     AGENTS.md
     bootstrap.sh
-    icon.png
+    icon.<ext>
 
 build/tutti-app/<app-id>/package/
   tutti.app.json
   AGENTS.md
   bootstrap.sh
   server.mjs
-  icon.png
+  icon.<ext>
   dist/
   server/
     server.js
