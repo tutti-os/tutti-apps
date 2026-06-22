@@ -19,29 +19,6 @@ const atTabs = [
   { labelKey: "t_at4", image: "/assets/at-app.webp", altKey: "t_atd4" },
 ];
 
-const goalTabs = [
-  { labelKey: "t_gt1", image: "/assets/goal-set.webp", altKey: "t_gd1" },
-  {
-    labelKey: "t_gt2",
-    image: "/assets/goal-breakdown.webp",
-    altKey: "t_gd2",
-  },
-  { labelKey: "t_gt3", image: "/assets/goal-run.webp", altKey: "t_gd3" },
-];
-
-const controlTabs = [
-  {
-    labelKey: "t_ct1",
-    image: "/assets/control-waiting.webp",
-    altKey: "t_cd1",
-  },
-  {
-    labelKey: "t_ct2",
-    image: "/assets/control-overview.webp",
-    altKey: "t_cd2",
-  },
-];
-
 const appTabs = [
   {
     labelKey: "t_apt1",
@@ -53,14 +30,36 @@ const appTabs = [
     image: "/assets/apps-example.webp",
     altKey: "t_apd2",
   },
+  {
+    labelKey: "t_apt3",
+    image: "/assets/apps-example-prototype.webp",
+    altKey: "t_apd3",
+  },
+  {
+    labelKey: "t_apt4",
+    image: "/assets/apps-example-docs.webp",
+    altKey: "t_apd4",
+  },
+];
+
+const taskControlTabs = [
+  {
+    labelKey: "t_tc_tab1",
+    image: "/assets/goal-breakdown.webp",
+    altKey: "t_tc_img1",
+  },
+  {
+    labelKey: "t_tc_tab2",
+    image: "/assets/control-overview.webp",
+    altKey: "t_tc_img2",
+  },
 ];
 
 const sectionIcons = {
   setup: "/assets/icon-electric-plug.webp",
   collaboration: "/assets/icon-at.png",
-  task: "/assets/icon-clipboard.webp",
-  control: "/assets/icon-joystick.webp",
   apps: "/assets/icon-toolbox.webp",
+  taskControl: "/assets/icon-clipboard.webp",
 };
 
 function HtmlText({ as: Tag = "p", className, i18nKey }) {
@@ -407,11 +406,25 @@ export default function App() {
   const locale = useAppLocale();
   const [activeSection, setActiveSection] = useState("s1");
   const [section3Tab, setSection3Tab] = useState(0);
+  const [agentBound, setAgentBound] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const [isNavStuck, setIsNavStuck] = useState(false);
   const navRef = useRef(null);
   const navSentinelRef = useRef(null);
   const isNavStuckRef = useRef(false);
+
+  useEffect(() => {
+    const app = window.tuttiExternal?.app;
+    if (!app) return;
+    const updateBound = (ctx) => {
+      if (ctx && typeof ctx.agentBound === "boolean") {
+        setAgentBound(ctx.agentBound);
+      }
+    };
+    void app.getContext().then(updateBound).catch(() => {});
+    const unsubscribe = app.subscribe(updateBound);
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     void i18n.changeLanguage(locale);
@@ -530,21 +543,15 @@ export default function App() {
     },
     {
       id: "s3",
-      icon: sectionIcons.task,
+      icon: sectionIcons.apps,
       labelKey: "t_n3",
-      tone: "var(--accent-claude)",
+      tone: "var(--tutti-purple)",
     },
     {
       id: "s4",
-      icon: sectionIcons.control,
+      icon: sectionIcons.taskControl,
       labelKey: "t_n4",
       tone: "var(--accent-claude)",
-    },
-    {
-      id: "s5",
-      icon: sectionIcons.apps,
-      labelKey: "t_n5",
-      tone: "var(--tutti-purple)",
     },
   ];
 
@@ -582,6 +589,7 @@ export default function App() {
           ))}
         </nav>
 
+        {/* §1 登录 Agent */}
         <section
           className="sec"
           id="s1"
@@ -614,6 +622,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* §2 Big @ 协作 */}
         <section
           className="sec"
           id="s2"
@@ -639,53 +648,10 @@ export default function App() {
           </div>
         </section>
 
+        {/* §3 内置应用 (moved up) */}
         <section
           className="sec"
           id="s3"
-          style={{
-            "--tone": "var(--accent-claude)",
-            "--tone-fg": "var(--white-stationary)",
-          }}
-        >
-          <div className="sec-h">
-            <IconImage className="sec-ico" src={sectionIcons.task} />
-            <h2>{t("t_st2")}</h2>
-          </div>
-          <HtmlText className="sec-intro" i18nKey="t_td1" />
-          <article className="task">
-            <Tabs items={goalTabs} onOpen={openLightbox} variant="segment" />
-            <div className="btns">
-              <ActionButton action="issue-manager" className="btn ghost">
-                {t("t_bg1")}
-              </ActionButton>
-            </div>
-          </article>
-        </section>
-
-        <section
-          className="sec"
-          id="s4"
-          style={{
-            "--tone": "var(--accent-claude)",
-            "--tone-fg": "var(--white-stationary)",
-          }}
-        >
-          <div className="sec-h">
-            <IconImage className="sec-ico" src={sectionIcons.control} />
-            <h2>{t("t_tl2")}</h2>
-          </div>
-          <HtmlText className="sec-intro" i18nKey="t_td2" />
-          <Tabs items={controlTabs} onOpen={openLightbox} variant="segment" />
-          <div className="btns">
-            <ActionButton action="message-center" className="btn ghost">
-              {t("t_bg2")}
-            </ActionButton>
-          </div>
-        </section>
-
-        <section
-          className="sec"
-          id="s5"
           style={{
             "--tone": "var(--tutti-purple)",
             "--tone-fg": "var(--white-stationary)",
@@ -722,6 +688,31 @@ export default function App() {
           </div>
         </section>
 
+        {/* §4 任务与管控 (merged) */}
+        <section
+          className="sec"
+          id="s4"
+          style={{
+            "--tone": "var(--accent-claude)",
+            "--tone-fg": "var(--white-stationary)",
+          }}
+        >
+          <div className="sec-h">
+            <IconImage className="sec-ico" src={sectionIcons.taskControl} />
+            <h2>{t("t_h4")}</h2>
+          </div>
+          <HtmlText className="sec-intro" i18nKey="t_h4_desc" />
+          <Tabs items={taskControlTabs} onOpen={openLightbox} variant="segment" />
+          <div className="btns">
+            <ActionButton action="issue-manager" className="btn ghost">
+              {t("t_bg4a")}
+            </ActionButton>
+            <ActionButton action="message-center" className="btn ghost">
+              {t("t_bg4b")}
+            </ActionButton>
+          </div>
+        </section>
+
         <footer className="end">
           <IconImage
             alt="Tutti"
@@ -730,16 +721,19 @@ export default function App() {
           />
           <h2>{t("t_end")}</h2>
           <div className="btns center">
-            <ActionButton
-              action="agent-connect"
-              className="btn blue"
-              provider="codex"
-            >
-              {t("t_be1")}
-            </ActionButton>
-            <ActionButton action="agent-chat" className="btn ghost">
-              {t("t_be2")}
-            </ActionButton>
+            {agentBound ? (
+              <ActionButton action="agent-chat" className="btn blue">
+                {t("t_be2")}
+              </ActionButton>
+            ) : (
+              <ActionButton
+                action="agent-connect"
+                className="btn blue"
+                provider="codex"
+              >
+                {t("t_be1")}
+              </ActionButton>
+            )}
           </div>
         </footer>
       </main>
