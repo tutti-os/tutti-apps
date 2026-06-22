@@ -67,6 +67,8 @@
   --segment-control-padding: 2px;
   --segment-option-height: 36px;
   --segment-option-padding-x: 16px;
+  --nav-section-gap: 24px;
+  --nav-stuck-flow-compensation: 40px;
 
   --bg: var(--background-1);
   --tint: var(--background-panel);
@@ -174,7 +176,8 @@ button { font: inherit; }
 }
 
 .sec { position: relative; padding: 38px 0 42px; scroll-margin-top: 96px; }
-.nav + .sec { margin-top: 24px; padding-top: 24px; }
+.nav + .sec { margin-top: var(--nav-section-gap); padding-top: 24px; }
+.nav.stuck + .sec { margin-top: calc(var(--nav-section-gap) + var(--nav-stuck-flow-compensation)); }
 .nav + .sec::before,
 .sec + .sec::before,
 .end::before {
@@ -343,6 +346,7 @@ button { font: inherit; }
 .end h2 { font-size: clamp(19px, 4vw, 23px); font-weight: 550; letter-spacing: 0; margin-bottom: 22px; }
 
 @media (max-width: 400px) {
+  :root { --nav-stuck-flow-compensation: 8px; }
   .page { padding-left: 18px; padding-right: 18px; }
   .nav + .sec::before,
   .sec + .sec::before,
