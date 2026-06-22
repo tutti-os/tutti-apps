@@ -16,7 +16,7 @@
       "sourceDir": "apps/tutti-onboarding",
       "packageSourceDir": "apps/tutti-onboarding/tutti-package",
       "packageDir": "build/tutti-app/tutti-onboarding/package",
-      "iconPath": "build/tutti-app/tutti-onboarding/package/icon.png",
+      "iconPath": "build/tutti-app/tutti-onboarding/package/icon.webp",
       "packageCommand": "pnpm package:tutti --app tutti-onboarding"
     }
   },

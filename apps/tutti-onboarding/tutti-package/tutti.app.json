@@ -6,7 +6,7 @@
   "description": "Learn Tutti and Agent collaboration",
   "icon": {
     "type": "asset",
-    "src": "icon.png"
+    "src": "icon.webp"
   },
   "runtime": {
     "bootstrap": "bootstrap.sh",

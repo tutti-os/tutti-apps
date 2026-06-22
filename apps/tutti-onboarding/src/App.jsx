@@ -56,11 +56,11 @@ const appTabs = [
 ];
 
 const sectionIcons = {
-  setup: "/assets/icon-electric-plug.png",
-  collaboration: "/assets/icon-satellite-antenna.png",
-  task: "/assets/icon-clipboard.png",
-  control: "/assets/icon-joystick.png",
-  apps: "/assets/icon-toolbox.png",
+  setup: "/assets/icon-electric-plug.webp",
+  collaboration: "/assets/icon-satellite-antenna.webp",
+  task: "/assets/icon-clipboard.webp",
+  control: "/assets/icon-joystick.webp",
+  apps: "/assets/icon-toolbox.webp",
 };
 
 function HtmlText({ as: Tag = "p", className, i18nKey }) {
@@ -78,7 +78,7 @@ function HtmlText({ as: Tag = "p", className, i18nKey }) {
               alt=""
               aria-hidden="true"
               className="title-wave"
-              src="/assets/tone-light.png"
+              src="/assets/tone-light.webp"
             />
           ),
         }}
@@ -275,7 +275,7 @@ function AgentAppTabs({ onOpen }) {
         <ShotImage
           altKey="t_agd2"
           onOpen={onOpen}
-          src="/assets/apps-output-reference.png"
+          src="/assets/apps-output-reference.webp"
         />
       ),
     },
@@ -654,7 +654,7 @@ export default function App() {
           <IconImage
             alt="Tutti"
             className="end-logo"
-            src="/assets/logo1.png"
+            src="/assets/logo1.webp"
           />
           <h2>{t("t_end")}</h2>
           <div className="btns center">
