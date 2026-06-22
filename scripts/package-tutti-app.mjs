@@ -22,7 +22,6 @@ const REQUIRED_PACKAGE_FILES = [
   "tutti.app.json",
   "AGENTS.md",
   "bootstrap.sh",
-  "server.mjs",
 ];
 const CLI_SEGMENT_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const PNPM_FALLBACK_COMMANDS = [
@@ -281,6 +280,7 @@ function validateCliManifest(cliManifest) {
 }
 
 export async function validatePackageRoot(packageRoot) {
+  const manifest = await readJson(path.join(packageRoot, "tutti.app.json"));
   for (const relativePath of REQUIRED_PACKAGE_FILES) {
     const absolutePath = path.join(packageRoot, relativePath);
     try {
@@ -289,8 +289,14 @@ export async function validatePackageRoot(packageRoot) {
       throw new Error(`Missing required package file: ${relativePath}`);
     }
   }
+  if (manifest.runtime?.profile !== "standalone") {
+    try {
+      await access(path.join(packageRoot, "server.mjs"));
+    } catch {
+      throw new Error("Missing required package file: server.mjs");
+    }
+  }
 
-  const manifest = await readJson(path.join(packageRoot, "tutti.app.json"));
   if (manifest.schemaVersion !== "tutti.app.manifest.v1") {
     throw new Error(
       "tutti.app.json must use schemaVersion tutti.app.manifest.v1.",
@@ -480,6 +486,62 @@ async function bundleServer({ appConfig, appSourceDir, packageRoot }) {
   ]);
 }
 
+function standaloneTargets(appConfig) {
+  return appConfig.standaloneTargets ?? ["darwin-arm64", "darwin-amd64"];
+}
+
+function parseStandaloneTarget(target) {
+  const [goos, arch] = target.split("-");
+  if (!goos || !arch) {
+    throw new Error(`Invalid standalone target: ${target}`);
+  }
+  return {
+    goarch: arch === "amd64" ? "amd64" : arch,
+    goos,
+  };
+}
+
+async function buildStandaloneServer({
+  appConfig,
+  packageRoot,
+  packageSourceDir,
+}) {
+  if (appConfig.runtimeProfile !== "standalone") {
+    return;
+  }
+  const sourcePath = path.join(packageSourceDir, "server.go");
+  await access(sourcePath);
+  for (const target of standaloneTargets(appConfig)) {
+    const { goarch, goos } = parseStandaloneTarget(target);
+    const targetDir = path.join(packageRoot, "bin", target);
+    await mkdir(targetDir, { recursive: true });
+    const binaryName =
+      goos === "windows"
+        ? "tutti-onboarding-server.exe"
+        : "tutti-onboarding-server";
+    await run(
+      "go",
+      [
+        "build",
+        "-trimpath",
+        "-ldflags",
+        "-s -w",
+        "-o",
+        path.join(targetDir, binaryName),
+        sourcePath,
+      ],
+      {
+        env: {
+          ...process.env,
+          CGO_ENABLED: "0",
+          GOARCH: goarch,
+          GOOS: goos,
+        },
+      },
+    );
+  }
+}
+
 function isStaticPackage(appConfig) {
   return appConfig.packageKind === "static";
 }
@@ -506,7 +568,7 @@ async function writePackageFiles({ appConfig, manifest }) {
     path.join(packageRoot, "bootstrap.sh"),
   );
   await chmod(path.join(packageRoot, "bootstrap.sh"), 0o755);
-  await cp(
+  await copyIfExists(
     path.join(packageSourceDir, "server.mjs"),
     path.join(packageRoot, "server.mjs"),
   );
@@ -521,6 +583,7 @@ async function writePackageFiles({ appConfig, manifest }) {
   if (!isStaticPackage(appConfig)) {
     await bundleServer({ appConfig, appSourceDir, packageRoot });
   }
+  await buildStandaloneServer({ appConfig, packageRoot, packageSourceDir });
   await writeRuntimePackageJson({ packageRoot });
 
   await copyIfExists(
