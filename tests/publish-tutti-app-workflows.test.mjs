@@ -37,7 +37,6 @@ test("production Tutti app workflow publishes configured apps from a release bum
   assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
     "all",
     "daily-tech-radar",
-    "tutti-onboarding",
   ]);
   assert.equal(on.workflow_dispatch.inputs.release_bump.type, "choice");
   assert.equal(on.workflow_dispatch.inputs.release_bump.default, "patch");
@@ -103,7 +102,6 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
   assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
     "all",
     "daily-tech-radar",
-    "tutti-onboarding",
   ]);
   assert.equal(on.workflow_dispatch.inputs.publish_catalog.type, "boolean");
   assert.equal(on.workflow_dispatch.inputs.publish_catalog.default, false);

@@ -120,7 +120,6 @@ tutti --json radar item --id github:123456 --locale en-US
 ```txt
 apps/
   daily-tech-radar/      TanStack Start 应用与 Tutti 包文件
-  tutti-onboarding/      静态入门导览与 Tutti 包文件
 packages/                多个应用真实复用时再放共享包
 docs/                    架构说明和协作约定
 scripts/                 仓库级打包与校验脚本
@@ -191,7 +190,6 @@ pnpm package:tutti --app daily-tech-radar
 | 应用 | Package | 路径 |
 | --- | --- | --- |
 | Daily Product Radar | `@tutti-apps/daily-tech-radar` | `apps/daily-tech-radar` |
-| Tutti Onboarding | `@tutti-apps/tutti-onboarding` | `apps/tutti-onboarding` |
 
 ## License
 

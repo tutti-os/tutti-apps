@@ -9,27 +9,16 @@
       "packageDir": "build/tutti-app/daily-tech-radar/package",
       "iconPath": "build/tutti-app/daily-tech-radar/package/icon.png",
       "packageCommand": "pnpm package:tutti --app daily-tech-radar"
-    },
-    "tutti-onboarding": {
-      "packageName": "@tutti-apps/tutti-onboarding",
-      "packageKind": "static",
-      "runtimeProfile": "standalone",
-      "standaloneTargets": ["darwin-arm64", "darwin-amd64"],
-      "sourceDir": "apps/tutti-onboarding",
-      "packageSourceDir": "apps/tutti-onboarding/tutti-package",
-      "packageDir": "build/tutti-app/tutti-onboarding/package",
-      "iconPath": "build/tutti-app/tutti-onboarding/package/icon.webp",
-      "packageCommand": "pnpm package:tutti --app tutti-onboarding"
     }
   },
   "environments": {
     "production": {
       "defaultAppId": "daily-tech-radar",
-      "appIds": ["daily-tech-radar", "tutti-onboarding"]
+      "appIds": ["daily-tech-radar"]
     },
     "staging": {
       "defaultAppId": "daily-tech-radar",
-      "appIds": ["daily-tech-radar", "tutti-onboarding"]
+      "appIds": ["daily-tech-radar"]
     }
   }
 }
