@@ -9,7 +9,7 @@ on:
       app_id:
         description: Tutti app id to publish.
         required: false
-        default: daily-tech-radar
+        default: all
         type: choice
         options:
           - all

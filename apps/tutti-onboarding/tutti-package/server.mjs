@@ -63,6 +63,20 @@ const server = createServer(async (request, response) => {
     return;
   }
 
+  if (request.method === "POST" && url.pathname === "/tutti/cli/status") {
+    sendJson(response, 200, {
+      kind: "json",
+      value: {
+        ok: true,
+        data: {
+          appId: "tutti-onboarding",
+          status: "ready",
+        },
+      },
+    });
+    return;
+  }
+
   const staticPath = await resolveStaticPath(url.pathname);
   if (!staticPath) {
     sendJson(response, 404, { error: "Not Found" });

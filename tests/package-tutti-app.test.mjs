@@ -282,6 +282,6 @@ test("packageTuttiApp creates a valid static tutti-onboarding package", async ()
     cliManifest.commands.map((command) => command.handler.path),
     ["/tutti/cli/status"],
   );
-  assert.match(indexHtml, /Tutti Onboarding/);
+  assert.match(indexHtml, /Tutti .* Getting Started/);
   assert.equal(path.basename(zipPath), "tutti-onboarding-0.1.0.zip");
 });

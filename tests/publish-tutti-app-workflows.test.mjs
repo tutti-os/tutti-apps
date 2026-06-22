@@ -32,11 +32,12 @@ test("production Tutti app workflow publishes configured apps from a release bum
   assert.equal(workflow.name, "Publish Tutti App Production");
   assert.equal(workflow.permissions.contents, "write");
   assert.equal(on.push, undefined);
-  assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
+  assert.equal(on.workflow_dispatch.inputs.app_id.default, "all");
   assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
   assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
     "all",
     "daily-tech-radar",
+    "tutti-onboarding",
   ]);
   assert.equal(on.workflow_dispatch.inputs.release_bump.type, "choice");
   assert.equal(on.workflow_dispatch.inputs.release_bump.default, "patch");
@@ -96,12 +97,13 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
 
   assert.equal(workflow.name, "Publish Tutti App Staging");
   assert.equal(workflow.permissions.contents, "read");
-  assert.equal(on.push, undefined);
-  assert.equal(on.workflow_dispatch.inputs.app_id.default, "daily-tech-radar");
+  assert.deepEqual(on.push, { branches: ["main"] });
+  assert.equal(on.workflow_dispatch.inputs.app_id.default, "all");
   assert.equal(on.workflow_dispatch.inputs.app_id.type, "choice");
   assert.deepEqual(on.workflow_dispatch.inputs.app_id.options, [
     "all",
     "daily-tech-radar",
+    "tutti-onboarding",
   ]);
   assert.equal(on.workflow_dispatch.inputs.publish_catalog.type, "boolean");
   assert.equal(on.workflow_dispatch.inputs.publish_catalog.default, false);
@@ -130,8 +132,14 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
     publish.with.release_tag_prefix,
     "${{ matrix.target.release_tag_prefix }}",
   );
-  assert.equal(publish.with.publish_catalog, "${{ inputs.publish_catalog }}");
-  assert.equal(publish.with.catalog_only, "${{ inputs.catalog_only }}");
+  assert.equal(
+    publish.with.publish_catalog,
+    "${{ github.event_name == 'push' || inputs.publish_catalog }}",
+  );
+  assert.equal(
+    publish.with.catalog_only,
+    "${{ github.event_name == 'workflow_dispatch' && inputs.catalog_only }}",
+  );
   assert.equal(on.workflow_dispatch.inputs.release_version, undefined);
   assert.equal(publish.with.release_version, undefined);
   assert.match(source, /catalog_cloudfront_distribution_id/);
