@@ -409,9 +409,25 @@ export default function App() {
   const [section3Tab, setSection3Tab] = useState(0);
   const [lightbox, setLightbox] = useState(null);
   const [isNavStuck, setIsNavStuck] = useState(false);
+  const [agentBound, setAgentBound] = useState(false);
   const navRef = useRef(null);
   const navSentinelRef = useRef(null);
   const isNavStuckRef = useRef(false);
+
+  useEffect(() => {
+    const app = window.tuttiExternal?.app;
+    if (!app) return;
+
+    const updateBound = (ctx) => {
+      if (ctx && typeof ctx.agentBound === "boolean") {
+        setAgentBound(ctx.agentBound);
+      }
+    };
+
+    void app.getContext().then(updateBound).catch(() => {});
+    const unsubscribe = app.subscribe(updateBound);
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     void i18n.changeLanguage(locale);
@@ -730,16 +746,19 @@ export default function App() {
           />
           <h2>{t("t_end")}</h2>
           <div className="btns center">
-            <ActionButton
-              action="agent-connect"
-              className="btn blue"
-              provider="codex"
-            >
-              {t("t_be1")}
-            </ActionButton>
-            <ActionButton action="agent-chat" className="btn ghost">
-              {t("t_be2")}
-            </ActionButton>
+            {agentBound ? (
+              <ActionButton action="agent-chat" className="btn blue">
+                {t("t_be2")}
+              </ActionButton>
+            ) : (
+              <ActionButton
+                action="agent-connect"
+                className="btn blue"
+                provider="codex"
+              >
+                {t("t_be1")}
+              </ActionButton>
+            )}
           </div>
         </footer>
       </main>
