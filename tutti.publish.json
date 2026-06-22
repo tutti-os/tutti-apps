@@ -13,6 +13,8 @@
     "tutti-onboarding": {
       "packageName": "@tutti-apps/tutti-onboarding",
       "packageKind": "static",
+      "runtimeProfile": "standalone",
+      "standaloneTargets": ["darwin-arm64", "darwin-amd64"],
       "sourceDir": "apps/tutti-onboarding",
       "packageSourceDir": "apps/tutti-onboarding/tutti-package",
       "packageDir": "build/tutti-app/tutti-onboarding/package",

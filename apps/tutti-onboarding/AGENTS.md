@@ -26,8 +26,9 @@ pnpm package:tutti --app tutti-onboarding
 
 ## Runtime Notes
 
-This app is a static Vite app. The package runtime uses
-`tutti-package/server.mjs` to serve built assets and `/healthz`.
+This app is a static Vite app. The package runtime builds
+`tutti-package/server.go` into small standalone binaries that serve built
+assets and `/healthz` without the managed Node runtime.
 
 The UI entrypoint is React:
 

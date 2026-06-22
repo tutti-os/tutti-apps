@@ -46,7 +46,7 @@ const requiredFiles = [
   "tutti-package/tutti.app.json",
   "tutti-package/bootstrap.sh",
   "tutti-package/icon.webp",
-  "tutti-package/server.mjs",
+  "tutti-package/server.go",
 ];
 
 await Promise.all(
@@ -83,7 +83,7 @@ const manifest = JSON.parse(
 if (
   manifest.name !== "Getting Started" ||
   manifest.runtime?.healthcheckPath !== "/healthz" ||
-  manifest.runtime?.profile !== "node-static"
+  manifest.runtime?.profile !== "standalone"
 ) {
   throw new Error(
     "tutti.app.json must match the built-in onboarding manifest.",
@@ -197,7 +197,7 @@ async function readTranslations() {
     ),
   };
 
-  if (!translations["zh-CN"].t_title.includes("开始使用 Tutti")) {
+  if (!translations["zh-CN"].t_title.includes("新手指引")) {
     throw new Error("zh-CN onboarding copy must be preserved.");
   }
 

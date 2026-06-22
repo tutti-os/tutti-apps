@@ -589,7 +589,7 @@ export default function App() {
           ))}
         </nav>
 
-        {/* §1 登录 Agent */}
+        {/* Section 1: Agent sign-in */}
         <section
           className="sec"
           id="s1"
@@ -622,7 +622,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* §2 Big @ 协作 */}
+        {/* Section 2: Big @ collaboration */}
         <section
           className="sec"
           id="s2"
@@ -648,7 +648,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* §3 内置应用 (moved up) */}
+        {/* Section 3: Built-in apps */}
         <section
           className="sec"
           id="s3"
@@ -688,7 +688,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* §4 任务与管控 (merged) */}
+        {/* Section 4: Tasks and control */}
         <section
           className="sec"
           id="s4"

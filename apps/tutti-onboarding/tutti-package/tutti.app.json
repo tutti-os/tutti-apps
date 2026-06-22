@@ -11,7 +11,7 @@
   "runtime": {
     "bootstrap": "bootstrap.sh",
     "healthcheckPath": "/healthz",
-    "profile": "node-static"
+    "profile": "standalone"
   },
   "cli": {
     "manifest": "tutti.cli.json"
