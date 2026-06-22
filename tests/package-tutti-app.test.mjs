@@ -270,6 +270,7 @@ test("packageTuttiApp creates a valid static tutti-onboarding package", async ()
   assert.equal(manifest.appId, "tutti-onboarding");
   assert.equal(manifest.version, "0.1.0");
   assert.equal(manifest.runtime.bootstrap, "bootstrap.sh");
+  assert.equal(manifest.runtime.profile, "node-static");
   assert.deepEqual(manifest.cli, {
     manifest: "tutti.cli.json",
   });
