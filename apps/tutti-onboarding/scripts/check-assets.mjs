@@ -82,7 +82,8 @@ const manifest = JSON.parse(
 );
 if (
   manifest.name !== "Getting Started" ||
-  manifest.runtime?.healthcheckPath !== "/healthz"
+  manifest.runtime?.healthcheckPath !== "/healthz" ||
+  manifest.runtime?.profile !== "node-static"
 ) {
   throw new Error(
     "tutti.app.json must match the built-in onboarding manifest.",

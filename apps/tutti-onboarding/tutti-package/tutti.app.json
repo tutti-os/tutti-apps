@@ -10,7 +10,8 @@
   },
   "runtime": {
     "bootstrap": "bootstrap.sh",
-    "healthcheckPath": "/healthz"
+    "healthcheckPath": "/healthz",
+    "profile": "node-static"
   },
   "cli": {
     "manifest": "tutti.cli.json"
