@@ -10,6 +10,7 @@
 /build
 **/dist
 **/.turbo
+**/.wrangler
 **/.output
 **/.next
 **/out
