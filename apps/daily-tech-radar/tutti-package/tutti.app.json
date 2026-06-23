@@ -3,7 +3,7 @@
   "appId": "daily-tech-radar",
   "version": "0.0.10",
   "name": "Daily Product Radar",
-  "description": "Product Hunt and GitHub daily discovery cards.",
+  "description": "Summarizes daily new products and popular open-source projects.",
   "icon": {
     "type": "asset",
     "src": "icon.png"

@@ -194,6 +194,10 @@ test("packageTuttiApp creates a valid daily-tech-radar package", async () => {
   assert.equal(manifest.appId, "daily-tech-radar");
   assert.equal(manifest.version, sourceManifest.version);
   assert.equal(manifest.name, "Daily Product Radar");
+  assert.equal(
+    manifest.description,
+    "Summarizes daily new products and popular open-source projects.",
+  );
   assert.deepEqual(manifest.cli, {
     manifest: "tutti.cli.json",
   });
@@ -212,6 +216,7 @@ test("packageTuttiApp creates a valid daily-tech-radar package", async () => {
     await readFile(path.join(packageRoot, "locales", "zh-CN", "manifest.json")),
   );
   assert.equal(manifestLocale.name, "每日产品雷达");
+  assert.equal(manifestLocale.description, "汇总每日新产品和热门开源项目。");
   assert.match(bootstrap, /TUTTI_APP_PACKAGE_DIR/);
   assert.match(bootstrap, /TUTTI_APP_NODE/);
   assert.match(bootstrap, /app_node="\$\{TUTTI_APP_NODE:-node\}"/);
