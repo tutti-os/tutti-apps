@@ -465,7 +465,16 @@ MVP 阶段建议只监听：
 - `pull_request`
 - `issue_comment`
 
-贡献量上升后再考虑增加：
+第一阶段只处理这些 action：
+
+- `opened`
+- `reopened`
+- `ready_for_review`
+- `created`
+
+也就是只推送外部贡献者新建或重新打开的 Issue/PR、Draft PR 变为可评审、以及 Issue/PR 普通评论。PR review 和逐行 review comment 第一阶段先不推送，避免活跃 PR 把群刷屏。
+
+贡献量上升后，如果维护者确实需要 review 动态，再考虑增加：
 
 - `pull_request_review`
 - `pull_request_review_comment`

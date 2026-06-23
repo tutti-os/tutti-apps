@@ -11,24 +11,19 @@ interface Env {
 type GitHubEvent =
   | "issues"
   | "pull_request"
-  | "issue_comment"
-  | "pull_request_review"
-  | "pull_request_review_comment";
+  | "issue_comment";
 
 const SUPPORTED_EVENTS = new Set<GitHubEvent>([
   "issues",
   "pull_request",
-  "issue_comment",
-  "pull_request_review",
-  "pull_request_review_comment"
+  "issue_comment"
 ]);
 
 const SUPPORTED_ACTIONS = new Set([
   "opened",
   "reopened",
   "ready_for_review",
-  "created",
-  "submitted"
+  "created"
 ]);
 
 export default {
@@ -164,32 +159,6 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
       title: issue.title,
       number: issue.number,
       htmlUrl: payload.comment?.html_url ?? issue.html_url,
-      summary: summarize(payload.comment?.body)
-    };
-  }
-
-  if (event === "pull_request_review") {
-    const pr = payload.pull_request;
-    return {
-      ...base,
-      authorAssociation: payload.review?.author_association,
-      subjectType: "PR 评审",
-      title: pr.title,
-      number: pr.number,
-      htmlUrl: payload.review?.html_url ?? pr.html_url,
-      summary: summarize(payload.review?.body || payload.review?.state)
-    };
-  }
-
-  if (event === "pull_request_review_comment") {
-    const pr = payload.pull_request;
-    return {
-      ...base,
-      authorAssociation: payload.comment?.author_association,
-      subjectType: "PR 评审评论",
-      title: pr.title,
-      number: pr.number,
-      htmlUrl: payload.comment?.html_url ?? pr.html_url,
       summary: summarize(payload.comment?.body)
     };
   }
@@ -360,11 +329,7 @@ function formatHeadlineAction(notification: Notification): string {
     return notification.subjectType === "PR 评论" ? "新 PR 评论" : "新 Issue 评论";
   }
 
-  if (notification.event === "pull_request_review") {
-    return "新 PR 评审";
-  }
-
-  return "新 PR 评审评论";
+  return "新评论";
 }
 
 function formatSentenceAction(notification: Notification): string {
@@ -383,11 +348,7 @@ function formatSentenceAction(notification: Notification): string {
     return notification.subjectType === "PR 评论" ? "评论了一个 PR" : "评论了一个 Issue";
   }
 
-  if (notification.event === "pull_request_review") {
-    return "提交了一个 PR 评审";
-  }
-
-  return "评论了一个 PR 评审";
+  return "新增了一条评论";
 }
 
 function buildActions(notification: Notification): any[] {
