@@ -131,7 +131,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: pr.author_association,
-      title: `[External PR] ${repo.full_name}#${pr.number} ${pr.title}`,
+      title: `[Github External PR] ${repo.full_name}#${pr.number} ${pr.title}`,
       number: pr.number,
       htmlUrl: pr.html_url,
       checksUrl: `${pr.html_url}/checks`,
@@ -144,7 +144,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: issue.author_association,
-      title: `[External Issue] ${repo.full_name}#${issue.number} ${issue.title}`,
+      title: `[Github External Issue] ${repo.full_name}#${issue.number} ${issue.title}`,
       number: issue.number,
       htmlUrl: issue.html_url,
       summary: summarize(issue.body)
@@ -157,7 +157,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.comment?.author_association,
-      title: `[External ${kind}] ${repo.full_name}#${issue.number} ${issue.title}`,
+      title: `[Github External ${kind}] ${repo.full_name}#${issue.number} ${issue.title}`,
       number: issue.number,
       htmlUrl: payload.comment?.html_url ?? issue.html_url,
       summary: summarize(payload.comment?.body)
@@ -169,7 +169,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.review?.author_association,
-      title: `[External Review] ${repo.full_name}#${pr.number} ${pr.title}`,
+      title: `[Github External Review] ${repo.full_name}#${pr.number} ${pr.title}`,
       number: pr.number,
       htmlUrl: payload.review?.html_url ?? pr.html_url,
       summary: summarize(payload.review?.body || payload.review?.state)
@@ -181,7 +181,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.comment?.author_association,
-      title: `[External Review Comment] ${repo.full_name}#${pr.number} ${pr.title}`,
+      title: `[Github External Review Comment] ${repo.full_name}#${pr.number} ${pr.title}`,
       number: pr.number,
       htmlUrl: payload.comment?.html_url ?? pr.html_url,
       summary: summarize(payload.comment?.body)
@@ -265,6 +265,7 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
           text: {
             tag: "lark_md",
             content: [
+              "**Source:** Github",
               `**Repository:** ${notification.repoFullName}`,
               `**Author:** ${notification.senderLogin}`,
               `**Action:** ${notification.action}`,
@@ -297,8 +298,18 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
     body: JSON.stringify(body)
   });
 
+  const responseText = await response.text();
   if (!response.ok) {
-    throw new Error(`Feishu webhook failed: ${response.status} ${await response.text()}`);
+    throw new Error(`Feishu webhook failed: ${response.status} ${responseText}`);
+  }
+
+  if (responseText) {
+    const result = JSON.parse(responseText);
+    const statusCode = result.StatusCode ?? result.code;
+    if (statusCode !== undefined && statusCode !== 0) {
+      const message = result.StatusMessage ?? result.msg ?? result.message ?? responseText;
+      throw new Error(`Feishu webhook rejected message: ${statusCode} ${message}`);
+    }
   }
 }
 
