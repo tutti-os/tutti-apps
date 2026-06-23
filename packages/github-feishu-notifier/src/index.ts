@@ -131,7 +131,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: pr.author_association,
-      title: `[Github External PR] ${repo.full_name}#${pr.number} ${pr.title}`,
+      title: `[Github 外部 PR] ${repo.full_name}#${pr.number} ${pr.title}`,
       number: pr.number,
       htmlUrl: pr.html_url,
       checksUrl: `${pr.html_url}/checks`,
@@ -144,7 +144,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: issue.author_association,
-      title: `[Github External Issue] ${repo.full_name}#${issue.number} ${issue.title}`,
+      title: `[Github 外部 Issue] ${repo.full_name}#${issue.number} ${issue.title}`,
       number: issue.number,
       htmlUrl: issue.html_url,
       summary: summarize(issue.body)
@@ -153,11 +153,11 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
 
   if (event === "issue_comment") {
     const issue = payload.issue;
-    const kind = issue.pull_request ? "PR comment" : "Issue comment";
+    const kind = issue.pull_request ? "PR 评论" : "Issue 评论";
     return {
       ...base,
       authorAssociation: payload.comment?.author_association,
-      title: `[Github External ${kind}] ${repo.full_name}#${issue.number} ${issue.title}`,
+      title: `[Github 外部${kind}] ${repo.full_name}#${issue.number} ${issue.title}`,
       number: issue.number,
       htmlUrl: payload.comment?.html_url ?? issue.html_url,
       summary: summarize(payload.comment?.body)
@@ -169,7 +169,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.review?.author_association,
-      title: `[Github External Review] ${repo.full_name}#${pr.number} ${pr.title}`,
+      title: `[Github 外部评审] ${repo.full_name}#${pr.number} ${pr.title}`,
       number: pr.number,
       htmlUrl: payload.review?.html_url ?? pr.html_url,
       summary: summarize(payload.review?.body || payload.review?.state)
@@ -181,7 +181,7 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.comment?.author_association,
-      title: `[Github External Review Comment] ${repo.full_name}#${pr.number} ${pr.title}`,
+      title: `[Github 外部评审评论] ${repo.full_name}#${pr.number} ${pr.title}`,
       number: pr.number,
       htmlUrl: payload.comment?.html_url ?? pr.html_url,
       summary: summarize(payload.comment?.body)
@@ -265,14 +265,14 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
           text: {
             tag: "lark_md",
             content: [
-              "**Source:** Github",
-              `**Repository:** ${notification.repoFullName}`,
-              `**Author:** ${notification.senderLogin}`,
-              `**Action:** ${notification.action}`,
+              "**来源:** Github",
+              `**仓库:** ${notification.repoFullName}`,
+              `**作者:** ${notification.senderLogin}`,
+              `**动作:** ${formatAction(notification.action)}`,
               notification.authorAssociation
-                ? `**Association:** ${notification.authorAssociation}`
+                ? `**身份:** ${formatAssociation(notification.authorAssociation)}`
                 : undefined,
-              notification.summary ? `**Summary:** ${escapeMd(notification.summary)}` : undefined
+              notification.summary ? `**摘要:** ${escapeMd(notification.summary)}` : undefined
             ]
               .filter(Boolean)
               .join("\n")
@@ -314,24 +314,48 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
 }
 
 function buildActions(notification: Notification): any[] {
-  const primaryText = notification.event === "issues" ? "Open Issue" : "Open PR";
+  const primaryText = notification.event === "issues" ? "打开 Issue" : "打开 PR";
   const actions = [
     button(primaryText, notification.htmlUrl, "primary"),
-    button("View Repository", notification.repoUrl)
+    button("查看仓库", notification.repoUrl)
   ];
 
   if (notification.checksUrl) {
-    actions.push(button("View Checks", notification.checksUrl));
+    actions.push(button("查看检查", notification.checksUrl));
   }
-  actions.push(button("View Author", notification.authorUrl));
+  actions.push(button("查看作者", notification.authorUrl));
   actions.push(
     button(
-      "Contribution Guide",
+      "贡献指南",
       "https://github.com/tutti-os/.github/blob/main/CONTRIBUTING.md"
     )
   );
 
   return actions;
+}
+
+function formatAction(action: string): string {
+  const actionMap: Record<string, string> = {
+    opened: "新建",
+    reopened: "重新打开",
+    ready_for_review: "标记为可评审",
+    created: "新增评论",
+    submitted: "提交评审"
+  };
+  return actionMap[action] ?? action;
+}
+
+function formatAssociation(association: string): string {
+  const associationMap: Record<string, string> = {
+    NONE: "外部贡献者",
+    FIRST_TIME_CONTRIBUTOR: "首次贡献者",
+    FIRST_TIMER: "首次参与者",
+    CONTRIBUTOR: "历史贡献者",
+    COLLABORATOR: "协作者",
+    MEMBER: "组织成员",
+    OWNER: "组织所有者"
+  };
+  return associationMap[association] ?? association;
 }
 
 function button(content: string, url: string, type = "default"): any {
