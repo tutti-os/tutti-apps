@@ -447,6 +447,8 @@ GitHub Organization Webhook
 
 这套方式适合多仓库，因为所有仓库事件从一个入口进入，后续新增仓库不容易漏通知，也方便统一过滤、统一格式和统一路由。
 
+当前通知服务运行时代码放在独立仓库 [`tutti-os/github-feishu-notifier`](https://github.com/tutti-os/github-feishu-notifier)。`tutti-apps` 只保留这份规划文档，不承载组织级通知服务代码。
+
 默认建议创建普通飞书群，而不是话题群。普通群对机器人、消息卡片、成员管理和通知习惯最稳。话题群可以作为后续选项：只有当团队明确希望每个 PR/Issue 形成独立讨论串，并且验证机器人卡片在话题群中的展示和通知体验满足要求后，再切换。
 
 第一阶段不建议直接做完整 GitHub App。GitHub App 更适合后续需要更强写权限、安装管理、复杂权限模型或飞书卡片交互时再引入。
@@ -544,6 +546,8 @@ Cloudflare Worker 或 AWS Lambda Function URL
         ↓
 GitHub API / 飞书群卡片
 ```
+
+当前实现使用 Cloudflare Workers，仓库为 `tutti-os/github-feishu-notifier`，Worker 名称为 `tutti-github-feishu-notifier`。
 
 需要保存的密钥：
 
