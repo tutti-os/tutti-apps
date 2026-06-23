@@ -1,0 +1,17 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "tutti-github-feishu-notifier",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "account_id": "aa9e54eb562f50b63275b5a30015383d",
+  "vars": {
+    "ORG_LOGIN": "tutti-os",
+    "ENVIRONMENT": "production"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "DELIVERIES",
+      "id": "2fec41ccbbef4b12841cbdf8dc09963e"
+    }
+  ]
+}
