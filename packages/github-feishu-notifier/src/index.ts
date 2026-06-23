@@ -256,16 +256,6 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
           }
         },
         {
-          tag: "hr"
-        },
-        {
-          tag: "div",
-          text: {
-            tag: "lark_md",
-            content: "**来源:** GitHub（Github）"
-          }
-        },
-        {
           tag: "action",
           actions: buildActions(notification)
         }
@@ -303,7 +293,7 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
 function buildCardTitle(notification: Notification): string {
   const repoName = notification.repoFullName.split("/").pop() ?? notification.repoFullName;
   const number = notification.number ? ` #${notification.number}` : "";
-  return `GitHub 外部贡献提醒：${repoName} ${formatHeadlineAction(notification)}${number}`;
+  return `Github 外部贡献提醒：${repoName} ${formatHeadlineAction(notification)}${number}`;
 }
 
 function buildCardIntro(notification: Notification): string {
@@ -362,12 +352,6 @@ function buildActions(notification: Notification): any[] {
     actions.push(button("查看检查", notification.checksUrl));
   }
   actions.push(button("查看作者", notification.authorUrl));
-  actions.push(
-    button(
-      "贡献指南",
-      "https://github.com/tutti-os/.github/blob/main/CONTRIBUTING.md"
-    )
-  );
 
   return actions;
 }
