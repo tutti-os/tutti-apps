@@ -101,6 +101,7 @@ interface Notification {
   senderLogin: string;
   senderType?: string;
   authorAssociation?: string;
+  subjectType: string;
   title: string;
   number?: number;
   htmlUrl: string;
@@ -131,7 +132,8 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: pr.author_association,
-      title: `[Github 外部 PR] ${repo.full_name}#${pr.number} ${pr.title}`,
+      subjectType: "PR",
+      title: pr.title,
       number: pr.number,
       htmlUrl: pr.html_url,
       checksUrl: `${pr.html_url}/checks`,
@@ -144,7 +146,8 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: issue.author_association,
-      title: `[Github 外部 Issue] ${repo.full_name}#${issue.number} ${issue.title}`,
+      subjectType: "Issue",
+      title: issue.title,
       number: issue.number,
       htmlUrl: issue.html_url,
       summary: summarize(issue.body)
@@ -157,7 +160,8 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.comment?.author_association,
-      title: `[Github 外部${kind}] ${repo.full_name}#${issue.number} ${issue.title}`,
+      subjectType: kind,
+      title: issue.title,
       number: issue.number,
       htmlUrl: payload.comment?.html_url ?? issue.html_url,
       summary: summarize(payload.comment?.body)
@@ -169,7 +173,8 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.review?.author_association,
-      title: `[Github 外部评审] ${repo.full_name}#${pr.number} ${pr.title}`,
+      subjectType: "PR 评审",
+      title: pr.title,
       number: pr.number,
       htmlUrl: payload.review?.html_url ?? pr.html_url,
       summary: summarize(payload.review?.body || payload.review?.state)
@@ -181,7 +186,8 @@ function extractNotification(event: GitHubEvent, payload: any): Notification | n
     return {
       ...base,
       authorAssociation: payload.comment?.author_association,
-      title: `[Github 外部评审评论] ${repo.full_name}#${pr.number} ${pr.title}`,
+      subjectType: "PR 评审评论",
+      title: pr.title,
       number: pr.number,
       htmlUrl: payload.comment?.html_url ?? pr.html_url,
       summary: summarize(payload.comment?.body)
@@ -256,7 +262,7 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
         template: notification.event === "pull_request" ? "blue" : "orange",
         title: {
           tag: "plain_text",
-          content: truncate(notification.title, 120)
+          content: truncate(buildCardTitle(notification), 120)
         }
       },
       elements: [
@@ -264,18 +270,30 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
           tag: "div",
           text: {
             tag: "lark_md",
+            content: buildCardIntro(notification)
+          }
+        },
+        {
+          tag: "div",
+          text: {
+            tag: "lark_md",
             content: [
-              "**来源:** Github",
               `**仓库:** ${notification.repoFullName}`,
-              `**作者:** ${notification.senderLogin}`,
-              `**动作:** ${formatAction(notification.action)}`,
-              notification.authorAssociation
-                ? `**身份:** ${formatAssociation(notification.authorAssociation)}`
-                : undefined,
+              `**标题:** ${escapeMd(notification.title)}`,
               notification.summary ? `**摘要:** ${escapeMd(notification.summary)}` : undefined
             ]
               .filter(Boolean)
               .join("\n")
+          }
+        },
+        {
+          tag: "hr"
+        },
+        {
+          tag: "div",
+          text: {
+            tag: "lark_md",
+            content: "**来源:** GitHub（Github）"
           }
         },
         {
@@ -313,8 +331,67 @@ async function sendFeishuCard(env: Env, notification: Notification): Promise<voi
   }
 }
 
+function buildCardTitle(notification: Notification): string {
+  const repoName = notification.repoFullName.split("/").pop() ?? notification.repoFullName;
+  const number = notification.number ? ` #${notification.number}` : "";
+  return `GitHub 外部贡献提醒：${repoName} ${formatHeadlineAction(notification)}${number}`;
+}
+
+function buildCardIntro(notification: Notification): string {
+  const contributor = notification.authorAssociation
+    ? formatAssociation(notification.authorAssociation)
+    : "外部贡献者";
+  return `${contributor} ${notification.senderLogin} ${formatSentenceAction(notification)}。`;
+}
+
+function formatHeadlineAction(notification: Notification): string {
+  if (notification.event === "issues") {
+    return notification.action === "reopened" ? "重新打开 Issue" : "新 Issue";
+  }
+
+  if (notification.event === "pull_request") {
+    if (notification.action === "ready_for_review") {
+      return "PR 可评审";
+    }
+    return notification.action === "reopened" ? "重新打开 PR" : "新 PR";
+  }
+
+  if (notification.event === "issue_comment") {
+    return notification.subjectType === "PR 评论" ? "新 PR 评论" : "新 Issue 评论";
+  }
+
+  if (notification.event === "pull_request_review") {
+    return "新 PR 评审";
+  }
+
+  return "新 PR 评审评论";
+}
+
+function formatSentenceAction(notification: Notification): string {
+  if (notification.event === "issues") {
+    return notification.action === "reopened" ? "重新打开了一个 Issue" : "新建了一个 Issue";
+  }
+
+  if (notification.event === "pull_request") {
+    if (notification.action === "ready_for_review") {
+      return "把一个 PR 标记为可评审";
+    }
+    return notification.action === "reopened" ? "重新打开了一个 PR" : "新建了一个 PR";
+  }
+
+  if (notification.event === "issue_comment") {
+    return notification.subjectType === "PR 评论" ? "评论了一个 PR" : "评论了一个 Issue";
+  }
+
+  if (notification.event === "pull_request_review") {
+    return "提交了一个 PR 评审";
+  }
+
+  return "评论了一个 PR 评审";
+}
+
 function buildActions(notification: Notification): any[] {
-  const primaryText = notification.event === "issues" ? "打开 Issue" : "打开 PR";
+  const primaryText = isIssueNotification(notification) ? "打开 Issue" : "打开 PR";
   const actions = [
     button(primaryText, notification.htmlUrl, "primary"),
     button("查看仓库", notification.repoUrl)
@@ -334,15 +411,8 @@ function buildActions(notification: Notification): any[] {
   return actions;
 }
 
-function formatAction(action: string): string {
-  const actionMap: Record<string, string> = {
-    opened: "新建",
-    reopened: "重新打开",
-    ready_for_review: "标记为可评审",
-    created: "新增评论",
-    submitted: "提交评审"
-  };
-  return actionMap[action] ?? action;
+function isIssueNotification(notification: Notification): boolean {
+  return notification.event === "issues" || notification.subjectType === "Issue 评论";
 }
 
 function formatAssociation(association: string): string {
