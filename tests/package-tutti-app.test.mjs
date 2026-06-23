@@ -37,10 +37,7 @@ test("publish config registers daily-tech-radar as the default app", async () =>
     app.iconPath,
     "build/tutti-app/daily-tech-radar/package/icon.png",
   );
-  assert.deepEqual(config.environments.production.appIds, [
-    "daily-tech-radar",
-    "tutti-onboarding",
-  ]);
+  assert.deepEqual(config.environments.production.appIds, ["daily-tech-radar"]);
 });
 
 test("publish config registers daily-tech-radar as an explicit app", async () => {
@@ -242,47 +239,4 @@ test("packageTuttiApp creates a valid daily-tech-radar package", async () => {
     path.basename(zipPath),
     `daily-tech-radar-${sourceManifest.version}.zip`,
   );
-});
-
-test("packageTuttiApp creates a valid static tutti-onboarding package", async () => {
-  const zipPath = await packageTuttiApp({ appId: "tutti-onboarding" });
-  const packageRoot = path.resolve("build/tutti-app/tutti-onboarding/package");
-  const manifest = JSON.parse(
-    await readFile(path.join(packageRoot, "tutti.app.json"), "utf8"),
-  );
-  const bootstrap = await readFile(
-    path.join(packageRoot, "bootstrap.sh"),
-    "utf8",
-  );
-  const wrapper = await readFile(path.join(packageRoot, "server.mjs"), "utf8");
-  const cliManifest = JSON.parse(
-    await readFile(path.join(packageRoot, "tutti.cli.json"), "utf8"),
-  );
-  const indexHtml = await readFile(
-    path.join(packageRoot, "dist", "index.html"),
-    "utf8",
-  );
-
-  await assert.rejects(
-    access(path.join(packageRoot, "server", "server.js")),
-    /ENOENT/,
-  );
-  assert.equal(manifest.appId, "tutti-onboarding");
-  assert.equal(manifest.version, "0.1.0");
-  assert.equal(manifest.runtime.bootstrap, "bootstrap.sh");
-  assert.equal(manifest.runtime.profile, "node-static");
-  assert.deepEqual(manifest.cli, {
-    manifest: "tutti.cli.json",
-  });
-  assert.match(bootstrap, /TUTTI_APP_NODE/);
-  assert.match(bootstrap, /app_port="\$\{TUTTI_APP_PORT:-3003\}"/);
-  assert.match(wrapper, /tutti-onboarding/);
-  assert.match(wrapper, /\/tutti\/cli\/status/);
-  assert.equal(cliManifest.scope, "onboarding");
-  assert.deepEqual(
-    cliManifest.commands.map((command) => command.handler.path),
-    ["/tutti/cli/status"],
-  );
-  assert.match(indexHtml, /Tutti .* Getting Started/);
-  assert.equal(path.basename(zipPath), "tutti-onboarding-0.1.0.zip");
 });

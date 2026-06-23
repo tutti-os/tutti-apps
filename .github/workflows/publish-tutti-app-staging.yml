@@ -14,7 +14,6 @@ on:
         options:
           - all
           - daily-tech-radar
-          - tutti-onboarding
       publish_catalog:
         description: Whether to publish the staging App Center catalog after this release. Main branch pushes always publish the catalog.
         required: false
