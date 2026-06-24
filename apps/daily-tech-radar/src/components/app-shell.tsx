@@ -115,8 +115,12 @@ export function AppShell({
   const { i18n: i18next } = useTranslation("radar");
   const t = useMemo(() => i18n.getFixedT(locale, "radar"), [locale]);
   const categories = useMemo(
-    () => getVisibleCategories(board.cards, searchState.source),
-    [board.cards, searchState.source],
+    () =>
+      getVisibleCategories(board.cards, {
+        query: searchState.query,
+        source: searchState.source,
+      }),
+    [board.cards, searchState.query, searchState.source],
   );
   const categoryExists =
     searchState.category === "all" ||

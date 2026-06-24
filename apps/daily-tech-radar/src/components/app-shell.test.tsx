@@ -30,6 +30,25 @@ const card: RadarCard = {
   type: "producthunt",
 };
 
+const githubCard: RadarCard = {
+  categories: ["AI", "AI代理"],
+  date: "2026-06-05",
+  description: "Self-improving AI agent with a built-in learning loop.",
+  id: "github:nousresearch-hermes-agent",
+  keywords: ["agent", "quick install"],
+  language: "Python",
+  media: [],
+  metrics: { forks: 31423, score: 118, stars: 183193 },
+  name: "hermes-agent",
+  owner: "NousResearch",
+  rank: 1,
+  sourceLabel: "GitHub · #1 · Python",
+  sourceUrl: "https://github.com/NousResearch/hermes-agent",
+  summary: "Self-improving AI agent with a built-in learning loop.",
+  title: "NousResearch / hermes-agent",
+  type: "github",
+};
+
 describe("DetailDrawer", () => {
   it("places the source action before the detail body copy", () => {
     const html = renderToStaticMarkup(
@@ -243,6 +262,49 @@ describe("AppShell", () => {
     expect(html).toContain("92 评论");
     expect(html).not.toContain("371 votes");
     expect(html).not.toContain("92 comments");
+  });
+
+  it("updates category chips for the current query while keeping signal metrics global", () => {
+    const board: RadarBoard = {
+      availableDates: ["2026-06-05"],
+      cards: [card, githubCard],
+      categories: [
+        { count: 1, label: "AI" },
+        { count: 1, label: "AI代理" },
+        { count: 1, label: "开发工具" },
+        { count: 1, label: "安全隐私" },
+      ],
+      date: "2026-06-05",
+      generatedAt: "2026-06-06T00:00:00.000Z",
+      locale: "zh-CN",
+      metrics: {
+        aiPercent: 92,
+        githubCount: 16,
+        productHuntCount: 20,
+      },
+    };
+
+    const html = renderToStaticMarkup(
+      <AppShell
+        board={board}
+        searchState={{
+          category: "all",
+          date: "2026-06-05",
+          query: "not-a-real-card",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
+    );
+
+    expect(html).toContain("没有匹配的卡片");
+    expect(html).toContain("<b>20</b><span>新品发布</span>");
+    expect(html).toContain("<b>16</b><span>GitHub 仓库</span>");
+    expect(html).toContain("<b>92%</b><span>AI 相关</span>");
+    expect(html).not.toContain("开发工具 1");
+    expect(html).not.toContain("安全隐私 1");
+    expect(html).not.toContain("AI代理 1");
   });
 
   it("renders the shell chrome in English while preserving raw category filters", () => {

@@ -7,6 +7,11 @@ type FilterInput = {
   source: RadarSource;
 };
 
+type CategoryVisibilityInput = {
+  query?: string;
+  source: RadarSource;
+};
+
 export function filterRadarCards(cards: RadarCard[], input: FilterInput) {
   const query = input.query.trim().toLowerCase();
 
@@ -21,12 +26,16 @@ export function filterRadarCards(cards: RadarCard[], input: FilterInput) {
 
 export function getVisibleCategories(
   cards: RadarCard[],
-  source: RadarSource,
+  input: CategoryVisibilityInput,
 ): Array<{ count: number; label: string }> {
+  const query = input.query?.trim().toLowerCase() ?? "";
   const counts = new Map<string, number>();
 
   for (const card of cards) {
-    if (source !== "all" && card.type !== source) {
+    if (input.source !== "all" && card.type !== input.source) {
+      continue;
+    }
+    if (query && !searchableText(card).includes(query)) {
       continue;
     }
     for (const category of new Set(card.categories)) {
