@@ -59,10 +59,22 @@ describe("radar filtering", () => {
   });
 
   it("derives category chips from currently selected source cards", () => {
-    expect(getVisibleCategories(cards, "github")).toEqual([
+    expect(getVisibleCategories(cards, { source: "github" })).toEqual([
       { count: 1, label: "AI" },
       { count: 1, label: "AI代理" },
       { count: 1, label: "开发工具" },
+    ]);
+  });
+
+  it("derives category chips from cards matching the current query", () => {
+    expect(
+      getVisibleCategories(cards, {
+        query: "sellerclaw",
+        source: "all",
+      }),
+    ).toEqual([
+      { count: 1, label: "AI代理" },
+      { count: 1, label: "电商自动化" },
     ]);
   });
 });
