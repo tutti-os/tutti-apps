@@ -15,4 +15,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Record review event
-        run: echo "External PR review gate refresh requested."
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+
+            const pull = context.payload.pull_request;
+            const review = context.payload.review;
+            const payload = {
+              pr_number: pull.number,
+              pr_author: pull.user.login,
+              pr_head_sha: pull.head.sha,
+              pr_is_draft: pull.draft,
+              review_commit_id: review.commit_id,
+              review_state: review.state,
+            };
+
+            fs.mkdirSync('review-signal', { recursive: true });
+            fs.writeFileSync(
+              'review-signal/review-event.json',
+              `${JSON.stringify(payload, null, 2)}\n`,
+            );
+
+            core.info(`External PR review gate refresh requested for PR #${payload.pr_number} at ${payload.pr_head_sha}.`);
+
+      - name: Upload review event payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-pr-review-gate-review
+          path: review-signal/review-event.json
+          if-no-files-found: error
+          retention-days: 1

@@ -8,6 +8,7 @@ on:
       - completed
 
 permissions:
+  actions: read
   contents: read
   pull-requests: write
   statuses: write
@@ -23,35 +24,59 @@ jobs:
       pr_is_draft: ${{ steps.resolve.outputs.pr_is_draft }}
       should_refresh: ${{ steps.resolve.outputs.should_refresh }}
     steps:
+      - name: Download review event payload
+        id: download-review-event
+        uses: actions/download-artifact@v4
+        with:
+          name: external-pr-review-gate-review
+          path: ${{ runner.temp }}/review-signal
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
       - name: Resolve reviewed pull request
         id: resolve
         uses: actions/github-script@v8
         with:
           script: |
+            const fs = require('fs');
             const run = context.payload.workflow_run;
-            let pr = run.pull_requests?.find((item) => item.base?.repo?.full_name === context.payload.repository.full_name);
+            const payloadPath = `${process.env.RUNNER_TEMP}/review-signal/review-event.json`;
 
-            if (!pr) {
-              const associated = await github.paginate(github.rest.repos.listPullRequestsAssociatedWithCommit, {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                commit_sha: run.head_sha,
-                per_page: 100,
-              });
-              pr = associated.find((item) => item.state === 'open');
+            if (!fs.existsSync(payloadPath)) {
+              throw new Error(`Review signal artifact is missing ${payloadPath}.`);
             }
 
-            if (!pr) {
-              core.info(`No open pull request found for review signal ${run.id} at ${run.head_sha}.`);
-              core.setOutput('should_refresh', 'false');
-              return;
+            const payload = JSON.parse(fs.readFileSync(payloadPath, 'utf8'));
+            const pullNumber = Number(payload.pr_number);
+            if (!Number.isInteger(pullNumber) || pullNumber <= 0) {
+              throw new Error(`Invalid PR number in review signal artifact: ${JSON.stringify(payload.pr_number)}`);
             }
+
+            if (payload.pr_head_sha !== run.head_sha) {
+              throw new Error(
+                `Review signal head SHA ${payload.pr_head_sha} does not match triggering workflow head SHA ${run.head_sha}.`,
+              );
+            }
+
+            core.info(`Resolved PR #${pullNumber} from review signal artifact.`);
 
             const { data: pull } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: pr.number,
+              pull_number: pullNumber,
             });
+
+            if (pull.state !== 'open') {
+              core.info(`PR #${pull.number} is ${pull.state}; review gate refresh is skipped.`);
+              core.setOutput('should_refresh', 'false');
+              return;
+            }
+
+            if (pull.head.sha !== run.head_sha) {
+              throw new Error(
+                `PR #${pull.number} head SHA ${pull.head.sha} does not match triggering workflow head SHA ${run.head_sha}.`,
+              );
+            }
 
             core.setOutput('pr_number', String(pull.number));
             core.setOutput('pr_author', pull.user.login);

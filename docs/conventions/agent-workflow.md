@@ -56,3 +56,8 @@ For frontend changes, start the target app and verify the UI in a browser.
   enabling an app, do not stop after `tutti.publish.json`; also check the
   production and staging workflow `app_id` choice lists, then run the resolver
   for the explicit app id and `all`.
+- External PR review gate refreshes use a low-privilege
+  `pull_request_review` signal followed by a privileged `workflow_run`.
+  Preserve that split for fork PRs, and pass the PR identity through an artifact;
+  do not rely on `workflow_run.pull_requests` or commit-to-PR lookup for forked
+  review events.
