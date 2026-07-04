@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { z } from "zod";
 
 import { AppShell, AppShellLoading } from "@/components/app-shell";
@@ -14,6 +15,7 @@ import {
   resolveAppLocale,
   useHostLocale,
 } from "@/i18n/app-context";
+import { reportUserActiveOnce } from "@/lib/tutti-activity";
 
 const searchSchema = z.object({
   date: z.string().optional(),
@@ -39,6 +41,9 @@ function IndexRoute() {
   const { data: board } = useQuery(
     radarBoardQueryOptions({ date: search.date, locale }),
   );
+  useEffect(() => {
+    if (board) reportUserActiveOnce();
+  }, [board]);
   const searchState = {
     category: search.filter,
     date: search.date ?? board?.date ?? "",
