@@ -45,6 +45,7 @@ import {
   filterRadarCards,
   getVisibleCategories,
 } from "@/features/radar/filtering";
+import { calculateAiPercent } from "@/features/radar/radar.normalize";
 import {
   primaryDisplayTags,
   secondaryDisplayTags,
@@ -131,6 +132,19 @@ export function AppShell({
     query: searchState.query,
     source: searchState.source,
   });
+  const filteredMetrics = useMemo(() => {
+    let productHuntCount = 0;
+    let githubCount = 0;
+    for (const card of visibleCards) {
+      if (card.type === "producthunt") productHuntCount++;
+      else githubCount++;
+    }
+    return {
+      aiPercent: calculateAiPercent(visibleCards),
+      githubCount,
+      productHuntCount,
+    };
+  }, [visibleCards]);
 
   function updateState(partial: Partial<SearchState>) {
     onSearchStateChange({
@@ -173,6 +187,7 @@ export function AppShell({
       />
       <HeroSection
         board={board}
+        metrics={filteredMetrics}
         t={t}
         query={searchState.query}
         onClear={() => updateState({ query: "" })}
@@ -190,8 +205,10 @@ export function AppShell({
       <section className="radar-layout">
         <RadarSidebar
           board={board}
+          categories={categories}
           date={searchState.date || board.date}
           locale={locale}
+          metrics={filteredMetrics}
           t={t}
           onDateChange={(date) => updateState({ category: "all", date })}
         />
@@ -285,6 +302,7 @@ export function AppShellLoading({
       />
       <HeroSection
         board={loadingBoard}
+        metrics={loadingBoard.metrics}
         query={searchState.query}
         t={t}
         onClear={() => updateState({ query: "" })}
@@ -445,12 +463,14 @@ function TopNav({
 
 function HeroSection({
   board,
+  metrics,
   onClear,
   onQueryChange,
   query,
   t,
 }: {
   board: RadarBoard;
+  metrics: RadarBoard["metrics"];
   onClear: () => void;
   onQueryChange: (query: string) => void;
   query: string;
@@ -522,27 +542,33 @@ function HeroSection({
           ) : null}
         </label>
       </div>
-      <SignalPanel board={board} t={t} />
+      <SignalPanel metrics={metrics} t={t} />
     </section>
   );
 }
 
-function SignalPanel({ board, t }: { board: RadarBoard; t: RadarT }) {
+function SignalPanel({
+  metrics,
+  t,
+}: {
+  metrics: RadarBoard["metrics"];
+  t: RadarT;
+}) {
   return (
     <aside className="radar-signal">
       <h2>{t("signal.title")}</h2>
       <p>{t("signal.body")}</p>
       <div className="radar-mini-metrics">
         <Metric
-          value={String(board.metrics.productHuntCount)}
+          value={String(metrics.productHuntCount)}
           label={t("sources.productLaunches")}
         />
         <Metric
-          value={String(board.metrics.githubCount)}
+          value={String(metrics.githubCount)}
           label={t("sources.githubRepos")}
         />
         <Metric
-          value={`${board.metrics.aiPercent}%`}
+          value={`${metrics.aiPercent}%`}
           label={t("metrics.aiRelated")}
         />
       </div>
@@ -612,14 +638,18 @@ function Toolbar({
 
 function RadarSidebar({
   board,
+  categories,
   date,
   locale,
+  metrics,
   onDateChange,
   t,
 }: {
   board: RadarBoard;
+  categories: Array<{ count: number; label: string }>;
   date: string;
   locale: Locale;
+  metrics: RadarBoard["metrics"];
   onDateChange: (date: string) => void;
   t: RadarT;
 }) {
@@ -632,15 +662,15 @@ function RadarSidebar({
         <h3>{t("sources.contentSources")}</h3>
         <div className="radar-topic">
           <span>{t("sources.productHuntLaunches")}</span>
-          <span>{board.metrics.productHuntCount}</span>
+          <span>{metrics.productHuntCount}</span>
         </div>
         <div className="radar-topic">
           <span>{t("sources.githubRepos")}</span>
-          <span>{board.metrics.githubCount}</span>
+          <span>{metrics.githubCount}</span>
         </div>
         <div className="radar-topic">
           <span>{t("sources.crossSourceInsights")}</span>
-          <span>{board.categories.slice(0, 3).length}</span>
+          <span>{categories.slice(0, 3).length}</span>
         </div>
       </div>
       <div className="radar-sidebar-card">
