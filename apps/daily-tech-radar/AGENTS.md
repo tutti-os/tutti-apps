@@ -11,6 +11,11 @@ Product scope:
 - source/date/category/search/view filters
 - prototype-style card grid, compact list, detail drawer, and favorites
 
+Daily Tech Radar does not own or launch an Agent runtime. Do not add
+`@tutti-os/agent-acp-kit`, raw Agent catalog/composer routes, provider aliases,
+or consumer package patches unless the product architecture explicitly changes.
+The repository test suite enforces this no-Agent boundary.
+
 ## Validation
 
 ```bash
