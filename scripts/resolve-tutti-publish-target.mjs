@@ -68,6 +68,9 @@ export function resolvePublishTarget(
   if (!app) {
     throw new Error(`Unknown Tutti app id: ${resolvedAppId}`);
   }
+  if (!app.minTuttiVersion) {
+    throw new Error(`App ${resolvedAppId} is missing minTuttiVersion.`);
+  }
 
   return {
     app_id: resolvedAppId,

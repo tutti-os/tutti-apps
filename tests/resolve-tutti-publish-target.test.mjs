@@ -73,6 +73,15 @@ test("resolvePublishTarget rejects apps disabled for an environment", () => {
   );
 });
 
+test("resolvePublishTarget rejects apps without a Tutti compatibility floor", () => {
+  const missingFloorConfig = structuredClone(config);
+  delete missingFloorConfig.apps["daily-tech-radar"].minTuttiVersion;
+  assert.throws(
+    () => resolvePublishTarget(missingFloorConfig, { environment: "production" }),
+    /daily-tech-radar is missing minTuttiVersion/,
+  );
+});
+
 test("resolvePublishTargets expands all enabled apps for an environment", () => {
   assert.deepEqual(
     resolvePublishTargets(config, {
