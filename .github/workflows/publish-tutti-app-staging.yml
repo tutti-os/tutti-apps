@@ -56,6 +56,7 @@ jobs:
     uses: tutti-os/tutti/.github/workflows/publish-tutti-app-release.yml@main
     with:
       app_id: ${{ matrix.target.app_id }}
+      min_tutti_version: ${{ matrix.target.min_tutti_version }}
       package_command: ${{ matrix.target.package_command }}
       package_dir: ${{ matrix.target.package_dir }}
       icon_path: ${{ matrix.target.icon_path }}
