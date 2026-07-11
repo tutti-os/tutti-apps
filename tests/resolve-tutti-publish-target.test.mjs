@@ -13,12 +13,14 @@ const config = {
       packageSourceDir: "apps/daily-tech-radar/tutti-package",
       packageDir: "build/tutti-app/daily-tech-radar/package",
       iconPath: "build/tutti-app/daily-tech-radar/package/icon.png",
+      minTuttiVersion: "0.1.18",
     },
     "second-app": {
       packageCommand: "pnpm package:tutti --app second-app",
       packageSourceDir: "apps/second-app/tutti-package",
       packageDir: "build/tutti-app/second-app/package",
       iconPath: "build/tutti-app/second-app/package/icon.png",
+      minTuttiVersion: "0.1.19",
     },
   },
   environments: {
@@ -37,6 +39,7 @@ test("resolvePublishTarget returns reusable workflow inputs", () => {
       package_command: "pnpm package:tutti --app daily-tech-radar",
       package_dir: "build/tutti-app/daily-tech-radar/package",
       icon_path: "build/tutti-app/daily-tech-radar/package/icon.png",
+      min_tutti_version: "0.1.18",
       release_tag_prefix: "daily-tech-radar-v",
     },
   );
@@ -53,6 +56,7 @@ test("resolvePublishTarget returns daily-tech-radar when explicitly requested", 
       package_command: "pnpm package:tutti --app daily-tech-radar",
       package_dir: "build/tutti-app/daily-tech-radar/package",
       icon_path: "build/tutti-app/daily-tech-radar/package/icon.png",
+      min_tutti_version: "0.1.18",
       release_tag_prefix: "daily-tech-radar-v",
     },
   );
@@ -81,6 +85,7 @@ test("resolvePublishTargets expands all enabled apps for an environment", () => 
         package_command: "pnpm package:tutti --app daily-tech-radar",
         package_dir: "build/tutti-app/daily-tech-radar/package",
         icon_path: "build/tutti-app/daily-tech-radar/package/icon.png",
+        min_tutti_version: "0.1.18",
         release_tag_prefix: "daily-tech-radar-v",
       },
       {
@@ -88,6 +93,7 @@ test("resolvePublishTargets expands all enabled apps for an environment", () => 
         package_command: "pnpm package:tutti --app second-app",
         package_dir: "build/tutti-app/second-app/package",
         icon_path: "build/tutti-app/second-app/package/icon.png",
+        min_tutti_version: "0.1.19",
         release_tag_prefix: "second-app-v",
       },
     ],

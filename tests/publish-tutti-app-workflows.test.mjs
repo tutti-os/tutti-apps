@@ -63,6 +63,10 @@ test("production Tutti app workflow publishes configured apps from a release bum
   });
   assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
   assert.equal(
+    publish.with.min_tutti_version,
+    "${{ matrix.target.min_tutti_version }}",
+  );
+  assert.equal(
     publish.with.package_command,
     "${{ matrix.target.package_command }}",
   );
@@ -120,6 +124,10 @@ test("staging Tutti app workflow publishes configured apps manually", async () =
     "cancel-in-progress": false,
   });
   assert.equal(publish.with.app_id, "${{ matrix.target.app_id }}");
+  assert.equal(
+    publish.with.min_tutti_version,
+    "${{ matrix.target.min_tutti_version }}",
+  );
   assert.equal(
     publish.with.package_command,
     "${{ matrix.target.package_command }}",

@@ -8,7 +8,8 @@
       "packageSourceDir": "apps/daily-tech-radar/tutti-package",
       "packageDir": "build/tutti-app/daily-tech-radar/package",
       "iconPath": "build/tutti-app/daily-tech-radar/package/icon.png",
-      "packageCommand": "pnpm package:tutti --app daily-tech-radar"
+      "packageCommand": "pnpm package:tutti --app daily-tech-radar",
+      "minTuttiVersion": "0.1.18"
     }
   },
   "environments": {
