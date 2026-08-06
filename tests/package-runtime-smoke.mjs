@@ -51,9 +51,18 @@ child.stderr.setEncoding("utf8");
 child.stderr.on("data", (chunk) => {
   stderr += chunk;
 });
+const childExit = new Promise((_, reject) => {
+  child.once("exit", (code, signal) => {
+    reject(
+      new Error(
+        `Package runtime exited before health check (code=${code}, signal=${signal}): ${stderr}`,
+      ),
+    );
+  });
+});
 
 try {
-  const response = await waitForHealth(port);
+  const response = await Promise.race([waitForHealth(port), childExit]);
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), {
     app: "daily-tech-radar",
