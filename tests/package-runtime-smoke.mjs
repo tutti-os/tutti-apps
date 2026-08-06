@@ -23,25 +23,23 @@ await Promise.all([
 
 const port = await reservePort();
 const bootstrap = path.join(packageRoot, "bootstrap.sh");
-const shellPath = (value) =>
-  process.platform === "win32" ? value.replaceAll("\\", "/") : value;
 const invocation =
   process.platform === "win32"
     ? {
         command: process.env.TUTTI_APP_TEST_SHELL?.trim() || "bash",
-        args: [shellPath(bootstrap)],
+        args: [bootstrap],
       }
     : { command: bootstrap, args: [] };
 const child = spawn(invocation.command, invocation.args, {
   cwd: runtimeDir,
   env: {
     ...process.env,
-    TUTTI_APP_DATA_DIR: shellPath(dataDir),
+    TUTTI_APP_DATA_DIR: dataDir,
     TUTTI_APP_HOST: "127.0.0.1",
-    TUTTI_APP_NODE: shellPath(process.execPath),
-    TUTTI_APP_PACKAGE_DIR: shellPath(packageRoot),
+    TUTTI_APP_NODE: process.execPath,
+    TUTTI_APP_PACKAGE_DIR: packageRoot,
     TUTTI_APP_PORT: String(port),
-    TUTTI_APP_RUNTIME_DIR: shellPath(runtimeDir),
+    TUTTI_APP_RUNTIME_DIR: runtimeDir,
   },
   stdio: ["ignore", "pipe", "pipe"],
 });
