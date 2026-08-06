@@ -1,0 +1,30 @@
+name: Windows Runtime Check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:workspace
+      - run: pnpm --filter @tutti-apps/daily-tech-radar typecheck
+      - run: pnpm package:tutti --app daily-tech-radar
+      - name: Start packaged app and verify health
+        env:
+          TUTTI_APP_TEST_SHELL: C:\Program Files\Git\bin\bash.exe
+        run: node tests/package-runtime-smoke.mjs
