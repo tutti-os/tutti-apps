@@ -275,7 +275,10 @@ function validateCliManifest(cliManifest) {
   }
 }
 
-export async function validatePackageRoot(packageRoot) {
+export async function validatePackageRoot(
+  packageRoot,
+  { platform = process.platform } = {},
+) {
   for (const relativePath of REQUIRED_PACKAGE_FILES) {
     const absolutePath = path.join(packageRoot, relativePath);
     try {
@@ -334,7 +337,7 @@ export async function validatePackageRoot(packageRoot) {
   }
 
   const bootstrapStat = await stat(path.join(packageRoot, "bootstrap.sh"));
-  if ((bootstrapStat.mode & 0o111) === 0) {
+  if (platform !== "win32" && (bootstrapStat.mode & 0o111) === 0) {
     throw new Error("bootstrap.sh must be executable.");
   }
 
@@ -372,6 +375,10 @@ async function run(command, args, options = {}, fallbackCommands = []) {
 }
 
 async function runPnpm(args, options = {}) {
+  const entrypoint = process.env.npm_execpath?.trim();
+  if (entrypoint) {
+    return run(process.execPath, [entrypoint, ...args], options);
+  }
   return run("pnpm", args, options, PNPM_FALLBACK_COMMANDS);
 }
 
@@ -536,11 +543,21 @@ async function writePackageFiles({ appConfig, manifest }) {
   };
 }
 
+export function resolveArchiveInvocation(
+  zipPath,
+  platform = process.platform,
+) {
+  return platform === "win32"
+    ? { command: "tar.exe", args: ["-a", "-c", "-f", zipPath, "."] }
+    : { command: "zip", args: ["-qry", zipPath, "."] };
+}
+
 async function createZip({ appId, packageRoot, version, buildRoot }) {
   const appBuildRoot = path.join(rootDir, buildRoot, appId);
   const zipPath = path.join(appBuildRoot, `${appId}-${version}.zip`);
   await rm(zipPath, { force: true });
-  await run("zip", ["-qry", zipPath, "."], { cwd: packageRoot });
+  const invocation = resolveArchiveInvocation(zipPath);
+  await run(invocation.command, invocation.args, { cwd: packageRoot });
   return zipPath;
 }
 

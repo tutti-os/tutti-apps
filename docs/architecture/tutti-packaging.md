@@ -138,6 +138,12 @@ build/tutti-app/<app-id>/package/
 build/tutti-app/<app-id>/<app-id>-<version>.zip
 ```
 
+The packager runs on macOS, Linux, and Windows. It invokes the active pnpm
+entrypoint through Node, uses the Windows-provided `tar.exe` archive mode when
+needed, and treats POSIX executable bits as a Unix-only validation. Windows CI
+also starts the packaged app through the same shell entrypoint contract and
+checks its health endpoint.
+
 The package directory is the input consumed by the reusable release workflow in
 `tutti-os/tutti`.
 

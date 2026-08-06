@@ -17,6 +17,7 @@ import {
   assertNoSymlinks,
   packageTuttiApp,
   readPublishConfig,
+  resolveArchiveInvocation,
   resolveAppConfig,
   validatePackageRoot,
 } from "../scripts/package-tutti-app.mjs";
@@ -77,6 +78,24 @@ test("validatePackageRoot requires the files Tutti imports", async () => {
   await chmod(path.join(packageRoot, "bootstrap.sh"), 0o755);
 
   await validatePackageRoot(packageRoot);
+
+  await chmod(path.join(packageRoot, "bootstrap.sh"), 0o644);
+  await assert.rejects(
+    validatePackageRoot(packageRoot, { platform: "linux" }),
+    /bootstrap\.sh must be executable/,
+  );
+  await validatePackageRoot(packageRoot, { platform: "win32" });
+});
+
+test("resolveArchiveInvocation uses the platform archive tool", () => {
+  assert.deepEqual(resolveArchiveInvocation("app.zip", "win32"), {
+    command: "tar.exe",
+    args: ["-a", "-c", "-f", "app.zip", "."],
+  });
+  assert.deepEqual(resolveArchiveInvocation("app.zip", "darwin"), {
+    command: "zip",
+    args: ["-qry", "app.zip", "."],
+  });
 });
 
 test("validatePackageRoot requires declared CLI manifest and docs", async () => {
