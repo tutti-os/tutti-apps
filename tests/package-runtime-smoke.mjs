@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { mkdir, mkdtemp, rm } from "node:fs/promises";
 import http from "node:http";
 import os from "node:os";
@@ -58,6 +58,7 @@ const childExit = new Promise((_, reject) => {
     );
   });
 });
+const childTermination = new Promise((resolve) => child.once("exit", resolve));
 
 try {
   const response = await Promise.race([waitForHealth(port), childExit]);
@@ -67,15 +68,25 @@ try {
     ok: true,
   });
 } finally {
-  child.kill("SIGTERM");
+  if (process.platform === "win32" && child.pid) {
+    await new Promise((resolve) => {
+      execFile(
+        "taskkill",
+        ["/pid", String(child.pid), "/T", "/F"],
+        () => resolve(),
+      );
+    });
+  } else {
+    child.kill("SIGTERM");
+  }
   await Promise.race([
-    new Promise((resolve) => child.once("exit", resolve)),
+    childTermination,
     new Promise((resolve) => setTimeout(resolve, 2_000)),
   ]);
   await rm(scratch, { recursive: true, force: true });
 }
 
-if (child.exitCode && child.exitCode !== 0) {
+if (process.platform !== "win32" && child.exitCode && child.exitCode !== 0) {
   throw new Error(`Package runtime exited with ${child.exitCode}: ${stderr}`);
 }
 
