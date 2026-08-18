@@ -142,7 +142,10 @@ function getGitHubCover(repo: GitHubTrendRepo): {
 } {
   const visualUrl = repo.visual.thumbUrl ?? repo.visual.url ?? null;
 
-  if (repo.visual.kind === "repository_avatar") {
+  if (
+    repo.visual.kind === "repository_avatar" ||
+    isGitHubAvatarVisual(repo, visualUrl)
+  ) {
     return {
       style: "image",
       url: `https://opengraph.githubassets.com/daily-tech-radar/${repo.owner}/${repo.name}`,
@@ -167,6 +170,28 @@ function getGitHubCover(repo: GitHubTrendRepo): {
     style: "semantic",
     url: null,
   };
+}
+
+function isGitHubAvatarVisual(
+  repo: GitHubTrendRepo,
+  visualUrl: string | null,
+) {
+  if (!visualUrl) return false;
+  const withoutQuery = (value?: string | null) => {
+    if (!value) return undefined;
+    return value.split("?")[0]?.replace(/\/+$/, "").toLowerCase();
+  };
+  if (withoutQuery(visualUrl) === withoutQuery(repo.avatarUrl)) return true;
+  try {
+    const url = new URL(visualUrl);
+    return (
+      (["github.com", "www.github.com"].includes(url.hostname.toLowerCase()) &&
+        /^\/[^/]+\.png$/i.test(url.pathname)) ||
+      url.hostname.toLowerCase() === "avatars.githubusercontent.com"
+    );
+  } catch {
+    return false;
+  }
 }
 
 function shouldUseSemanticGitHubCover(
