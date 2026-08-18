@@ -6,7 +6,12 @@ import { defineConfig } from "vite";
 import { nitro } from "nitro/vite";
 
 export default defineConfig({
-  plugins: [tanstackStart(), nitro(), react(), tailwindcss()],
+  plugins: [
+    tanstackStart(),
+    ...(process.env.VERCEL ? [nitro()] : []),
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
