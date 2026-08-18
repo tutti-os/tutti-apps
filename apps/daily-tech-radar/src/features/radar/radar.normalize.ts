@@ -142,6 +142,13 @@ function getGitHubCover(repo: GitHubTrendRepo): {
 } {
   const visualUrl = repo.visual.thumbUrl ?? repo.visual.url ?? null;
 
+  if (repo.visual.kind === "repository_avatar") {
+    return {
+      style: "image",
+      url: `https://opengraph.githubassets.com/daily-tech-radar/${repo.owner}/${repo.name}`,
+    };
+  }
+
   if (visualUrl && !shouldUseSemanticGitHubCover(repo, visualUrl)) {
     return {
       style: "image",

@@ -232,6 +232,30 @@ describe("radar normalization", () => {
     });
   });
 
+  it("uses a repository Open Graph cover instead of stretching an owner avatar", () => {
+    const [baseRepo] = githubPackage.repos;
+    expect(baseRepo).toBeDefined();
+    const repo = {
+      ...(baseRepo as NonNullable<typeof baseRepo>),
+      visual: {
+        alt: "NousResearch/hermes-agent",
+        kind: "repository_avatar" as const,
+        sourceUrl: "https://github.com/NousResearch/hermes-agent",
+        thumbUrl: "https://github.com/NousResearch.png",
+        url: "https://github.com/NousResearch.png",
+      },
+    };
+
+    const card = normalizeGitHubRepo(repo, githubPackage);
+
+    expect(card).toMatchObject({
+      coverStyle: "image",
+      coverUrl:
+        "https://opengraph.githubassets.com/daily-tech-radar/NousResearch/hermes-agent",
+      iconUrl: "https://github.com/NousResearch.png",
+    });
+  });
+
   it("builds a board with merged dates, category counts, and AI share", () => {
     const board = buildRadarBoard({
       date: "2026-06-05",
