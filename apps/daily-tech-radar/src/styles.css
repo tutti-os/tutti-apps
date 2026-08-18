@@ -569,11 +569,12 @@ input:focus-visible {
 
 .radar-grid.compact .radar-desc {
   min-height: auto;
+  -webkit-line-clamp: 4;
 }
 
 .radar-card {
   position: relative;
-  min-height: 336px;
+  min-height: 380px;
   overflow: hidden;
   border: 1px solid rgba(23, 25, 28, 0.075);
   border-radius: 18px;
@@ -824,7 +825,7 @@ input:focus-visible {
 }
 
 .radar-desc {
-  min-height: 58px;
+  min-height: 76px;
   margin: 14px 0 0;
   color: rgba(23, 25, 28, 0.58);
   font-size: 13px;
@@ -832,7 +833,7 @@ input:focus-visible {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 5;
 }
 
 .radar-tags {
