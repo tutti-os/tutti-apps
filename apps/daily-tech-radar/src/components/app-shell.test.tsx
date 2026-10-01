@@ -264,7 +264,7 @@ describe("AppShell", () => {
     expect(html).not.toContain("92 comments");
   });
 
-  it("updates category chips for the current query while keeping signal metrics global", () => {
+  it("updates category chips and signal metrics for the current query", () => {
     const board: RadarBoard = {
       availableDates: ["2026-06-05"],
       cards: [card, githubCard],
@@ -299,9 +299,10 @@ describe("AppShell", () => {
     );
 
     expect(html).toContain("没有匹配的卡片");
-    expect(html).toContain("<b>20</b><span>新品发布</span>");
-    expect(html).toContain("<b>16</b><span>GitHub 仓库</span>");
-    expect(html).toContain("<b>92%</b><span>AI 相关</span>");
+    // Metrics should reflect the filtered set (no matches), not the global board metrics
+    expect(html).toContain("<b>0</b><span>新品发布</span>");
+    expect(html).toContain("<b>0</b><span>GitHub 仓库</span>");
+    expect(html).toContain("<b>0%</b><span>AI 相关</span>");
     expect(html).not.toContain("开发工具 1");
     expect(html).not.toContain("安全隐私 1");
     expect(html).not.toContain("AI代理 1");
@@ -417,5 +418,45 @@ describe("AppShell", () => {
     expect(html).toContain("更多日期");
     expect(html).toContain("06-02");
     expect(html).not.toContain("06-01");
+  });
+
+  it("updates signal metrics to reflect filtered results", () => {
+    const board: RadarBoard = {
+      availableDates: ["2026-06-05"],
+      cards: [card, githubCard],
+      categories: [
+        { count: 1, label: "AI" },
+        { count: 1, label: "AI代理" },
+        { count: 1, label: "开发工具" },
+        { count: 1, label: "安全隐私" },
+      ],
+      date: "2026-06-05",
+      generatedAt: "2026-06-06T00:00:00.000Z",
+      locale: "zh-CN",
+      metrics: {
+        aiPercent: 92,
+        githubCount: 16,
+        productHuntCount: 20,
+      },
+    };
+
+    const html = renderToStaticMarkup(
+      <AppShell
+        board={board}
+        searchState={{
+          category: "all",
+          date: "2026-06-05",
+          query: "hermes",
+          source: "all",
+          view: "grid",
+        }}
+        onSearchStateChange={vi.fn()}
+      />,
+    );
+
+    // Only the github card matches "hermes"
+    expect(html).toContain("<b>0</b><span>新品发布</span>");
+    expect(html).toContain("<b>1</b><span>GitHub 仓库</span>");
+    expect(html).toContain("<b>100%</b><span>AI 相关</span>");
   });
 });
